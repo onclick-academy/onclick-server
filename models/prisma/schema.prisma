@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  fullName      String
+  passWord      String
+  role          Role           @default(STUDENT)
+  isAdmin       Boolean        @default(false)
+  EmailConfirm  Boolean        @default(false)
+  instructor    Instructor[]
+  student       Student[]
+  SusspendState SusspendState?
+  BlockState    BlockState?
+}
+
+model Admin {
+  id          String         @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String         @unique
+  password    String
+  profilePic  String?
+  isDeleted   Boolean        @default(false)
+  didSusspend SusspendState?
+  didBlock    BlockState?
+}
+
+model Instructor {
+  id         String    @id @default(uuid())
+  userId     String
+  firstName  String
+  lastName   String
+  email      String    @unique
+  password   String
+  nationalID String
+  birthDate  DateTime
+  country    String
+  phoneNum   String
+  bio        String?
+  profilePic String?
+  cv         String
+  rate       Float?
+  gender     Gender    @default(MALE)
+  Courses    Courses[]
+  user       User      @relation(fields: [userId], references: [id], onDelete: NoAction)
+  isDeleted  Boolean   @default(false)
+}
+
+model Student {
+  id         String    @id @default(uuid())
+  userId     String
+  firstName  String
+  lastName   String
+  email      String    @unique
+  password   String
+  birthDate  DateTime
+  country    String
+  phoneNum   String
+  bio        String?
+  profilePic String?
+  progress   Float?
+  gender     Gender    @default(MALE)
+  Courses    Courses[]
+  user       User      @relation(fields: [userId], references: [id], onDelete: NoAction)
+  isDeleted  Boolean   @default(false)
+}
+
+model Courses {
+  id           String     @id @default(uuid())
+  InstructorId String
+  StudentId    String
+  instructor   Instructor @relation(fields: [InstructorId], references: [id], onDelete: NoAction)
+  student      Student    @relation(fields: [StudentId], references: [id], onDelete: NoAction)
+}
+
+model SusspendState {
+  id      String   @id @default(uuid())
+  userId  String   @unique
+  adminId String   @unique
+  state   Boolean  @default(false)
+  byAdmin Admin?   @relation(fields: [adminId], references: [id], onDelete: NoAction)
+  reason  String?
+  period  DateTime
+  user    User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+}
+
+model BlockState {
+  id      String   @id @default(uuid())
+  userId  String   @unique
+  adminId String   @unique
+  state   Boolean  @default(false)
+  byAdmin Admin?   @relation(fields: [adminId], references: [id], onDelete: NoAction)
+  reason  String?
+  period  DateTime
+  user    User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
