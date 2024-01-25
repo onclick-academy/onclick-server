@@ -25,6 +25,7 @@ model User {
   id             String   @id @default(uuid())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
   fullName       String
   bio            String?
   country        String
@@ -36,15 +37,18 @@ model User {
   gender         GENDER   @default(MALE)
   role           ROLE     @default(STUDENT)
   isEmailConfirm Boolean  @default(false)
-
   instructor    Instructor?
   student       Student?
+
   suspendStates SuspendState[]
   blockStates   BlockState[]
 }
 
 model Admin {
   id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   firstName  String
   lastName   String
   email      String  @unique
@@ -52,6 +56,7 @@ model Admin {
   profilePic String?
   isDeleted  Boolean @default(false)
 
+  coursesApproved Course[]
   suspendStates SuspendState[]
   blockStates   BlockState[]
 }
@@ -63,7 +68,7 @@ model Instructor {
   cv         String
   rate       Float?
 
-  Courses   Courses[]
+  Courses   Course[]
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   isDeleted Boolean   @default(false)
 }
@@ -74,19 +79,170 @@ model Student {
   isDeleted      Boolean @default(false)
   coursesProgres Json
 
-  Courses Courses[]
+  courseReviews  CourseReviews[]
+  enrollments    CourseEnrollment[]
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Courses {
-  id           String @id @default(uuid())
-  instructorId String
-  studentId    String
-  // TODO add course infos @kholoudxs55kh
+model CourseEnrollment {
+  id        String  @id @default(uuid())
+  courseId  String
+  studentId String
+  progress  Json?
 
-  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  student    Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, studentId]) // TODO discuss this later [one student can enroll in one course only once]
 }
+
+model Course {
+  id           String     @id @default(uuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  instructorId String
+  adminId      String?
+  categoryId   String
+  subCategoryId String?
+  title        String
+  description  String
+  price        Float
+  languages    String
+  rate         Float?
+  discount     Float?
+  available    Boolean    @default(false)
+  skillsGained String
+  duration     String
+  photo       String
+  isDeleted    Boolean    @default(false)
+  certificate  String
+  introVideo   String
+  instructorRate Float
+  courseRate  Float
+
+  topics       Topic[]
+  lectures     Lecture[]
+  reviews      CourseReviews[]
+  enrollments  CourseEnrollment[]
+  createdBy    Admin?     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  category     Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subCategory  SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+}
+
+model  Lecture {
+  id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  courseId   String
+  description String
+  // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
+  // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
+  videoUrl   String
+  duration   String
+  isDeleted  Boolean @default(false)
+
+  content    LecturesContent[]
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model LecturesContent {
+  id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order      Int // order of leccture is matter
+  materialId String
+  lectureId  String
+  content    String
+  isDeleted  Boolean @default(false)
+
+  material   LecturesMaterials @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  lecture    Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+}
+
+model LecturesMaterials {
+  id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  name       String
+  content       String
+  isDeleted  Boolean @default(false)
+
+  contents   LecturesContent[]
+}
+
+model Topic {
+  id         String  @id @default(uuid())
+  courseId   String
+  name       String
+  isDeleted  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model CourseReviews {
+  id         String  @id @default(uuid())
+  courseId   String
+  studentId  String
+  comment    String
+  courseRate CourseRate[]
+  instructorRate InstructorRate[]
+  isDeleted  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student    Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id         String  @id @default(uuid())
+  name       String
+  description String
+  photo      String
+  isDeleted  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  courses    Course[]
+  subCategory SubCategory[]
+}
+
+model SubCategory {
+  id         String  @id @default(uuid())
+  categoryId String
+  name       String
+  description String
+  isDeleted  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  courses    Course[]
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model CourseRate {
+  id         String  @id @default(uuid())
+  reviewId   String
+  rate       Float
+  isDeleted  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  review     CourseReviews @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}
+
+model InstructorRate {
+  id         String  @id @default(uuid())
+  reviewId   String
+  rate       Float
+  isDeleted  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  review     CourseReviews @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}
+
 
 model SuspendState {
   id      String   @id @default(uuid())
