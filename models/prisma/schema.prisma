@@ -60,6 +60,7 @@ model Admin {
   suspendStates   SuspendState[]
   blockStates     BlockState[]
   News            News[]
+  Events          Events[]
 }
 
 model Instructor {
@@ -320,6 +321,25 @@ model News {
   subtitle    String
   description String
   images      String[]
+  createdBy   Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  isDeleted   Boolean  @default(false)
+  isAvailable Boolean  @default(false)
+  cover       String
+}
+
+//model for Events schema
+model Events {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminId     String
+  title       String
+  subtitle    String
+  description String
+  images      String[]
+  startDate   DateTime
+  endDate     DateTime
   createdBy   Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
   isDeleted   Boolean  @default(false)
   isAvailable Boolean  @default(false)
