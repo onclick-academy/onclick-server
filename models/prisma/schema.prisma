@@ -25,6 +25,7 @@ model User {
   id             String   @id @default(uuid())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
   fullName       String
   bio            String?
   country        String
@@ -36,25 +37,26 @@ model User {
   gender         GENDER   @default(MALE)
   role           ROLE     @default(STUDENT)
   isEmailConfirm Boolean  @default(false)
-
   instructor    Instructor?
   student       Student?
+
   suspendStates SuspendState[]
   blockStates   BlockState[]
 }
 
 model Admin {
   id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   firstName  String
   lastName   String
   email      String  @unique
   password   String
   profilePic String?
   isDeleted  Boolean @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  courseCreated Courses[]
 
+  coursesApproved Course[]
   suspendStates SuspendState[]
   blockStates   BlockState[]
 }
@@ -66,7 +68,7 @@ model Instructor {
   cv         String
   rate       Float?
 
-  Courses   Courses[]
+  Courses   Course[]
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   isDeleted Boolean   @default(false)
 }
@@ -76,24 +78,36 @@ model Student {
   userId         String  @unique
   isDeleted      Boolean @default(false)
   coursesProgres Json
-  courseReviews  CourseReviews[]
 
-  Courses Courses[]
+  courseReviews  CourseReviews[]
+  enrollments    CourseEnrollment[]
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model CourseEnrollment {
+  id        String  @id @default(uuid())
+  courseId  String
+  studentId String
+  progress  Json?
 
-model Courses {
+  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, studentId]) // TODO discuss this later [one student can enroll in one course only once]
+}
+
+model Course {
   id           String     @id @default(uuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
   instructorId String
-  studentId    String
   adminId      String?
   categoryId   String
   subCategoryId String?
-  // TODO add course infos @kholoudxs55kh
   title        String
   description  String
-  price        String
+  price        Float
   languages    String
   rate         Float?
   discount     Float?
@@ -101,55 +115,63 @@ model Courses {
   skillsGained String
   duration     String
   photo       String
-  topics       Topic[]
   isDeleted    Boolean    @default(false)
   certificate  String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  lectures     Lectures[]
-  reviews      CourseReviews[]
-  createdBy    Admin?     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   introVideo   String
+  instructorRate Float
+  courseRate  Float
+
+  topics       Topic[]
+  lectures     Lecture[]
+  reviews      CourseReviews[]
+  enrollments  CourseEnrollment[]
+  createdBy    Admin?     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   category     Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   subCategory  SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  courseRate  Float
-  instructorRate Float
   instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  student      Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
-model  Lectures {
+model  Lecture {
   id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   courseId   String
   description String
-  content    LecturesContent[]
+  // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
+  // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
   videoUrl   String
   duration   String
   isDeleted  Boolean @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  course     Courses @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  content    LecturesContent[]
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model LecturesContent {
   id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order      Int // order of leccture is matter
   materialId String
   lectureId  String
   content    String
-  material   LecturesMaterials @relation(fields: [materialId], references: [id], onDelete: Cascade)
   isDeleted  Boolean @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  lecture    Lectures @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  material   LecturesMaterials @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  lecture    Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
 }
 
 model LecturesMaterials {
   id         String  @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   name       String
   content       String
   isDeleted  Boolean @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+
   contents   LecturesContent[]
 }
 
@@ -160,7 +182,7 @@ model Topic {
   isDeleted  Boolean @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  course     Courses @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model CourseReviews {
@@ -173,7 +195,7 @@ model CourseReviews {
   isDeleted  Boolean @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  course     Courses @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   student    Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
@@ -185,7 +207,7 @@ model Category {
   isDeleted  Boolean @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  courses    Courses[]
+  courses    Course[]
   subCategory SubCategory[]
 }
 
@@ -197,7 +219,7 @@ model SubCategory {
   isDeleted  Boolean @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  courses    Courses[]
+  courses    Course[]
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
