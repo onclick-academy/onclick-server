@@ -59,6 +59,7 @@ model Admin {
   coursesApproved Course[]
   suspendStates   SuspendState[]
   blockStates     BlockState[]
+  News            News[]
 }
 
 model Instructor {
@@ -306,4 +307,21 @@ model AppSettings {
 
   coverSlides Json
   socialLinks Json
+}
+
+// Model for News schema
+model News {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminId     String
+  title       String
+  subtitle    String
+  description String
+  images      String[]
+  createdBy   Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  isDeleted   Boolean  @default(false)
+  isAvailable Boolean  @default(false)
+  cover       String
 }
