@@ -345,3 +345,17 @@ model Events {
   isAvailable Boolean  @default(false)
   cover       String
 }
+//model for ContactUs schema
+model ContactUs {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name   String
+  email  String
+  note   String
+  // Extra field for phone number
+  phone  String
+  //Extra field for subject
+  isRead Boolean @default(false)
+}
