@@ -18,6 +18,16 @@ enum GENDER {
   FEMALE
 }
 
+enum EDUCATION_LEVEL {
+  ELEMENTARY
+  MIDDLE
+  HIGH
+  COLLEGE
+  UNIVERSITY
+  MASTER
+  PHD
+}
+
 model User {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -67,12 +77,11 @@ model Instructor {
 
   userId     String @unique
   nationalID String
-  cv         String
-  rate       Float?
+  cvLink       String
+  averageRate       Float?
 
-  Courses   Course[]
+  courses   Course[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isDeleted Boolean  @default(false)
 }
 
 model Student {
@@ -81,8 +90,7 @@ model Student {
   updatedAt DateTime @updatedAt
 
   userId         String  @unique
-  isDeleted      Boolean @default(false)
-  coursesProgres Json
+  educationLevel EDUCATION_LEVEL
 
   courseReviews CourseReview[]
   enrollments   CourseEnrollment[]
