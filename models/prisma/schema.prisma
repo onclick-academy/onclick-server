@@ -304,7 +304,6 @@ model AppSettings {
   privacy      String
   logo         String
   favicon      String
-
   coverSlides Json
   socialLinks Json
 }
@@ -319,9 +318,10 @@ model News {
   title       String
   subtitle    String
   description String
-  images      String[]
-  createdBy   Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  images      Json?
   isDeleted   Boolean  @default(false)
   isAvailable Boolean  @default(false)
   cover       String
+
+  createdBy   Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
