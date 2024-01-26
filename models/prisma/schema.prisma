@@ -327,7 +327,6 @@ model News {
   cover       String
 }
 
-//model for Events schema
 model Events {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -345,17 +344,15 @@ model Events {
   isAvailable Boolean  @default(false)
   cover       String
 }
-//model for ContactUs schema
+
 model ContactUs {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name   String
-  email  String
-  note   String
-  // Extra field for phone number
-  phone  String
-  //Extra field for subject
-  isRead Boolean @default(false)
+  name    String
+  email   String
+  message String
+  phone   String?
+  isRead  Boolean @default(false)
 }
