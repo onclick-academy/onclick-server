@@ -43,9 +43,9 @@ model User {
   updatedAt DateTime @updatedAt
 
   fullName       String
+  username       String      @unique
+  email          String      @unique
   bio            String?
-  country        String
-  city           String
   password       String
   phoneNum       String      @unique
   profilePic     String?
@@ -58,6 +58,7 @@ model User {
 
   suspendStates SuspendState[]
   blockStates   BlockState[]
+  WishList      WishList[]
   notifications Notification[]
 }
 
@@ -145,22 +146,22 @@ model Course {
   updatedAt DateTime @updatedAt
 
   instructorId   String
-  adminId        String?
+  adminId        String
   categoryId     String
-  subCategoryId  String?
+  subCategoryId  String
   title          String
   description    String
   price          Float
   languages      String
   rate           Float?
   discount       Float?
-  available      Boolean @default(false)
-  skillsGained   String
+  available      Boolean  @default(false)
+  skillsGained   String[]
   duration       String
   photo          String
-  isDeleted      Boolean @default(false)
+  isDeleted      Boolean  @default(false)
   certificate    String
-  introVideo     String
+  introVideo     String?
   instructorRate Float
   courseRate     Float
 
@@ -168,9 +169,9 @@ model Course {
   lectures    Lecture[]
   reviews     CourseReview[]
   enrollments CourseEnrollment[]
-  createdBy   Admin?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  category    Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  subCategory SubCategory?       @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  WishList    WishList[]
+  createdBy   Admin             @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  subCategory SubCategory       @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   instructor  Instructor         @relation(fields: [instructorId], references: [id], onDelete: Cascade)
 }
 
@@ -196,7 +197,7 @@ model LecturesContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order      Int // order of leccture is matter
+  order      Int     @unique
   materialId String
   lectureId  String
   content    String
@@ -211,9 +212,9 @@ model LecturesMaterials {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name      String
-  content   String
-  isDeleted Boolean @default(false)
+  title       String
+  description String
+  isDeleted   Boolean @default(false)
 
   contents LecturesContent[]
 }
@@ -256,7 +257,6 @@ model Category {
   photo       String
   isDeleted   Boolean @default(false)
 
-  courses     Course[]
   subCategory SubCategory[]
 }
 
@@ -388,4 +388,17 @@ model ContactUs {
   message String
   phone   String?
   isRead  Boolean @default(false)
+}
+
+model WishList {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courseId String
+  userId   String
+  isDeleted Boolean @default(false)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
