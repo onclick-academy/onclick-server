@@ -137,7 +137,7 @@ model CourseEnrollment {
   course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, studentId]) // TODO discuss this later [one student can enroll in one course only once]
+  @@unique([courseId, studentId])
 }
 
 model Course {
@@ -245,6 +245,8 @@ model CourseReview {
   instructorRate InstructorRate[]
   course         Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   student        Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, studentId])
 }
 
 model Category {
