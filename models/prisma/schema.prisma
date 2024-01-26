@@ -27,6 +27,16 @@ enum NOTIFICATION_TYPE {
   REVIEW_COURESE
 }
 
+enum EDUCATION_LEVEL {
+  ELEMENTARY
+  MIDDLE
+  HIGH
+  COLLEGE
+  UNIVERSITY
+  MASTER
+  PHD
+}
+
 model User {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -75,14 +85,13 @@ model Instructor {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId     String @unique
-  nationalID String
-  cv         String
-  rate       Float?
+  userId      String @unique
+  nationalID  String
+  cvLink      String
+  averageRate Float?
 
-  Courses   Course[]
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isDeleted Boolean  @default(false)
+  courses Course[]
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Student {
@@ -90,9 +99,8 @@ model Student {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId         String  @unique
-  isDeleted      Boolean @default(false)
-  coursesProgres Json
+  userId         String          @unique
+  educationLevel EDUCATION_LEVEL
 
   courseReviews CourseReview[]
   enrollments   CourseEnrollment[]
