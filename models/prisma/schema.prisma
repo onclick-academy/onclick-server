@@ -18,6 +18,15 @@ enum GENDER {
   FEMALE
 }
 
+enum NOTIFICATION_TYPE {
+  COURSE_ENROLLMENT
+  COURSE_COMPLETION
+  NEW_COURSE_AVAILABLE
+  INSTRUCTOR_FEEDBACK
+  ADMIN_ANNOUNCEMENT
+  REVIEW_COURESE
+}
+
 enum EDUCATION_LEVEL {
   ELEMENTARY
   MIDDLE
@@ -50,6 +59,7 @@ model User {
   suspendStates SuspendState[]
   blockStates   BlockState[]
   WishList      WishList[]
+  notifications Notification[]
 }
 
 model Admin {
@@ -96,6 +106,23 @@ model Student {
   courseReviews CourseReview[]
   enrollments   CourseEnrollment[]
   user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipientId    String
+  type           NOTIFICATION_TYPE
+  title          String
+  message        String?
+  isRead         Boolean           @default(false)
+  additionalInfo Json?
+
+  recipient User @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId, isRead]) // Index to optimize queries for unread notifications per user
 }
 
 model CourseEnrollment {
