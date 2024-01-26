@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -60,6 +57,7 @@ model Admin {
   suspendStates   SuspendState[]
   blockStates     BlockState[]
   News            News[]
+  Events          Events[]
 }
 
 model Instructor {
@@ -261,6 +259,7 @@ model InstructorRate {
   reviewId  String
   rate      Float
   isDeleted Boolean      @default(false)
+
   review    CourseReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }
 
@@ -308,7 +307,6 @@ model AppSettings {
   socialLinks Json
 }
 
-// Model for News schema
 model News {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -324,4 +322,23 @@ model News {
   cover       String
 
   createdBy   Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model Events {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminId     String
+  title       String
+  subtitle    String
+  description String
+  images      Json?
+  startDate   DateTime
+  endDate     DateTime
+  isDeleted   Boolean  @default(false)
+  isAvailable Boolean  @default(false)
+  cover       String
+
+  createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
