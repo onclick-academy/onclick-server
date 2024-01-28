@@ -6,7 +6,6 @@ export class categoryValidation {
     description: joi.string().required(),
     photo: joi.string().required(),
     isDeleted: joi.boolean().default(false),
-    subCategories: joi.array().items(joi.string()),
     deletedAt: joi.date().allow(null)
   }
 
@@ -17,6 +16,6 @@ export class categoryValidation {
   static updateCategory() {
     return joi
       .object(this.baseSchema)
-      .fork(['title', 'description', 'photo', 'isDeleted', 'subCategories', 'deletedAt'], schema => schema.optional())
+      .fork(['title', 'description', 'photo', 'isDeleted', 'deletedAt'], schema => schema.optional())
   }
 }
