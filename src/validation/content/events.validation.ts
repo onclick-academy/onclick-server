@@ -22,8 +22,7 @@ export class eventsValidation {
     return joi
       .object({
         ...this.baseSchema,
-        id: joi.string().required(),
-        adminId: joi.string()
+        adminId: joi.string().required()
       })
       .fork(['title', 'description', 'subtitle', 'startDate', 'endDate', 'cover'], schema => schema.optional())
   }

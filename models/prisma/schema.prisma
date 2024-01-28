@@ -75,11 +75,11 @@ model Admin {
 
   firstName  String
   lastName   String
-  email      String   @unique
+  email      String    @unique
   password   String
   profilePic String?
-  isDeleted  Boolean  @default(false)
-  deletedAt  DateTime
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
 
   coursesApproved Course[]
   suspendStates   SuspendState[]
@@ -158,19 +158,16 @@ model Course {
   title          String
   description    String
   price          Float
-  languages      String
   rate           Float?
   discount       Float?
-  available      Boolean  @default(false)
+  available      Boolean   @default(false)
   skillsGained   String[]
   duration       String
   photo          String
-  isDeleted      Boolean  @default(false)
-  deletedAt      DateTime
+  isDeleted      Boolean   @default(false)
+  deletedAt      DateTime?
   certificate    String
   introVideo     String?
-  instructorRate Float
-  courseRate     Float
 
   topics      Topic[]
   lectures    Lecture[]
@@ -188,13 +185,14 @@ model Lecture {
   updatedAt DateTime @updatedAt
 
   courseId    String
+  title String
   description String
   // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
   // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
   videoUrl    String
   duration    String
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
 
   content LecturesContent[]
   course  Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -205,12 +203,12 @@ model LecturesContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order      Int      @unique
+  order      Int       @unique  @default(autoincrement())
   materialId String
   lectureId  String
   content    String
-  isDeleted  Boolean  @default(false)
-  deletedAt  DateTime
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
 
   material LecturesMaterials @relation(fields: [materialId], references: [id], onDelete: Cascade)
   lecture  Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
@@ -223,8 +221,8 @@ model LecturesMaterials {
 
   title       String
   description String
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
 
   contents LecturesContent[]
 }
@@ -234,12 +232,11 @@ model Topic {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  courseId  String
-  name      String
-  isDeleted Boolean  @default(false)
-  deletedAt DateTime
+  title     String
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
 
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courses Course[]
 }
 
 model Rating {
@@ -252,7 +249,7 @@ model Rating {
   rate       Float
   comment    String?
   isDeleted  Boolean     @default(false)
-  deletedAt  DateTime
+  deletedAt  DateTime?
   courseId   String
   userId     String
 
@@ -267,13 +264,13 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name        String
+  title       String
   description String
   photo       String
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
 
-  subCategory SubCategory[]
+  subCategories SubCategory[]
 }
 
 model SubCategory {
@@ -284,8 +281,8 @@ model SubCategory {
   categoryId  String
   name        String
   description String
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
 
   courses  Course[]
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -345,9 +342,9 @@ model News {
   subtitle    String
   description String
   images      Json?
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
-  isAvailable Boolean  @default(false)
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  isAvailable Boolean   @default(false)
   cover       String
 
   createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
@@ -365,9 +362,9 @@ model Event {
   images      Json?
   startDate   DateTime
   endDate     DateTime
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
-  isAvailable Boolean  @default(true)
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  isAvailable Boolean   @default(true)
   cover       String
 
   createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
@@ -392,8 +389,8 @@ model WishList {
 
   courseId  String
   userId    String
-  isDeleted Boolean  @default(false)
-  deletedAt DateTime
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
