@@ -18,3 +18,4 @@ export class topicValidation {
       .fork(['title', 'isDeleted', 'deletedAt'], schema => schema.optional())
   }
 }
+
