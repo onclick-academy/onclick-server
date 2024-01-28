@@ -13,7 +13,7 @@ export class registerValidation {
       profilePic: joi.string().min(6).max(255),
       birthdate: joi.date().required(),
       role: joi.valid('ADMIN', 'INSTRUCTOR', 'STUDENT').default('STUDENT').required(),
-      isEmailConfirm: joi.boolean().default(false),
+      isEmailConfirm: joi.boolean().default(false)
     })
 
     return schema
@@ -31,7 +31,7 @@ export class registerValidation {
       birthdate: joi.date(),
       profilePic: joi.string().min(6).max(255),
       role: joi.valid('ADMIN', 'INSTRUCTOR', 'STUDENT'),
-      isEmailConfirm: joi.boolean(),
+      isEmailConfirm: joi.boolean()
     })
 
     return schema

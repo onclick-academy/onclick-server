@@ -10,7 +10,7 @@ export class suspendStateValidation {
       isValid: joi.boolean().default(false)
     })
     return schema
-  };
+  }
 
   static updateSuspendState() {
     const schema = joi.object({
@@ -21,5 +21,5 @@ export class suspendStateValidation {
       isValid: joi.boolean()
     })
     return schema
-  };
+  }
 }
