@@ -37,11 +37,6 @@ enum EDUCATION_LEVEL {
   PHD
 }
 
-enum TARGET_RATE {
-  COURSE
-  INSTRUCTOR
-}
-
 model User {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -65,7 +60,6 @@ model User {
   blockStates   BlockState[]
   WishList      WishList[]
   notifications Notification[]
-  ratings        Rating[]
 }
 
 model Admin {
@@ -109,8 +103,9 @@ model Student {
   userId         String          @unique
   educationLevel EDUCATION_LEVEL
 
-  enrollments CourseEnrollment[]
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseReviews CourseReview[]
+  enrollments   CourseEnrollment[]
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -172,12 +167,12 @@ model Course {
 
   topics      Topic[]
   lectures    Lecture[]
+  reviews     CourseReview[]
   enrollments CourseEnrollment[]
   WishList    WishList[]
-  createdBy   Admin              @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  subCategory SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  createdBy   Admin             @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  subCategory SubCategory       @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   instructor  Instructor         @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  ratings      Rating[]
 }
 
 model Lecture {
@@ -236,23 +231,22 @@ model Topic {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
-model Rating {
+model CourseReview {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  targetType TARGET_RATE
-  targetId   String // CourseId or InstructorId
-  rate       Float
-  comment    String
-  isDeleted  Boolean     @default(false)
-  courseId   String
-  userId     String
+  courseId  String
+  studentId String
+  comment   String
+  isDeleted Boolean @default(false)
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseRate     CourseRate[]
+  instructorRate InstructorRate[]
+  course         Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student        Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, userId, targetType])
+  @@unique([courseId, studentId])
 }
 
 model Category {
@@ -280,6 +274,30 @@ model SubCategory {
 
   courses  Course[]
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model CourseRate {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviewId  String
+  rate      Float
+  isDeleted Boolean @default(false)
+
+  review CourseReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}
+
+model InstructorRate {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviewId  String
+  rate      Float
+  isDeleted Boolean @default(false)
+
+  review CourseReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }
 
 model SuspendState {
@@ -379,8 +397,8 @@ model WishList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  courseId  String
-  userId    String
+  courseId String
+  userId   String
   isDeleted Boolean @default(false)
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
