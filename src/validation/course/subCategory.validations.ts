@@ -1,18 +1,20 @@
 import joi from 'joi'
 
-export class lecturesMaterialValidation {
-  static createLecturesMaterial() {
+export class subCategoryValidation {
+  static createSubCategory() {
     const schema = joi.object({
-      title: joi.string().required().min(6).max(255),
+      categoryId: joi.string().required(),
+      name: joi.string().required().min(6).max(255),
       description: joi.string().required().min(6),
       isDeleted: joi.boolean().default(false)
     })
     return schema
   }
 
-  static updateLecturesMaterial() {
+  static updateSubCategory() {
     const schema = joi.object({
-      title: joi.string().min(6).max(255),
+      categoryId: joi.string(),
+      name: joi.string().min(6).max(255),
       description: joi.string().min(6),
       isDeleted: joi.boolean()
     })
