@@ -1,1 +1,1 @@
-import { prisma } from '../../models/prisma/prisma-client.ts';
+import prisma from '../../models/prisma/prisma-client'
