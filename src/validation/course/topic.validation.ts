@@ -15,6 +15,6 @@ export class topicValidation {
   static updateTopic() {
     return joi
       .object(this.baseSchema)
-      .fork(['title', 'description', 'photo', 'isDeleted', 'deletedAt'], schema => schema.optional())
+      .fork(['title', 'isDeleted', 'deletedAt'], schema => schema.optional())
   }
 }
