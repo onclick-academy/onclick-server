@@ -85,7 +85,7 @@ model Admin {
   suspendStates   SuspendState[]
   blockStates     BlockState[]
   News            News[]
-  Events          Events[]
+  events          Event[]
 }
 
 model Instructor {
@@ -353,7 +353,7 @@ model News {
   createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
 
-model Events {
+model Event {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -367,7 +367,7 @@ model Events {
   endDate     DateTime
   isDeleted   Boolean  @default(false)
   deletedAt   DateTime
-  isAvailable Boolean  @default(false)
+  isAvailable Boolean  @default(true)
   cover       String
 
   createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
