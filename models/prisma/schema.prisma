@@ -158,7 +158,6 @@ model Course {
   title          String
   description    String
   price          Float
-  languages      String
   rate           Float?
   discount       Float?
   available      Boolean   @default(false)
@@ -169,8 +168,6 @@ model Course {
   deletedAt      DateTime?
   certificate    String
   introVideo     String?
-  instructorRate Float
-  courseRate     Float
 
   topics      Topic[]
   lectures    Lecture[]
