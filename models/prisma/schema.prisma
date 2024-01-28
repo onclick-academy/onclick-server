@@ -79,7 +79,7 @@ model Admin {
   password   String
   profilePic String?
   isDeleted  Boolean  @default(false)
-  deletedAt  DateTime
+  deletedAt  DateTime?
 
   coursesApproved Course[]
   suspendStates   SuspendState[]
@@ -166,7 +166,7 @@ model Course {
   duration       String
   photo          String
   isDeleted      Boolean  @default(false)
-  deletedAt      DateTime
+  deletedAt      DateTime?
   certificate    String
   introVideo     String?
   instructorRate Float
@@ -194,7 +194,7 @@ model Lecture {
   videoUrl    String
   duration    String
   isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  deletedAt   DateTime?
 
   content LecturesContent[]
   course  Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -210,7 +210,7 @@ model LecturesContent {
   lectureId  String
   content    String
   isDeleted  Boolean  @default(false)
-  deletedAt  DateTime
+  deletedAt  DateTime?
 
   material LecturesMaterials @relation(fields: [materialId], references: [id], onDelete: Cascade)
   lecture  Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
@@ -224,7 +224,7 @@ model LecturesMaterials {
   title       String
   description String
   isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  deletedAt   DateTime?
 
   contents LecturesContent[]
 }
@@ -237,7 +237,7 @@ model Topic {
   courseId  String
   name      String
   isDeleted Boolean  @default(false)
-  deletedAt DateTime
+  deletedAt DateTime?
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
@@ -252,7 +252,7 @@ model Rating {
   rate       Float
   comment    String?
   isDeleted  Boolean     @default(false)
-  deletedAt  DateTime
+  deletedAt  DateTime?
   courseId   String
   userId     String
 
@@ -267,13 +267,13 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name        String
+  title        String
   description String
   photo       String
   isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  deletedAt   DateTime?
 
-  subCategory SubCategory[]
+  subCategories SubCategory[]
 }
 
 model SubCategory {
@@ -285,7 +285,7 @@ model SubCategory {
   name        String
   description String
   isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  deletedAt   DateTime?
 
   courses  Course[]
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -346,7 +346,7 @@ model News {
   description String
   images      Json?
   isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  deletedAt   DateTime?
   isAvailable Boolean  @default(false)
   cover       String
 
@@ -366,7 +366,7 @@ model Event {
   startDate   DateTime
   endDate     DateTime
   isDeleted   Boolean  @default(false)
-  deletedAt   DateTime
+  deletedAt   DateTime?
   isAvailable Boolean  @default(true)
   cover       String
 
@@ -393,7 +393,7 @@ model WishList {
   courseId  String
   userId    String
   isDeleted Boolean  @default(false)
-  deletedAt DateTime
+  deletedAt DateTime?
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

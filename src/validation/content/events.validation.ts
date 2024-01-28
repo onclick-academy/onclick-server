@@ -19,10 +19,7 @@ export class eventsValidation {
 
   static updateEvents() {
     return joi
-      .object({
-        ...this.baseSchema,
-        id: joi.string().required()
-      })
+      .object(this.baseSchema)
       .fork(['title', 'description', 'subtitle', 'startDate', 'endDate', 'cover'], schema => schema.optional())
   }
 }
