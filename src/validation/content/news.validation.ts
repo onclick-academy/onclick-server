@@ -5,7 +5,7 @@ export class newsValidation {
     const schema = joi.object({
       adminId: joi.string().required(),
       title: joi.string().required().min(6).max(255),
-      description: joi.string().required().min(6).max(255),
+      description: joi.string().required().min(6),
       images: joi.object(),
       cover: joi.string().required(),
       isDeleted: joi.boolean().default(false),
@@ -18,7 +18,7 @@ export class newsValidation {
     const schema = joi.object({
       adminId: joi.string().required(),
       title: joi.string().min(6).max(255),
-      description: joi.string().min(6).max(255),
+      description: joi.string().min(6),
       images: joi.object(),
       cover: joi.string(),
       isDeleted: joi.boolean(),
