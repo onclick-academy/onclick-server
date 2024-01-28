@@ -1,14 +1,18 @@
 declare global {
-  interface User {
-    id: string
-    createdAt: Date
-    updatedAt: Date
-
-    firstName: string
-    lastName: string
-    email: string
-    password: string
+  interface UserInterface {
+    id: string;
+    fullName: string;
+    username: string;
+    email: string;
+    bio: string;
+    password: string;
+    phoneNum: string;
+    profilePic: string;
+    birthDate: Date;
+    gender: string;
+    role: string;
+    isEmailConfirmed: boolean;
   }
 }
 
-export {}
+export { UserInterface }
