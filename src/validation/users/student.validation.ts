@@ -1,25 +1,11 @@
-import Joi from "joi";
+import Joi from 'joi'
 
-//Student validation
 export class studentValidation {
-//createStudent()
-  static createStudent() {
+  static createUpdateStudent() {
     const schema = Joi.object({
-      name: Joi.string().required(),
-      email: Joi.string().email().required(),
-      class: Joi.string().required(),
-      suspended: Joi.boolean().default(false)
+      userId: Joi.string().required(),
+      educationLevel: Joi.valid('ELEMENTARY', 'MIDDLE', 'HIGH', 'COLLEGE', 'UNIVERSITY', 'MASTER', 'PHD').required()
     })
     return schema
-  };
-//updateStudent()
-  static updateStudent() {
-    const schema = Joi.object({
-      name: Joi.string(),
-      email: Joi.string().email(),
-      class: Joi.string(),
-      suspended: Joi.boolean()
-    })
-    return schema
-  };
+  }
 }
