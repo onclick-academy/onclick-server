@@ -188,6 +188,7 @@ model Lecture {
   updatedAt DateTime @updatedAt
 
   courseId    String
+  title String
   description String
   // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
   // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
