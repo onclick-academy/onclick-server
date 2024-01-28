@@ -9,7 +9,7 @@ export class adminValidation {
       password: Joi.string().required().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
       passwordConfirm: Joi.ref('password'),
       profilePic: Joi.string(),
-      isDeleted: Joi.boolean()
+      isDeleted: Joi.boolean().default(false)
     })
     return schema
   }
