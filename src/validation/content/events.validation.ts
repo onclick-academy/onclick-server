@@ -2,6 +2,7 @@ import joi from 'joi'
 
 export class eventsValidation {
   private static baseSchema = {
+    adminId: joi.string().required(),
     title: joi.string().required(),
     description: joi.string().required(),
     subtitle: joi.string().required(),
@@ -19,7 +20,10 @@ export class eventsValidation {
 
   static updateEvents() {
     return joi
-      .object(this.baseSchema)
+      .object({
+        ...this.baseSchema,
+        adminId: joi.string().required()
+      })
       .fork(['title', 'description', 'subtitle', 'startDate', 'endDate', 'cover'], schema => schema.optional())
   }
 }
