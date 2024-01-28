@@ -21,10 +21,9 @@ export class RateValidation {
 
   static updateRate() {
     return joi
-      .object({
-        ...this.baseSchema,
-        id: joi.string().required()
-      })
+      .object(
+        this.baseSchema
+      )
       .fork(['rate', 'comment', 'isDeleted', 'courseId'], field => field.optional())
   }
 }
