@@ -203,7 +203,7 @@ model LecturesContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order      Int       @unique
+  order      Int       @unique  @default(autoincrement())
   materialId String
   lectureId  String
   content    String
