@@ -2,6 +2,7 @@ import joi from 'joi'
 
 export class lectureValidation {
   private static baseSchema = {
+    courseId: joi.string().required(),
     title: joi.string().required(),
     description: joi.string().required(),
     videoUrl: joi.string().required(),
