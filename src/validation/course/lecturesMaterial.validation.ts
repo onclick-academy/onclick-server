@@ -1,21 +1,16 @@
 import joi from 'joi'
 
 export class lecturesMaterialValidation {
+  private static baseSchema = {
+    title: joi.string().required().min(6).max(255),
+    description: joi.string().required().min(6),
+    isDeleted: joi.boolean().default(false)
+  }
   static createLecturesMaterial() {
-    const schema = joi.object({
-      title: joi.string().required().min(6).max(255),
-      description: joi.string().required().min(6),
-      isDeleted: joi.boolean().default(false)
-    })
-    return schema
+    return joi.object(this.baseSchema)
   }
 
   static updateLecturesMaterial() {
-    const schema = joi.object({
-      title: joi.string().min(6).max(255),
-      description: joi.string().min(6),
-      isDeleted: joi.boolean()
-    })
-    return schema
+    return joi.object(this.baseSchema).fork(Object.keys(this.baseSchema), schema => schema.optional())
   }
 }
