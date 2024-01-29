@@ -26,6 +26,17 @@ declare global {
     isDeleted: boolean
     deletedAt: Date
   }
+
+  interface LectureInterface extends Request {
+    id: string
+    courseId: string
+    title: string
+    description: string
+    videoUrl: string
+    duration: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
 }
 
-export { UserInterface, AdminInterface }
+export { UserInterface, AdminInterface, LectureInterface }
