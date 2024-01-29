@@ -1,24 +1,20 @@
-import e from 'express'
 import joi from 'joi'
 
 export class instructorValidation {
+  private static baseSchema = {
+    userId: joi.string().required(),
+    nationalID: joi.string().required(),
+    cvLink: joi.string().required(),
+    averageRate: joi.number()
+  }
+
   createInstructor() {
-    const schema = joi.object({
-      userId: joi.string().required(),
-      nationalID: joi.string().required(),
-      cvLink: joi.string().required(),
-      averageRate: joi.number()
-    })
-    return schema
+    return joi.object(instructorValidation.baseSchema) // can't use this.baseSchema => to check!
   }
 
   updateInstructor() {
-    const schema = joi.object({
-      userId: joi.string(),
-      nationalID: joi.string(),
-      cvLink: joi.string(),
-      averageRate: joi.number()
-    })
-    return schema
+    return joi
+      .object({ ...instructorValidation.baseSchema, userId: joi.string().required() })
+      .fork(['nationalID', 'cvLink', 'averageRate'], schema => schema.optional())
   }
 }
