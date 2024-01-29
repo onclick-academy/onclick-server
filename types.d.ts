@@ -15,6 +15,17 @@ declare global {
     role: string
     isEmailConfirmed: boolean
   }
+
+  interface AdminInterface extends Request {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    profilePic: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
 }
 
-export { UserInterface }
+export { UserInterface, AdminInterface }
