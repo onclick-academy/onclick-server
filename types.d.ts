@@ -64,6 +64,16 @@ declare global {
     reason: string
     period: Date
 }
+
+  interface BlockStateInterface extends Request {
+    id: string
+    userId: string
+    adminId: string
+    state: boolean
+    reason: string
+    period: Date
+  }
+
 }
 
 export {
@@ -73,4 +83,5 @@ export {
   LectureContentInterface,
   lectureMaterialInterface,
   SusspendStateInterface,
+  BlockStateInterface
 }
