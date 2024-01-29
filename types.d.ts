@@ -37,6 +37,21 @@ declare global {
     isDeleted: boolean
     deletedAt: Date
   }
+
+  interface LectureContentInterface extends Request {
+    id: string
+    lectureId: string
+    materialId: string
+    order: number
+    content: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
 }
 
-export { UserInterface, AdminInterface, LectureInterface }
+export {
+  UserInterface,
+  AdminInterface,
+  LectureInterface,
+  LectureContentInterface
+}
