@@ -55,6 +55,15 @@ declare global {
     isDeleted: boolean
     deletedAt: Date
   }
+
+  interface SusspendStateInterface extends Request {
+    id: string
+    userId: string
+    adminId: string
+    isValid: boolean
+    reason: string
+    period: Date
+}
 }
 
 export {
@@ -63,4 +72,5 @@ export {
   LectureInterface,
   LectureContentInterface,
   lectureMaterialInterface,
+  SusspendStateInterface,
 }
