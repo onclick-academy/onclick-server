@@ -8,7 +8,11 @@ export class WhishlistValidation {
     deletedAt: Joi.date().allow(null)
   }
 
-  static Whishlist() {
+  static createWhishlist() {
+    return Joi.object(this.baseSchema)
+  }
+
+  static updateWhishlist() {
     return Joi.object({
       ...this.baseSchema,
       isDeleted: Joi.boolean().required(),
