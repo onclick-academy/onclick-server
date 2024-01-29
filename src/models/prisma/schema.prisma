@@ -63,7 +63,7 @@ model User {
 
   suspendStates SuspendState[]
   blockStates   BlockState[]
-  WishList      WishList[]
+  wishList      WishList[]
   notifications Notification[]
   ratings       Rating[]
 }

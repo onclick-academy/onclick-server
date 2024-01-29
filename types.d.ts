@@ -1,7 +1,5 @@
-import { Request } from 'express'
-
 declare global {
-  interface UserInterface extends Request {
+  interface UserInterface {
     id: string
     fullName: string
     username: string
@@ -14,9 +12,16 @@ declare global {
     gender: string
     role: string
     isEmailConfirmed: boolean
+    students?: any
+    instructors?: any
+    suspendStates?: any
+    blockStates?: any
+    wishList?: any
+    notifications?: any
+    ratings?: any
   }
 
-  interface AdminInterface extends Request {
+  interface AdminInterface {
     id: string
     firstName: string
     lastName: string
@@ -27,7 +32,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface LectureInterface extends Request {
+  interface LectureInterface {
     id: string
     courseId: string
     title: string
@@ -38,7 +43,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface LectureContentInterface extends Request {
+  interface LectureContentInterface {
     id: string
     lectureId: string
     materialId: string
@@ -48,7 +53,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface lectureMaterialInterface extends Request {
+  interface lectureMaterialInterface {
     id: string
     title: string
     description: string
@@ -56,16 +61,16 @@ declare global {
     deletedAt: Date
   }
 
-  interface SusspendStateInterface extends Request {
+  interface SusspendStateInterface {
     id: string
     userId: string
     adminId: string
     isValid: boolean
     reason: string
     period: Date
-}
+  }
 
-  interface BlockStateInterface extends Request {
+  interface BlockStateInterface {
     id: string
     userId: string
     adminId: string
@@ -73,7 +78,6 @@ declare global {
     reason: string
     period: Date
   }
-
 }
 
 export {

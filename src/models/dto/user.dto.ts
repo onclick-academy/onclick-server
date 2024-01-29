@@ -1,18 +1,18 @@
 export class UserDto {
   // [key: string]: UserInterface[keyof UserInterface]
   // TODO find another weay to devcalre typess - all attributes have "any" type
-  readonly id: string
-  readonly fullName: string
-  readonly username: string
-  readonly email: string
-  readonly bio: string
-  readonly password: string
-  readonly phoneNum: string
-  readonly profilePic: string
-  readonly birthDate: Date
-  readonly gender: string
-  readonly role: string
-  readonly isEmailConfirmed: boolean
+  public id: string
+  public fullName: string
+  public username: string
+  public email: string
+  public bio: string
+  public password: string
+  public phoneNum: string
+  public profilePic: string
+  public birthDate: Date
+  public gender: string
+  public role: string
+  public isEmailConfirmed: boolean
 
   constructor(bodyReq: UserInterface) {
     this.id = bodyReq['id']
