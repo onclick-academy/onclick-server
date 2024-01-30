@@ -63,7 +63,7 @@ declare global {
     isValid: boolean
     reason: string
     period: Date
-}
+  }
 
   interface BlockStateInterface extends Request {
     id: string
@@ -74,6 +74,14 @@ declare global {
     period: Date
   }
 
+  interface ContactUsInterface {
+    id: string
+    name: string
+    email: string
+    message: string
+    phone?: string | null
+    isRead: boolean
+  }
 }
 
 export {
