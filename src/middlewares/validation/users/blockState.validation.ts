@@ -2,7 +2,7 @@ import joi from 'joi'
 
 export class blockStateValidation {
   private static baseSchema = {
-    UserDtoId: joi.string().required(),
+    userId: joi.string().required(),
     adminId: joi.string().required(),
     reason: joi.string().min(20),
     period: joi.date().required(),
