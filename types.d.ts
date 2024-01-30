@@ -63,7 +63,7 @@ declare global {
     isValid: boolean
     reason: string
     period: Date
-}
+  }
 
   interface BlockStateInterface extends Request {
     id: string
@@ -74,6 +74,24 @@ declare global {
     period: Date
   }
 
+  interface CourseInterface {
+    adminId: string
+    categoryId: string
+    subCategoryId: string
+    title: string
+    description: string
+    price: number
+    rate?: number
+    discount?: number
+    isAvailable: boolean
+    skillsGained: string[]
+    duration: string
+    photoUrl: string
+    isDeleted: boolean
+    deletedAt?: Date
+    certifiacteUrl: string
+    introVideoUrl?: string
+  }
 }
 
 export {

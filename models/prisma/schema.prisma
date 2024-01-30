@@ -160,14 +160,14 @@ model Course {
   price          Float
   rate           Float?
   discount       Float?
-  available      Boolean   @default(false)
+  isAvailable    Boolean   @default(false)
   skillsGained   String[]
   duration       String
-  photo          String
+  photoUrl       String
   isDeleted      Boolean   @default(false)
   deletedAt      DateTime?
-  certificate    String
-  introVideo     String?
+  certificateUrl String
+  introVideoUrl  String?
 
   topics      Topic[]
   lectures    Lecture[]
@@ -185,7 +185,7 @@ model Lecture {
   updatedAt DateTime @updatedAt
 
   courseId    String
-  title String
+  title       String
   description String
   // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
   // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
@@ -203,7 +203,7 @@ model LecturesContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order      Int       @unique  @default(autoincrement())
+  order      Int       @unique @default(autoincrement())
   materialId String
   lectureId  String
   content    String
