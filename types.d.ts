@@ -74,6 +74,24 @@ declare global {
     period: Date
   }
 
+  interface CourseInterface {
+    adminId: string
+    categoryId: string
+    subCategoryId: string
+    title: string
+    description: string
+    price: number
+    rate?: number
+    discount?: number
+    isAvailable: boolean
+    skillsGained: string[]
+    duration: string
+    photoUrl: string
+    isDeleted: boolean
+    deletedAt?: Date
+    certifiacteUrl: string
+    introVideoUrl?: string
+  }
   interface TopicInterface {
     title: string
     isDeleted: boolean
