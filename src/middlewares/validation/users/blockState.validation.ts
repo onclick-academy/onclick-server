@@ -15,7 +15,7 @@ export class blockStateValidation {
 
   static updateBlockState() {
     return joi
-      .object({ ...this.baseSchema, UserDtoId: joi.string().required(), adminId: joi.string().required() })
+      .object({ ...this.baseSchema, userId: joi.string().required(), adminId: joi.string().required() })
       .fork(['reason', 'period', 'state'], schema => schema.optional())
   }
 }
