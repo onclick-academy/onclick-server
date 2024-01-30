@@ -134,7 +134,7 @@ declare global {
       linkedin: string
     }
   }
-    
+
   interface RatingInterface {
     targetType: 'COURSE' | 'INSTRUCTOR'
     targetId: string
@@ -145,12 +145,4 @@ declare global {
   }
 }
 
-export {
-  UserInterface,
-  AdminInterface,
-  LectureInterface,
-  LectureContentInterface,
-  lectureMaterialInterface,
-  SusspendStateInterface,
-  BlockStateInterface
-}
+export {}
