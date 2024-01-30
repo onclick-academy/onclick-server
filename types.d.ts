@@ -74,6 +74,18 @@ declare global {
     period: Date
   }
 
+  interface EventsInterface {
+    adminId: string
+    title: string
+    description: string
+    startDate: Date
+    endDate: Date
+    isDeleted: boolean
+    deletedAt?: Date
+    isAvailable: boolean
+    cover: string
+    images?: string[]
+  }
   interface AppSettingsInterface {
     mainEmail: string
     contactEmail: string
