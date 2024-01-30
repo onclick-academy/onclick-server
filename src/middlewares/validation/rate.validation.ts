@@ -12,7 +12,7 @@ export class RateValidation {
       then: joi.string().required(),
       otherwise: joi.string().allow(null)
     }),
-    userId: joi.string().required()
+    UserDtoId: joi.string().required()
   }
 
   static createRate() {
@@ -20,10 +20,6 @@ export class RateValidation {
   }
 
   static updateRate() {
-    return joi
-      .object(
-        this.baseSchema
-      )
-      .fork(['rate', 'comment', 'isDeleted', 'courseId'], field => field.optional())
+    return joi.object(this.baseSchema).fork(['rate', 'comment', 'isDeleted', 'courseId'], field => field.optional())
   }
 }

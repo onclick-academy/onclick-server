@@ -2,13 +2,12 @@ import { UserDao } from '../models/dao/user.dao'
 import { UserDto } from '../models/dto/user.dto'
 import { registerValidation } from '../middlewares/validation/auth/register.auth.validation'
 import { createToken } from '../utilities/token'
+import { Request, Response } from 'express'
 
 export class UserController {
-  static register = async (req: any, res: any) => {
+  static register = async (req: Request, res: Response) => {
     const userDto = new UserDto(req.body)
 
-    // const error = await registerValidation.createUser(userDto)
-    // if (error) return res.status(400).json({ error: error.details[0].message })
     const validationResult = await registerValidation.createUser(userDto)
     if (validationResult.error) {
       if (validationResult.error.details && validationResult.error.details.length > 0) {
@@ -18,14 +17,13 @@ export class UserController {
       return res.status(400).json({ error: 'Error when creating user' })
     }
     if (req.file) {
-      userDto.profilePic = req.file.path
+      userDto.profilePic = req.file.filename
     }
 
     const userDao = new UserDao()
     try {
-      const newToken = createToken(userDto)
-
       const newUser = await userDao.createUser(userDto)
+      const newToken = createToken(newUser)
 
       return res.status(200).json({
         data: newUser,

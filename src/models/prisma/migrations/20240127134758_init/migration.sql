@@ -50,7 +50,7 @@ CREATE TABLE "Instructor" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
+    "UserDtoId" TEXT NOT NULL,
     "nationalID" TEXT NOT NULL,
     "cvLink" TEXT NOT NULL,
     "averageRate" DOUBLE PRECISION,
@@ -63,7 +63,7 @@ CREATE TABLE "Student" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
+    "UserDtoId" TEXT NOT NULL,
     "educationLevel" "EDUCATION_LEVEL" NOT NULL,
 
     CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
@@ -244,7 +244,7 @@ CREATE TABLE "SuspendState" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
+    "UserDtoId" TEXT NOT NULL,
     "adminId" TEXT NOT NULL,
     "isValid" BOOLEAN NOT NULL DEFAULT false,
     "reason" TEXT,
@@ -258,7 +258,7 @@ CREATE TABLE "BlockState" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
+    "UserDtoId" TEXT NOT NULL,
     "adminId" TEXT NOT NULL,
     "state" BOOLEAN NOT NULL DEFAULT false,
     "reason" TEXT,
@@ -340,7 +340,7 @@ CREATE TABLE "WishList" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "courseId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "UserDtoId" TEXT NOT NULL,
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "WishList_pkey" PRIMARY KEY ("id")
@@ -359,10 +359,10 @@ CREATE UNIQUE INDEX "User_phoneNum_key" ON "User"("phoneNum");
 CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Instructor_userId_key" ON "Instructor"("userId");
+CREATE UNIQUE INDEX "Instructor_UserDtoId_key" ON "Instructor"("UserDtoId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Student_userId_key" ON "Student"("userId");
+CREATE UNIQUE INDEX "Student_UserDtoId_key" ON "Student"("UserDtoId");
 
 -- CreateIndex
 CREATE INDEX "Notification_recipientId_isRead_idx" ON "Notification"("recipientId", "isRead");
@@ -377,10 +377,10 @@ CREATE UNIQUE INDEX "LecturesContent_order_key" ON "LecturesContent"("order");
 CREATE UNIQUE INDEX "CourseReview_courseId_studentId_key" ON "CourseReview"("courseId", "studentId");
 
 -- AddForeignKey
-ALTER TABLE "Instructor" ADD CONSTRAINT "Instructor_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Instructor" ADD CONSTRAINT "Instructor_UserDtoId_fkey" FOREIGN KEY ("UserDtoId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Student" ADD CONSTRAINT "Student_UserDtoId_fkey" FOREIGN KEY ("UserDtoId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_recipientId_fkey" FOREIGN KEY ("recipientId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -431,13 +431,13 @@ ALTER TABLE "InstructorRate" ADD CONSTRAINT "InstructorRate_reviewId_fkey" FOREI
 ALTER TABLE "SuspendState" ADD CONSTRAINT "SuspendState_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SuspendState" ADD CONSTRAINT "SuspendState_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "SuspendState" ADD CONSTRAINT "SuspendState_UserDtoId_fkey" FOREIGN KEY ("UserDtoId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BlockState" ADD CONSTRAINT "BlockState_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BlockState" ADD CONSTRAINT "BlockState_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "BlockState" ADD CONSTRAINT "BlockState_UserDtoId_fkey" FOREIGN KEY ("UserDtoId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "News" ADD CONSTRAINT "News_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -449,4 +449,4 @@ ALTER TABLE "Events" ADD CONSTRAINT "Events_adminId_fkey" FOREIGN KEY ("adminId"
 ALTER TABLE "WishList" ADD CONSTRAINT "WishList_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "WishList" ADD CONSTRAINT "WishList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "WishList" ADD CONSTRAINT "WishList_UserDtoId_fkey" FOREIGN KEY ("UserDtoId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

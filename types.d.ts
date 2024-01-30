@@ -1,5 +1,5 @@
 declare global {
-  interface UserInterface {
+  interface UserDtoI {
     id: string
     fullName: string
     username: string
@@ -7,21 +7,14 @@ declare global {
     bio: string
     password: string
     phoneNum: string
-    profilePic: string
+    profilePic?: string
     birthDate: Date
     gender: string
     role: string
     isEmailConfirm: boolean
-    students?: any
-    instructors?: any
-    suspendStates?: any
-    blockStates?: any
-    wishList?: any
-    notifications?: any
-    ratings?: any
   }
 
-  interface AdminInterface {
+  interface AdminI {
     id: string
     firstName: string
     lastName: string
@@ -32,7 +25,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface LectureInterface {
+  interface LectureI {
     id: string
     courseId: string
     title: string
@@ -43,7 +36,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface LectureContentInterface {
+  interface LectureContentI {
     id: string
     lectureId: string
     materialId: string
@@ -53,7 +46,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface lectureMaterialInterface {
+  interface lectureMaterialI {
     id: string
     title: string
     description: string
@@ -61,18 +54,18 @@ declare global {
     deletedAt: Date
   }
 
-  interface SusspendStateInterface {
+  interface SusspendStateI {
     id: string
-    userId: string
+    UserDtoId: string
     adminId: string
     isValid: boolean
     reason: string
     period: Date
   }
 
-  interface BlockStateInterface {
+  interface BlockStateI {
     id: string
-    userId: string
+    UserDtoId: string
     adminId: string
     state: boolean
     reason: string
@@ -80,12 +73,4 @@ declare global {
   }
 }
 
-export {
-  UserInterface,
-  AdminInterface,
-  LectureInterface,
-  LectureContentInterface,
-  lectureMaterialInterface,
-  SusspendStateInterface,
-  BlockStateInterface
-}
+export {}

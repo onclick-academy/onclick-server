@@ -1,5 +1,5 @@
 export class UserDto {
-  // [key: string]: UserInterface[keyof UserInterface]
+  // [key: string]: UserDtoI[keyof UserDtoI]
   // TODO find another weay to devcalre typess - all attributes have "any" type
   public id: string
   public fullName: string
@@ -8,14 +8,13 @@ export class UserDto {
   public bio: string
   public password: string
   public phoneNum: string
-  public profilePic: string
+  public profilePic?: string
   public birthDate: Date
   public gender: string
   public role: string
   public isEmailConfirm: boolean
 
-  constructor(bodyReq: UserInterface) {
-    this.id = bodyReq['id']
+  constructor(bodyReq: UserDtoI) {
     this.fullName = bodyReq['fullName']
     this.username = bodyReq['username']
     this.email = bodyReq['email']

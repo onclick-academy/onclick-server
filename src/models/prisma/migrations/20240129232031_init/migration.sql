@@ -103,7 +103,7 @@ CREATE TABLE "Rating" (
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "deletedAt" TIMESTAMP(3),
     "courseId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "UserDtoId" TEXT NOT NULL,
 
     CONSTRAINT "Rating_pkey" PRIMARY KEY ("id")
 );
@@ -135,7 +135,7 @@ CREATE TABLE "_CourseToTopic" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Rating_courseId_userId_targetType_key" ON "Rating"("courseId", "userId", "targetType");
+CREATE UNIQUE INDEX "Rating_courseId_UserDtoId_targetType_key" ON "Rating"("courseId", "UserDtoId", "targetType");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CourseToTopic_AB_unique" ON "_CourseToTopic"("A", "B");
@@ -144,7 +144,7 @@ CREATE UNIQUE INDEX "_CourseToTopic_AB_unique" ON "_CourseToTopic"("A", "B");
 CREATE INDEX "_CourseToTopic_B_index" ON "_CourseToTopic"("B");
 
 -- AddForeignKey
-ALTER TABLE "Rating" ADD CONSTRAINT "Rating_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Rating" ADD CONSTRAINT "Rating_UserDtoId_fkey" FOREIGN KEY ("UserDtoId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Rating" ADD CONSTRAINT "Rating_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -2,7 +2,7 @@ import { hashPassword } from '../../utilities/hash'
 import prisma from '../prisma/prisma-client'
 
 export class UserDao {
-  createUser = async (userDto: UserInterface) => {
+  createUser = async (userDto: UserDtoI) => {
     const isExistedUser = await prisma.user.findUnique({
       where: {
         email: userDto.email
@@ -16,6 +16,14 @@ export class UserDao {
       }
     })
     if (isExistedUsername) throw new Error('Username is not available')
+
+    const isExistedPhone = await prisma.user.findUnique({
+      where: {
+        phoneNum: userDto.phoneNum
+      }
+    })
+    if (isExistedPhone) throw new Error('Phone number is already in use')
+
     // TODO check valid birthDate
     const hashedPassword = await hashPassword(userDto.password)
     userDto.password = hashedPassword
@@ -41,7 +49,7 @@ export class UserDao {
     return user
   }
 
-  updateUser = async (id: string, user: UserInterface) => {
+  updateUser = async (id: string, user: UserDtoI) => {
     const updatedUser = await prisma.user.update({
       where: {
         id: id

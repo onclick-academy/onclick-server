@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 
-export const createToken = (useDto: UserInterface) => {
-  const { id, username, email, role } = useDto
+export const createToken = (userDto: UserDtoI) => {
+  const { id, username, email, role } = userDto
   const secret = process.env.JWT_SECRET_KEY
   if (typeof secret === 'string') {
     return jwt.sign({ id, username, email, role }, secret, { expiresIn: '90d' })
