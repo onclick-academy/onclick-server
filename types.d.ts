@@ -74,6 +74,24 @@ declare global {
     period: Date
   }
 
+  interface AppSettingsInterface {
+    mainEmail: string
+    contactEmail: string
+    contactPhone: string
+    aboutUs: string
+    terms: string
+    privacy: string
+    logo: string
+    favicon: string
+    coverSlides: string[]
+    socialLinks: {
+      facebook: string
+      twitter: string
+      instagram: string
+      linkedin: string
+    }
+  }
+    
   interface RatingInterface {
     targetType: 'COURSE' | 'INSTRUCTOR'
     targetId: string
