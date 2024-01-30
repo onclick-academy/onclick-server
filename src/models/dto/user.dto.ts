@@ -12,7 +12,7 @@ export class UserDto {
   public birthDate: Date
   public gender: string
   public role: string
-  public isEmailConfirmed: boolean
+  public isEmailConfirm: boolean
 
   constructor(bodyReq: UserInterface) {
     this.id = bodyReq['id']
@@ -26,6 +26,6 @@ export class UserDto {
     this.birthDate = bodyReq['birthDate']
     this.gender = bodyReq['gender']
     this.role = bodyReq['role']
-    this.isEmailConfirmed = bodyReq['isEmailConfirmed']
+    this.isEmailConfirm = bodyReq['isEmailConfirm']
   }
 }
