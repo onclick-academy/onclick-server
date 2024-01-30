@@ -11,7 +11,7 @@ declare global {
     birthDate: Date
     gender: string
     role: string
-    isEmailConfirmed: boolean
+    isEmailConfirm: boolean
     students?: any
     instructors?: any
     suspendStates?: any

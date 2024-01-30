@@ -7,10 +7,18 @@ export class UserController {
   static register = async (req: any, res: any) => {
     const userDto = new UserDto(req.body)
 
-    const error = await registerValidation.createUser(userDto)
-    if (error) return res.status(400).json({ error: error.details[0].message })
+    // const error = await registerValidation.createUser(userDto)
+    // if (error) return res.status(400).json({ error: error.details[0].message })
+    const validationResult = await registerValidation.createUser(userDto)
+    if (validationResult.error) {
+      if (validationResult.error.details && validationResult.error.details.length > 0) {
+        console.error(validationResult.error.details[0].message)
+        return res.status(400).json({ error: validationResult.error.details[0].message })
+      }
+      return res.status(400).json({ error: 'Error when creating user' })
+    }
     if (req.file) {
-      userDto.profilePic = req.file.filename
+      userDto.profilePic = req.file.path
     }
 
     const userDao = new UserDao()

@@ -19,6 +19,7 @@ export class UserDao {
     // TODO check valid birthDate
     const hashedPassword = await hashPassword(userDto.password)
     userDto.password = hashedPassword
+    userDto.birthDate = new Date(userDto.birthDate)
 
     const newUser = await prisma.user.create({
       data: userDto
