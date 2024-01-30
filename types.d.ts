@@ -91,6 +91,15 @@ declare global {
       linkedin: string
     }
   }
+    
+  interface RatingInterface {
+    targetType: 'COURSE' | 'INSTRUCTOR'
+    targetId: string
+    rate: number
+    comment?: string
+    userId: string
+    courseId?: string
+  }
 }
 
 export {
