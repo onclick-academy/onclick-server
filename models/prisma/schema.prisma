@@ -250,11 +250,11 @@ model Rating {
   comment    String?
   isDeleted  Boolean     @default(false)
   deletedAt  DateTime?
-  courseId   String
+  courseId   String?
   userId     String
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, userId, targetType])
 }
