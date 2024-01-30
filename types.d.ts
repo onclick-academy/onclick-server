@@ -74,6 +74,14 @@ declare global {
     period: Date
   }
 
+  interface ContactUsInterface {
+    id: string
+    name: string
+    email: string
+    message: string
+    phone?: string | null
+    isRead: boolean
+  }
   interface EventsInterface {
     adminId: string
     title: string
