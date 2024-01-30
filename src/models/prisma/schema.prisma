@@ -93,13 +93,13 @@ model Instructor {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId      String @unique
+  UserDtoId      String @unique
   nationalID  String
   cvLink      String
   averageRate Float?
 
   courses Course[]
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [UserDtoId], references: [id], onDelete: Cascade)
 }
 
 model Student {
@@ -107,11 +107,11 @@ model Student {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId         String          @unique
+  UserDtoId         String          @unique
   educationLevel EDUCATION_LEVEL
 
   enrollments CourseEnrollment[]
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User               @relation(fields: [UserDtoId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -251,12 +251,12 @@ model Rating {
   isDeleted  Boolean     @default(false)
   deletedAt  DateTime?
   courseId   String
-  userId     String
+  UserDtoId     String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [UserDtoId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, userId, targetType])
+  @@unique([courseId, UserDtoId, targetType])
 }
 
 model Category {
@@ -293,14 +293,14 @@ model SuspendState {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId  String
+  UserDtoId  String
   adminId String
   isValid Boolean  @default(false)
   reason  String?
   period  DateTime
 
   byAdmin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [UserDtoId], references: [id], onDelete: Cascade)
 }
 
 model BlockState {
@@ -308,14 +308,14 @@ model BlockState {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId  String
+  UserDtoId  String
   adminId String
   state   Boolean  @default(false)
   reason  String?
   period  DateTime
 
   byAdmin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [UserDtoId], references: [id], onDelete: Cascade)
 }
 
 model AppSettings {
@@ -388,10 +388,10 @@ model WishList {
   updatedAt DateTime @updatedAt
 
   courseId  String
-  userId    String
+  UserDtoId    String
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [UserDtoId], references: [id], onDelete: Cascade)
 }

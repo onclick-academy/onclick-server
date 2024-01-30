@@ -2,7 +2,7 @@ import joi from 'joi'
 
 export class instructorValidation {
   private static baseSchema = {
-    userId: joi.string().required(),
+    UserDtoId: joi.string().required(),
     nationalID: joi.string().required(),
     cvLink: joi.string().required(),
     averageRate: joi.number()
@@ -14,7 +14,7 @@ export class instructorValidation {
 
   updateInstructor() {
     return joi
-      .object({ ...instructorValidation.baseSchema, userId: joi.string().required() })
+      .object({ ...instructorValidation.baseSchema, UserDtoId: joi.string().required() })
       .fork(['nationalID', 'cvLink', 'averageRate'], schema => schema.optional())
   }
 }

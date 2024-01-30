@@ -1,6 +1,6 @@
 export class SusspendStateDto {
   readonly id: string
-  readonly userId: string
+  readonly UserDtoId: string
   readonly adminId: string
   readonly isValid: boolean
   readonly reason: string
@@ -8,7 +8,7 @@ export class SusspendStateDto {
 
   constructor(body: SusspendStateDto) {
     this.id = body.id
-    this.userId = body.userId
+    this.UserDtoId = body.UserDtoId
     this.adminId = body.adminId
     this.isValid = body.isValid
     this.reason = body.reason

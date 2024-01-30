@@ -2,7 +2,7 @@ import joi from 'joi'
 
 export class blockStateValidation {
   private static baseSchema = {
-    userId: joi.string().required(),
+    UserDtoId: joi.string().required(),
     adminId: joi.string().required(),
     reason: joi.string().min(20),
     period: joi.date().required(),
@@ -15,7 +15,7 @@ export class blockStateValidation {
 
   static updateBlockState() {
     return joi
-      .object({ ...this.baseSchema, userId: joi.string().required(), adminId: joi.string().required() })
+      .object({ ...this.baseSchema, UserDtoId: joi.string().required(), adminId: joi.string().required() })
       .fork(['reason', 'period', 'state'], schema => schema.optional())
   }
 }
