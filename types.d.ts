@@ -63,7 +63,7 @@ declare global {
     isValid: boolean
     reason: string
     period: Date
-}
+  }
 
   interface BlockStateInterface extends Request {
     id: string
@@ -74,6 +74,23 @@ declare global {
     period: Date
   }
 
+  interface AppSettingsInterface {
+    mainEmail: string
+    contactEmail: string
+    contactPhone: string
+    aboutUs: string
+    terms: string
+    privacy: string
+    logo: string
+    favicon: string
+    coverSlides: string[]
+    socialLinks: {
+      facebook: string
+      twitter: string
+      instagram: string
+      linkedin: string
+    }
+  }
 }
 
 export {
