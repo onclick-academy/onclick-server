@@ -12,7 +12,7 @@ export class RateValidation {
       then: joi.string().required(),
       otherwise: joi.string().allow(null)
     }),
-    UserDtoId: joi.string().required()
+    userId: joi.string().required()
   }
 
   static createRate() {

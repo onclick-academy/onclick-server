@@ -3,7 +3,7 @@ import Joi from 'joi'
 export class WhishlistValidation {
   private static baseSchema = {
     courseId: Joi.string().required(),
-    UserDtoId: Joi.string().required(),
+    userId: Joi.string().required(),
     isDeleted: Joi.boolean().required().default(false),
     deletedAt: Joi.date().allow(null)
   }
