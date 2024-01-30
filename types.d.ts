@@ -74,6 +74,11 @@ declare global {
     period: Date
   }
 
+  interface TopicInterface {
+    title: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
   interface ContactUsInterface {
     id: string
     name: string
