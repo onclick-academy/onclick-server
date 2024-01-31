@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-export const createToken = (userDto: UserDtoI) => {
+export const createToken = (userDto: loginDtoI) => {
   const { id, username, email, role } = userDto
   const secret = process.env.JWT_SECRET_KEY
   if (typeof secret === 'string') {

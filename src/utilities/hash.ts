@@ -5,8 +5,9 @@ export const hashPassword = async (password: string): Promise<string> => {
   if (typeof hashSecret === 'string') {
     return bcrypt.hashSync(password, +hashSecret)
   } else {
-    throw new Error('HASH_SECRET is not set in environment variables')
+    return bcrypt.hashSync(password, hashSecret)
   }
+  throw new Error('HASH_SECRET is not set in environment variables')
 }
 
 export const comparePassword = async (password: string, hashedPassword: string): Promise<boolean> => {
