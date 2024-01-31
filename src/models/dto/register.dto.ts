@@ -1,4 +1,4 @@
-export class UserDto {
+export class RegisterDto {
   // [key: string]: UserDtoI[keyof UserDtoI]
   // TODO find another weay to devcalre typess - all attributes have "any" type
   public id: string

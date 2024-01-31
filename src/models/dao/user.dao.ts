@@ -1,5 +1,5 @@
-import { hashPassword } from '../../utilities/hash'
 import prisma from '../prisma/prisma-client'
+import { hashPassword } from '../../utilities/hash'
 
 export class UserDao {
   createUser = async (userDto: UserDtoI) => {
@@ -68,5 +68,5 @@ export class UserDao {
     return deletedUser
   }
 
-
+  
 }
