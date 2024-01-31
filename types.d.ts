@@ -17,7 +17,7 @@ declare global {
   interface loginDtoI {
     email?: string
     username?: string
-    password: string
+    password?: string
     role?: string
     id?: string
   }

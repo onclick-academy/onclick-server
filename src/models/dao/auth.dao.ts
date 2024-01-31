@@ -2,7 +2,7 @@ import prisma from '../prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
 
 export class AuthDao {
-  login = async userDto => {
+  login = async (userDto: loginDtoI )=> {
     let user: {
       username: string
       email: string
@@ -27,6 +27,16 @@ export class AuthDao {
     const isPasswordCorrect = await comparePassword(userDto.password, user.password)
     if (!isPasswordCorrect) throw new Error('Email or password is not correct **')
 
+    return user
+  }
+
+  getUserByEmail = async (userDto : {email: string}) => {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: userDto.email
+      }
+    })
+    if (!user) throw new Error('Email is not found please register')
     return user
   }
 }

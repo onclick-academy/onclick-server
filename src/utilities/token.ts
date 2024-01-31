@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken'
 
-export const createToken = (userDto: loginDtoI) => {
+export const createToken = (userDto: loginDtoI, secret: string = process.env.JWT_SECRET_KEY, obj: any) => {
   const { id, username, email, role } = userDto
-  const secret = process.env.JWT_SECRET_KEY
   if (typeof secret === 'string') {
-    return jwt.sign({ id, username, email, role }, secret, { expiresIn: '90d' })
+    return jwt.sign({ id, username, email, role }, secret, { expiresIn: obj.expiresIn })
   } else throw new Error('JWT_SECRET_KEY is not set in environment variables')
 }
 

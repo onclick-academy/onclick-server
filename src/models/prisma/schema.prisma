@@ -61,11 +61,39 @@ model User {
   instructor     Instructor?
   student        Student?
 
+  resetTokens   ResetToken?
+  refreshTokens RefreshToken?
   suspendStates SuspendState[]
   blockStates   BlockState[]
   WishList      WishList[]
   notifications Notification[]
   ratings       Rating[]
+}
+
+model ResetToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  token     String   @unique
+  userId    String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_reset_token_user")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  token     String   @unique
+  userId    String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_refresh_token_user")
 }
 
 model Admin {
@@ -151,23 +179,23 @@ model Course {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  instructorId   String
-  adminId        String
-  categoryId     String
-  subCategoryId  String
-  title          String
-  description    String
-  price          Float
-  rate           Float?
-  discount       Float?
-  available      Boolean   @default(false)
-  skillsGained   String[]
-  duration       String
-  photo          String
-  isDeleted      Boolean   @default(false)
-  deletedAt      DateTime?
-  certificate    String
-  introVideo     String?
+  instructorId  String
+  adminId       String
+  categoryId    String
+  subCategoryId String
+  title         String
+  description   String
+  price         Float
+  rate          Float?
+  discount      Float?
+  available     Boolean   @default(false)
+  skillsGained  String[]
+  duration      String
+  photo         String
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+  certificate   String
+  introVideo    String?
 
   topics      Topic[]
   lectures    Lecture[]
@@ -185,7 +213,7 @@ model Lecture {
   updatedAt DateTime @updatedAt
 
   courseId    String
-  title String
+  title       String
   description String
   // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
   // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
@@ -203,7 +231,7 @@ model LecturesContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order      Int       @unique  @default(autoincrement())
+  order      Int       @unique @default(autoincrement())
   materialId String
   lectureId  String
   content    String

@@ -1,10 +1,27 @@
 import express from 'express'
 import { upload } from '../middlewares/upload'
-import { UserController } from '../controllers/user.controller'
+import { AuthController } from '../controllers/auth.controller'
 
 const router = express.Router()
 
-router.route('/register').post(upload.single('profilePic'), UserController.register)
-router.route('/login').post(UserController.login)
+router
+    .route('/register')
+    .post(upload.single('profilePic'), AuthController.register)
+
+router
+    .route('/login')
+    .post(AuthController.login)
+
+// passwords
+
+router
+    .route('/password/forgetpassword')
+    .post(AuthController.forgetPassword)
+
+router
+    .route('/password/resetpassword')
+    .post(AuthController.resetPassword)
+
+
 
 export default router
