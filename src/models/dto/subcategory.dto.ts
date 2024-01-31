@@ -1,13 +1,13 @@
-export class lectureMaterialDto {
+export class subCategoryDto {
   readonly id: string
-  readonly title: string
+  readonly name: string
   readonly description: string
   readonly isDeleted: boolean
   readonly deletedAt: Date
 
-  constructor(body: lectureMaterialI) {
+  constructor(body: SubCategoryI) {
     this.id = body.id
-    this.title = body.title
+    this.name = body.name
     this.description = body.description
     this.isDeleted = body.isDeleted
     this.deletedAt = body.deletedAt

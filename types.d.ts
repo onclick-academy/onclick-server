@@ -141,6 +141,67 @@ declare global {
     userId: string
     courseId?: string
   }
+
+  interface InstructorDtoI {
+    id: string
+    instructorId: string
+    nationalId: string
+    avgRate: number
+    CvLink: string
+  }
+
+  interface StudentDtoI {
+    id: string
+    studentId: string
+    educationLevel: string
+  }
+
+  interface NotificationDtoI {
+    id: string
+    recipientId: string
+    title: string
+    message: string
+    isRead: boolean
+  }
+
+  interface CategoryDtoI {
+    id: string
+    title: string
+    description: string
+    photoUrl: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
+
+  interface SubCategoryI {
+    id: string
+    categoryId: string
+    name: string
+    description: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
+
+  interface NewsDtoI {
+    id: string
+    adminId: string
+    title: string
+    subtitle: string
+    description: string
+    images: string[]
+    isDeleted: boolean
+    deletedAt: Date
+    isAvailable: boolean
+    cover: string
+  }
+
+  interface WishlistDtoI {
+    id: string
+    userId: string
+    courseId: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
 }
 
 export {}
