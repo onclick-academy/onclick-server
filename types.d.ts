@@ -14,6 +14,21 @@ declare global {
     isEmailConfirm: boolean
   }
 
+  interface UserUpdateI {
+    id: string
+    fullName?: string
+    username?: string
+    email?: string
+    bio?: string
+    password?: string
+    phoneNum?: string
+    profilePic?: string
+    birthDate?: Date
+    gender?: string
+    role?: string
+    isEmailConfirm?: boolean
+  }
+
   interface loginDtoI {
     email?: string
     username?: string

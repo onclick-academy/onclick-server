@@ -49,10 +49,10 @@ export class UserDao {
     return user
   }
 
-  updateUser = async (id: string, user: UserDtoI) => {
+  updateUser = async (user: UserUpdateI) => {
     const updatedUser = await prisma.user.update({
       where: {
-        id: id
+        id: user.id
       },
       data: user
     })
@@ -67,6 +67,4 @@ export class UserDao {
     })
     return deletedUser
   }
-
-  
 }

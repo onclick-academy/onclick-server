@@ -61,7 +61,7 @@ model User {
   instructor     Instructor?
   student        Student?
 
-  resetTokens   ResetToken?
+  resetToken   ResetToken?
   refreshTokens RefreshToken?
   suspendStates SuspendState[]
   blockStates   BlockState[]
