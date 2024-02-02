@@ -5,7 +5,8 @@ export class UserDao {
   createUser = async (userDto: UserDtoI) => {
     const isExistedUser = await prisma.user.findUnique({
       where: {
-        email: userDto.email
+        email: userDto.email,
+        isDeleted: false
       }
     })
     if (isExistedUser) throw new Error('Email is already in use')
@@ -36,14 +37,19 @@ export class UserDao {
   }
 
   getAllUsers = async () => {
-    const users = await prisma.user.findMany()
+    const users = await prisma.user.findMany({
+      where: {
+        isDeleted: false
+      }
+    })
     return users
   }
 
   getUserById = async (id: string) => {
     const user = await prisma.user.findUnique({
       where: {
-        id: id
+        id: id,
+        isDeleted: false
       }
     })
     return user
@@ -52,14 +58,45 @@ export class UserDao {
   updateUser = async (user: UserUpdateI) => {
     const updatedUser = await prisma.user.update({
       where: {
-        id: user.id
+        id: user.id,
+        isDeleted: false
       },
       data: user
     })
     return updatedUser
   }
 
-  deleteUser = async (id: string) => {
+  softDeleteUser = async (id: string) => {
+    const deletedUser = await prisma.user.update({
+      where: {
+        id: id,
+        isDeleted: false,
+        isAvailable: true
+      },
+      data: {
+        isDeleted: true,
+        deletedAt: new Date(),
+        isAvailable: false
+      }
+    })
+    return deletedUser
+  }
+
+  deactivateUser = async (id: string) => {
+    const deactivatedUser = await prisma.user.update({
+      where: {
+        id: id,
+        isDeleted: false,
+        isAvailable: true
+      },
+      data: {
+        isAvailable: false
+      }
+    })
+    return deactivatedUser
+  }
+
+  hardDeleteUser = async (id: string) => {
     const deletedUser = await prisma.user.delete({
       where: {
         id: id
