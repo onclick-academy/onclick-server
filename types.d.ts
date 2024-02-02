@@ -27,6 +27,7 @@ declare global {
     gender?: string
     role?: string
     isEmailConfirm?: boolean
+    isDeleted?: boolean
   }
 
   interface loginDtoI {
@@ -35,6 +36,7 @@ declare global {
     password?: string
     role?: string
     id?: string
+    isAvailable?: boolean
   }
 
   interface AdminI {
