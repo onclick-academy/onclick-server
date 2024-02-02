@@ -8,7 +8,7 @@ export class AdminDto {
     readonly isDeleted: boolean
     readonly deletedAt: Date
 
-    constructor(bodyReq: AdminInterface) {
+    constructor(bodyReq: AdminI) {
         this.id = bodyReq['id']
         this.firstName = bodyReq['firstName']
         this.lastName = bodyReq['lastName']
