@@ -1,0 +1,103 @@
+import { UserDao } from '../models/dao/user.dao'
+import { UserDto } from '../models/dto/user.dto'
+import { Request, Response } from 'express'
+
+export class UserController {
+  static getAllUsers = async (req: Request, res: Response) => {
+    const userDao = new UserDao()
+    const users = await userDao.getAllUsers()
+
+    if (!users) {
+      return res.status(404).json({ error: 'No users found' })
+    }
+
+    return res.status(200).json({ message: 'Users retrieved successfuly', data: users, status: 'success' })
+  }
+
+  static getUserById = async (req: Request, res: Response) => {
+    const userDao = new UserDao()
+    const user = await userDao.getUserById(req.params.userId)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    return res.status(200).json({ message: 'User retrieved successfuly', data: user, status: 'success' })
+  }
+
+  static updateUser = async (req: Request, res: Response) => {
+    const userDao = new UserDao()
+    const userDto = new UserDto(req.body)
+    userDto.id = req.params.userId
+
+
+    try {
+      const user = await userDao.getUserById(userDto.id)
+      if (!user) {
+       return res.status(404).json({ error: 'User not found' })
+      }
+      const updatedUser = await userDao.updateUser(userDto)
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' })
+      }
+
+      return res.status(200).json({ message: 'User updated successfuly', data: updatedUser, status: 'success' })
+    } catch (error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+
+  static softDeleteUser = async (req: Request, res: Response) => {
+    const userDao = new UserDao()
+    const userId = req.params.userId
+
+
+    console.log(userId)
+    try {
+      const deletedUser = await userDao.softDeleteUser(userId)
+
+      if (!deletedUser) {
+        return res.status(404).json({ error: 'User not found' })
+      }
+
+      return res.status(200).json({ message: 'User deleted successfuly', data: deletedUser, status: 'success' })
+    } catch (error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+
+  static hardDeleteUser = async (req: Request, res: Response) => {
+    const userDao = new UserDao()
+    const userId = req.params.userId
+
+    try {
+      const deletedUser = await userDao.hardDeleteUser(userId)
+
+      if (!deletedUser) {
+        return res.status(404).json({ error: 'User not found' })
+      }
+
+      return res.status(200).json({ message: 'User deleted successfuly', data: deletedUser, status: 'success' })
+    } catch (error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+
+  static deactivateUser = async (req: Request, res: Response) => {
+    const userDao = new UserDao()
+    const userId = req.params.userId
+
+    try {
+      const deactivatedUser = await userDao.deactivateUser(userId)
+
+      if (!deactivatedUser) {
+        return res.status(404).json({ error: 'User not found' })
+      }
+
+      return res.status(200).json({ message: 'User deactivated successfuly', data: deactivatedUser, status: 'success' })
+    } catch (error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+}
