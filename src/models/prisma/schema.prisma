@@ -8,7 +8,6 @@ datasource db {
 }
 
 enum ROLE {
-  ADMIN
   INSTRUCTOR
   STUDENT
 }
@@ -58,11 +57,15 @@ model User {
   gender         GENDER      @default(MALE)
   role           ROLE        @default(STUDENT)
   isEmailConfirm Boolean     @default(false)
+  isDeleted      Boolean     @default(false)
+  deletedAt      DateTime?
+  isAvailable    Boolean     @default(true)
   instructor     Instructor?
   student        Student?
 
-  resetToken   ResetToken?
+  resetToken    ResetToken?
   refreshTokens RefreshToken?
+  confirmToken  ConfirmToken?
   suspendStates SuspendState[]
   blockStates   BlockState[]
   WishList      WishList[]
@@ -94,6 +97,19 @@ model RefreshToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId], name: "idx_refresh_token_user")
+}
+
+model ConfirmToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  token     String   @unique
+  userId    String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_confirm_token_user")
 }
 
 model Admin {
