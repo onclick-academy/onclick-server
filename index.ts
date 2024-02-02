@@ -10,7 +10,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(morgan('dev'))
 
-
 app.use('/api', require('./src/routes/home.route').default)
 
 app.use('/api/v1/auth', require('./src/routes/auth.route').default)

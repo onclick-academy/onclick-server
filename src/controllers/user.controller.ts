@@ -30,11 +30,10 @@ export class UserController {
     const userDto = new UserDto(req.body)
     userDto.id = req.params.userId
 
-
     try {
       const user = await userDao.getUserById(userDto.id)
       if (!user) {
-       return res.status(404).json({ error: 'User not found' })
+        return res.status(404).json({ error: 'User not found' })
       }
       const updatedUser = await userDao.updateUser(userDto)
 
@@ -51,7 +50,6 @@ export class UserController {
   static softDeleteUser = async (req: Request, res: Response) => {
     const userDao = new UserDao()
     const userId = req.params.userId
-
 
     console.log(userId)
     try {

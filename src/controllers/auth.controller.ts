@@ -3,7 +3,7 @@ import prisma from '../models/prisma/prisma-client'
 import nodemailer from 'nodemailer'
 
 import { UserDao } from '../models/dao/user.dao'
-import { RegisterDto as UserDto } from '../models/dto/register.dto'
+import { RegisterDto } from '../models/dto/register.dto'
 import { registerValidation } from '../middlewares/validation/auth/register.auth.validation'
 import { createToken } from '../utilities/token'
 import { Request, Response } from 'express'
@@ -13,7 +13,7 @@ import { LoginDto } from '../models/dto/login.dto'
 
 export class AuthController {
   static register = async (req: Request, res: Response) => {
-    const userDto = new UserDto(req.body)
+    const userDto = new RegisterDto(req.body)
 
     if (req.file) {
       userDto.profilePic = req.file.path
@@ -35,7 +35,7 @@ export class AuthController {
       const newUser = await userDao.createUser(userDto)
       const newToken = createToken(newUser, process.env.JWT_SECRET_KEY, { expiresIn: '90d' })
 
-      this.sendConfirmatioEmail(req, res)
+      this.sendConfirmationEmail(req, res)
 
       return res.status(200).json({
         data: newUser,
@@ -50,7 +50,7 @@ export class AuthController {
     }
   }
 
-  static sendConfirmatioEmail = async (req: Request, res: Response) => {
+  static sendConfirmationEmail = async (req: Request, res: Response) => {
     const userEmail = req.body.email
     const authDao = new AuthDao()
 
