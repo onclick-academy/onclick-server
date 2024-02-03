@@ -15,7 +15,8 @@ export class registerValidation {
     birthDate: joi.date().required(),
     role: joi.valid('ADMIN', 'INSTRUCTOR', 'STUDENT').default('STUDENT'),
     isEmailConfirm: joi.boolean().default(false),
-    gender: joi.valid('FEMALE', 'MALE').default('MALE')
+    gender: joi.valid('FEMALE', 'MALE').default('MALE'),
+    isDeleted: joi.boolean().default(false)
   }
 
   static createUser(userDto: UserDtoI) {

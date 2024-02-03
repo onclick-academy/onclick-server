@@ -3,10 +3,9 @@ import { hashPassword } from '../../utilities/hash'
 
 export class UserDao {
   createUser = async (userDto: UserDtoI) => {
-    const isExistedUser = await prisma.user.findUnique({
+    const isExistedUser = await prisma.user.findFirst({
       where: {
-        email: userDto.email,
-        isDeleted: false
+        email: userDto.email
       }
     })
     if (isExistedUser) throw new Error('Email is already in use')

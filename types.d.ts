@@ -12,6 +12,7 @@ declare global {
     gender: string
     role: string
     isEmailConfirm: boolean
+    isDeleted?: boolean
   }
 
   interface UserUpdateI {

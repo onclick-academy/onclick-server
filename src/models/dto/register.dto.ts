@@ -13,6 +13,7 @@ export class RegisterDto {
   public gender: string
   public role: string
   public isEmailConfirm: boolean
+  public isDeleted?: boolean
 
   constructor(bodyReq: UserDtoI) {
     this.fullName = bodyReq['fullName']
@@ -26,5 +27,6 @@ export class RegisterDto {
     this.gender = bodyReq['gender']
     this.role = bodyReq['role']
     this.isEmailConfirm = bodyReq['isEmailConfirm']
+    this.isDeleted = bodyReq['isDeleted']
   }
 }

@@ -1,3 +1,4 @@
+import { AuthMiddleware } from './src/middlewares/auth.middleware'
 import express from 'express'
 import createError from 'http-errors'
 import morgan from 'morgan'
@@ -14,7 +15,11 @@ app.use('/api', require('./src/routes/home.route').default)
 
 app.use('/api/v1/auth', require('./src/routes/auth.route').default)
 
-app.use('/api/v1/users', require('./src/routes/user.route').default)
+app.use(
+  '/api/v1/users',
+  AuthMiddleware.verifyToken as unknown as express.RequestHandler,
+  require('./src/routes/user.route').default
+)
 
 app.use((req, res, next) => {
   next(createError.NotFound())

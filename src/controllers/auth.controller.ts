@@ -10,6 +10,7 @@ import { Request, Response } from 'express'
 import { LoginValidation } from '../middlewares/validation/auth/login.auth.validation'
 import { AuthDao } from '../models/dao/auth.dao'
 import { LoginDto } from '../models/dto/login.dto'
+import { UserRequest } from '../../types/user.interface'
 
 export class AuthController {
   static register = async (req: Request, res: Response) => {
@@ -33,7 +34,7 @@ export class AuthController {
         return res.status(400).json({ error: 'Error when creating user' })
       }
       const newUser = await userDao.createUser(userDto)
-      const newToken = createToken(newUser, process.env.JWT_SECRET_KEY, { expiresIn: '90d' })
+      const newToken = createToken(newUser, process.env.JWT_SECRET_KEY, { expiresIn: '5m' })
 
       this.sendConfirmationEmail(req, res)
 
@@ -46,6 +47,7 @@ export class AuthController {
       if (error.message.includes('Email is already in use') || error.message.includes('Username is not available')) {
         return res.status(400).json({ error: error.message, status: 'failed' })
       }
+      console.log(error.message)
       return res.status(500).json({ error: error.message, status: 'failed' })
     }
   }
@@ -70,14 +72,15 @@ export class AuthController {
 
       // TODO: utility
 
-      const secret = process.env.JWT_SECRET_KEY + user.password
-      const token = createToken({ email: user.email, id: user.id }, secret, { expiresIn: '1d' })
+      const token = createToken({ email: user.email, id: user.id }, process.env.JWT_SECRET_KEY as string, {
+        expiresIn: '5m'
+      })
 
-      const confirmToken = await prisma.confirmToken.create({
+      await prisma.confirmToken.create({
         data: {
           token,
           userId: user.id,
-          expiresAt: new Date(Date.now() + 15 * 60 * 1000)
+          expiresAt: new Date(Date.now() + 1 * 60 * 1000)
         }
       })
 
@@ -145,8 +148,8 @@ export class AuthController {
     }
   }
 
-  static login = async (req: Request, res: Response) => {
-    const loginDto = new LoginDto(req.body)
+  static login = async (req: UserRequest, res: Response) => {
+    const loginDto = new LoginDto(req.body as unknown as LoginDto)
     const authDao = new AuthDao()
     try {
       const { error } = await LoginValidation.validateLoginInput(loginDto)
@@ -159,13 +162,27 @@ export class AuthController {
         return res.status(400).json({ error: 'Error when validating the login' })
       }
 
-      const user = await authDao.login(loginDto)
-      const newToken = createToken(loginDto, process.env.JWT_SECRET_KEY, { expiresIn: '90d' })
+      const user: loginDtoI = await authDao.login(loginDto)
+      const newToken = createToken(loginDto, process.env.JWT_SECRET_KEY, { expiresIn: '10m' })
+      const refreshtoken = createToken(loginDto, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1h' })
 
+      console.log(user)
+
+      console.log({ refreshtoken, access: newToken })
+
+      req.user = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        accessToken: newToken,
+        refreshToken: refreshtoken
+      }
       return res.status(200).json({
         data: user,
-        token: newToken,
-        status: 'success'
+        accessToken: newToken,
+        status: 'success',
+        refreshToken: refreshtoken
       })
     } catch (error) {
       return res.status(500).json({ error: error.message, status: 'failed to login' })

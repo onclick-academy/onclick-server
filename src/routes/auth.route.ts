@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.route('/register').post(upload.single('profilePic'), AuthController.register)
 
-router.route('/login').post(AuthController.login)
+router.route('/login').post(AuthController.login as unknown as express.RequestHandler)
 
 // passwords
 
@@ -17,10 +17,8 @@ router.route('/password/resetpassword/:userId/:token').post(PasswordController.r
 
 router.route('/password/changepassword/:userId').post(PasswordController.changePassword)
 
-
 // email confirmation
 
 router.route('/email/confirmation/:userId/:token').post(AuthController.emailConfirmation)
-
 
 export default router

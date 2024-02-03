@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import prisma from '../models/prisma/prisma-client'
-import { UserController } from '../controllers/user.controller'
 import { UserDao } from '../models/dao/user.dao'
 
 export class UserMiddlware {
-  static checkIfUserExists = async (req, res, next) => {
+  static checkIfUserExists = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params
     const user = await prisma.user.findUnique({
       where: {

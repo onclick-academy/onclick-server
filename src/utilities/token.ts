@@ -1,13 +1,21 @@
 import jwt from 'jsonwebtoken'
-import { Request, Response, NextFunction } from 'express'
-import { HttpError } from 'http-errors'
 
-export const createToken = (userDto: loginDtoI, secret: string = process.env.JWT_SECRET_KEY, obj: any) => {
-  const { id, username, email, role } = userDto
-  if (typeof secret === 'string') {
-    return jwt.sign({ id, username, email, role }, secret, { expiresIn: obj.expiresIn })
-  } else throw new Error('JWT_SECRET_KEY is not set in environment variables')
+interface TokenOptions {
+  expiresIn?: string
 }
 
-// TODO add authentication for Admin and instructor
-// TODO add refresh token
+interface UserDto {
+  id?: string
+  username?: string
+  email?: string
+  role?: string
+}
+
+export const createToken = (
+  userDto: Partial<UserDto>,
+  secret: string = process.env.JWT_SECRET_KEY,
+  obj: TokenOptions
+) => {
+  const { id, username, email, role } = userDto
+  return jwt.sign({ id, username, email, role }, secret, { expiresIn: obj.expiresIn || '5m' })
+}

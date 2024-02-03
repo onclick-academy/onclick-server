@@ -1,9 +1,10 @@
+import { UserRequest } from '../../types/user.interface'
 import { UserDao } from '../models/dao/user.dao'
 import { UserDto } from '../models/dto/user.dto'
 import { Request, Response } from 'express'
 
 export class UserController {
-  static getAllUsers = async (req: Request, res: Response) => {
+  static getAllUsers = async (req: UserRequest, res: Response) => {
     const userDao = new UserDao()
     const users = await userDao.getAllUsers()
 
@@ -11,7 +12,13 @@ export class UserController {
       return res.status(404).json({ error: 'No users found' })
     }
 
-    return res.status(200).json({ message: 'Users retrieved successfuly', data: users, status: 'success' })
+    console.log('', req)
+    return res.status(200).json({
+      message: 'Users retrieved successfuly',
+      data: users,
+      status: 'success',
+      user: req.user
+    })
   }
 
   static getUserById = async (req: Request, res: Response) => {
