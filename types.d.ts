@@ -1,4 +1,15 @@
 declare global {
+  interface GlobalUserI {
+    id: string
+    fullName: string
+    username: string
+    email: string
+    bio: string
+    phoneNum: string
+    profilePic: string
+    birthDate: Date
+    role: string
+  }
   interface UserDtoI {
     id: string
     fullName: string
@@ -13,6 +24,7 @@ declare global {
     role: string
     isEmailConfirm: boolean
     isDeleted?: boolean
+    isRememberMe?: boolean
   }
 
   interface UserUpdateI {
@@ -33,11 +45,12 @@ declare global {
 
   interface loginDtoI {
     email?: string
-    username?: string
     password?: string
+    username?: string
     role?: string
     id?: string
     isAvailable?: boolean
+    isRememberMe?: boolean
   }
 
   interface AdminI {
@@ -227,6 +240,7 @@ declare global {
     courseId: string
     isDeleted: boolean
     deletedAt: Date
+    studentId: string
   }
 }
 
