@@ -19,7 +19,7 @@ export class UserMiddlware {
   }
 
   static checkIfUserIsActive = async (req: Request, res: Response, next: NextFunction) => {
-    let id: string
+    let id: string | undefined
     if (req.params.userId) {
       id = req.params.userId
     } else if (req.body.userId) {
@@ -54,8 +54,11 @@ export class UserMiddlware {
     next()
   }
 
+  /**
+   * Delete user after 30 days
+   */
   static checkIsDeletedPeriodAvailable = async (req: Request, res: Response, next: NextFunction) => {
-    let id: string
+    let id: string | undefined
     if (req.params.userId) {
       id = req.params.userId
     } else if (req.body.userId) {
@@ -63,12 +66,14 @@ export class UserMiddlware {
     }
 
     try {
-      const user = await prisma.user.findUnique({
+      const user = (await prisma.user.findUnique({
         where: {
           id: id,
           isDeleted: true
         }
-      })
+      })) as unknown as { deletedAt: Date }
+
+      if (!user) return res.status(404).json({ error: 'User not found' })
 
       const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000
       const currentDate = new Date()
@@ -83,7 +88,7 @@ export class UserMiddlware {
       } else {
         return res.status(200).json({ message: 'User is available for recovery', redirectUrl: '/api/v1/auth/login' })
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
       return res.status(500).json({ error: error.message })
     }
