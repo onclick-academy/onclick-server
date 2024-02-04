@@ -1,0 +1,441 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  INSTRUCTOR
+  STUDENT
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+}
+
+enum NOTIFICATION_TYPE {
+  COURSE_ENROLLMENT
+  COURSE_COMPLETION
+  NEW_COURSE_AVAILABLE
+  INSTRUCTOR_FEEDBACK
+  ADMIN_ANNOUNCEMENT
+  REVIEW_COURESE
+}
+
+enum EDUCATION_LEVEL {
+  ELEMENTARY
+  MIDDLE
+  HIGH
+  COLLEGE
+  UNIVERSITY
+  MASTER
+  PHD
+}
+
+enum TARGET_RATE {
+  COURSE
+  INSTRUCTOR
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fullName       String
+  username       String      @unique
+  email          String      @unique
+  bio            String?
+  password       String
+  phoneNum       String      @unique
+  profilePic     String?
+  birthDate      DateTime
+  gender         GENDER      @default(MALE)
+  role           ROLE        @default(STUDENT)
+  isEmailConfirm Boolean     @default(false)
+  isDeleted      Boolean     @default(false)
+  deletedAt      DateTime?
+  isAvailable    Boolean     @default(true)
+  instructor     Instructor?
+  student        Student?
+
+  resetToken    ResetToken?
+  refreshTokens RefreshToken?
+  confirmToken  ConfirmToken?
+  suspendStates SuspendState[]
+  blockStates   BlockState[]
+  WishList      WishList[]
+  notifications Notification[]
+  ratings       Rating[]
+}
+
+model ResetToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  token     String   @unique
+  userId    String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_reset_token_user")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  token     String   @unique
+  userId    String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_refresh_token_user")
+}
+
+model ConfirmToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  token     String   @unique
+  userId    String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_confirm_token_user")
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  firstName  String
+  lastName   String
+  email      String    @unique
+  password   String
+  profilePic String?
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
+
+  coursesApproved Course[]
+  suspendStates   SuspendState[]
+  blockStates     BlockState[]
+  News            News[]
+  events          Event[]
+}
+
+model Instructor {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId      String @unique
+  nationalID  String
+  cvLink      String
+  averageRate Float?
+
+  courses Course[]
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Student {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId         String          @unique
+  educationLevel EDUCATION_LEVEL
+
+  enrollments CourseEnrollment[]
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipientId    String
+  type           NOTIFICATION_TYPE
+  title          String
+  message        String?
+  isRead         Boolean           @default(false)
+  additionalInfo Json?
+
+  recipient User @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId, isRead]) // Index to optimize queries for unread notifications per user
+}
+
+model CourseEnrollment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courseId  String
+  studentId String
+  progress  Json?
+
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, studentId])
+}
+
+model Course {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  instructorId  String
+  adminId       String
+  categoryId    String
+  subCategoryId String
+  title         String
+  description   String
+  price         Float
+  rate          Float?
+  discount      Float?
+  available     Boolean   @default(false)
+  skillsGained  String[]
+  duration      String
+  photo         String
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+  certificate   String
+  introVideo    String?
+
+  topics      Topic[]
+  lectures    Lecture[]
+  enrollments CourseEnrollment[]
+  WishList    WishList[]
+  createdBy   Admin              @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  subCategory SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  instructor  Instructor         @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  ratings     Rating[]
+}
+
+model Lecture {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courseId    String
+  title       String
+  description String
+  // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
+  // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
+  videoUrl    String
+  duration    String
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
+  content LecturesContent[]
+  course  Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model LecturesContent {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order      Int       @unique @default(autoincrement())
+  materialId String
+  lectureId  String
+  content    String
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
+
+  material LecturesMaterials @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  lecture  Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+}
+
+model LecturesMaterials {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
+  contents LecturesContent[]
+}
+
+model Topic {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title     String
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  courses Course[]
+}
+
+model Rating {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  targetType TARGET_RATE
+  targetId   String // CourseId or InstructorId
+  rate       Float
+  comment    String?
+  isDeleted  Boolean     @default(false)
+  deletedAt  DateTime?
+  courseId   String
+  userId     String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId, targetType])
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String
+  photo       String
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
+  subCategories SubCategory[]
+}
+
+model SubCategory {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categoryId  String
+  name        String
+  description String
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
+  courses  Course[]
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model SuspendState {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId  String
+  adminId String
+  isValid Boolean  @default(false)
+  reason  String?
+  period  DateTime
+
+  byAdmin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BlockState {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId  String
+  adminId String
+  state   Boolean  @default(false)
+  reason  String?
+  period  DateTime
+
+  byAdmin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AppSettings {
+  id           String @id @default(uuid())
+  mainEmail    String
+  contactEmail String
+  contactPhone String
+  aboutUs      String
+  terms        String
+  privacy      String
+  logo         String
+  favicon      String
+  coverSlides  Json
+  socialLinks  Json
+}
+
+model News {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminId     String
+  title       String
+  subtitle    String
+  description String
+  images      Json?
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  isAvailable Boolean   @default(false)
+  cover       String
+
+  createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminId     String
+  title       String
+  subtitle    String
+  description String
+  images      Json?
+  startDate   DateTime
+  endDate     DateTime
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  isAvailable Boolean   @default(true)
+  cover       String
+
+  createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model ContactUs {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name    String
+  email   String
+  message String
+  phone   String?
+  isRead  Boolean @default(false)
+}
+
+model WishList {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courseId  String
+  userId    String
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

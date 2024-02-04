@@ -1,7 +1,16 @@
-import { Request } from 'express'
-
 declare global {
-  interface UserInterface extends Request {
+  interface GlobalUserI {
+    id: string
+    fullName: string
+    username: string
+    email: string
+    bio: string
+    phoneNum: string
+    profilePic: string
+    birthDate: Date
+    role: string
+  }
+  interface UserDtoI {
     id: string
     fullName: string
     username: string
@@ -9,14 +18,42 @@ declare global {
     bio: string
     password: string
     phoneNum: string
-    profilePic: string
+    profilePic?: string
     birthDate: Date
     gender: string
     role: string
-    isEmailConfirmed: boolean
+    isEmailConfirm: boolean
+    isDeleted?: boolean
+    isRememberMe?: boolean
   }
 
-  interface AdminInterface extends Request {
+  interface UserUpdateI {
+    id: string
+    fullName?: string
+    username?: string
+    email?: string
+    bio?: string
+    password?: string
+    phoneNum?: string
+    profilePic?: string
+    birthDate?: Date
+    gender?: string
+    role?: string
+    isEmailConfirm?: boolean
+    isDeleted?: boolean
+  }
+
+  interface loginDtoI {
+    email?: string
+    password?: string
+    username?: string
+    role?: string
+    id?: string
+    isAvailable?: boolean
+    isRememberMe?: boolean
+  }
+
+  interface AdminI {
     id: string
     firstName: string
     lastName: string
@@ -27,7 +64,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface LectureInterface extends Request {
+  interface LectureI {
     id: string
     courseId: string
     title: string
@@ -38,7 +75,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface LectureContentInterface extends Request {
+  interface LectureContentI {
     id: string
     lectureId: string
     materialId: string
@@ -48,7 +85,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface lectureMaterialInterface extends Request {
+  interface lectureMaterialI {
     id: string
     title: string
     description: string
@@ -56,18 +93,18 @@ declare global {
     deletedAt: Date
   }
 
-  interface SusspendStateInterface extends Request {
+  interface SusspendStateI {
     id: string
-    userId: string
+    UserDtoId: string
     adminId: string
     isValid: boolean
     reason: string
     period: Date
   }
 
-  interface BlockStateInterface extends Request {
+  interface BlockStateI {
     id: string
-    userId: string
+    UserDtoId: string
     adminId: string
     state: boolean
     reason: string
@@ -142,6 +179,68 @@ declare global {
     comment?: string
     userId: string
     courseId?: string
+  }
+
+  interface InstructorDtoI {
+    id: string
+    instructorId: string
+    nationalId: string
+    avgRate: number
+    CvLink: string
+  }
+
+  interface StudentDtoI {
+    id: string
+    studentId: string
+    educationLevel: string
+  }
+
+  interface NotificationDtoI {
+    id: string
+    recipientId: string
+    title: string
+    message: string
+    isRead: boolean
+  }
+
+  interface CategoryDtoI {
+    id: string
+    title: string
+    description: string
+    photoUrl: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
+
+  interface SubCategoryI {
+    id: string
+    categoryId: string
+    name: string
+    description: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
+
+  interface NewsDtoI {
+    id: string
+    adminId: string
+    title: string
+    subtitle: string
+    description: string
+    images: string[]
+    isDeleted: boolean
+    deletedAt: Date
+    isAvailable: boolean
+    cover: string
+  }
+
+  interface WishlistDtoI {
+    id: string
+    userId: string
+    courseId: string
+    isDeleted: boolean
+    deletedAt: Date
+    studentId: string
   }
 }
 

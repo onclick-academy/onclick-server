@@ -5,3 +5,5 @@ dist/
 models/prisma/migrations*
 src/test.validation.ts
 yarn.lock
+*.log
+uploads/*
