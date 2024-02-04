@@ -14,8 +14,10 @@ export class RegisterDto {
   public role: string
   public isEmailConfirm: boolean
   public isDeleted?: boolean
+  public isRememberMe?: boolean
 
   constructor(bodyReq: UserDtoI) {
+    this.id = bodyReq['id']
     this.fullName = bodyReq['fullName']
     this.username = bodyReq['username']
     this.email = bodyReq['email']
@@ -28,5 +30,6 @@ export class RegisterDto {
     this.role = bodyReq['role']
     this.isEmailConfirm = bodyReq['isEmailConfirm']
     this.isDeleted = bodyReq['isDeleted']
+    this.isRememberMe = bodyReq['isRememberMe']
   }
 }

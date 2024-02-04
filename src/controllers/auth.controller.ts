@@ -1,3 +1,4 @@
+import { expiredPeriod } from './../../index'
 import joi from 'joi'
 import prisma from '../models/prisma/prisma-client'
 import nodemailer from 'nodemailer'
@@ -33,17 +34,23 @@ export class AuthController {
 
         return res.status(400).json({ error: 'Error when creating user' })
       }
+
       const newUser = await userDao.createUser(userDto)
-      const newToken = createToken(newUser, process.env.JWT_SECRET_KEY, { expiresIn: '5m' })
+      const accessToken = createToken(newUser, process.env.JWT_SECRET_KEY, { expiresIn: expiredPeriod.accessToken })
+
+      const refreshToken = createToken(newUser, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: expiredPeriod.refreshToken
+      })
 
       this.sendConfirmationEmail(req, res)
 
       return res.status(200).json({
         data: newUser,
-        token: newToken,
+        accessToken: accessToken,
+        refreshToken: userDto.isRememberMe ? refreshToken : null,
         status: 'success'
       })
-    } catch (error) {
+    } catch (error: any) {
       if (error.message.includes('Email is already in use') || error.message.includes('Username is not available')) {
         return res.status(400).json({ error: error.message, status: 'failed' })
       }
@@ -115,7 +122,7 @@ export class AuthController {
           return res.status(200).json({ data: 'email sent' })
         }
       })
-    } catch (error) {
+    } catch (error: any) {
       if (error.message.includes('Email')) {
         return res.status(400).json({ error: error.message })
       }
@@ -135,6 +142,7 @@ export class AuthController {
         }
       })
       if (!user) throw new Error('User not found')
+      if (!user.confirmToken) throw new Error('Token not found')
       if (user.confirmToken.expiresAt < new Date()) throw new Error('Token has expired')
       if (user.confirmToken.token !== token) throw new Error('Token is not valid')
       if (user.isEmailConfirm) throw new Error('Email is already confirmed')
@@ -143,7 +151,7 @@ export class AuthController {
       const updatedUser = await userDao.updateUser({ id: user.id, isEmailConfirm: true })
 
       return res.status(200).json({ data: updatedUser, status: 'success' })
-    } catch (error) {
+    } catch (error: any) {
       return res.status(500).json({ error: error.message, status: 'failed' })
     }
   }
@@ -162,29 +170,19 @@ export class AuthController {
         return res.status(400).json({ error: 'Error when validating the login' })
       }
 
-      const user: loginDtoI = await authDao.login(loginDto)
-      const newToken = createToken(loginDto, process.env.JWT_SECRET_KEY, { expiresIn: '10m' })
-      const refreshtoken = createToken(loginDto, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1h' })
+      const user: loginDtoI | undefined = await authDao.login(loginDto)
+      const accessToken = createToken(loginDto, process.env.JWT_SECRET_KEY, { expiresIn: expiredPeriod.accessToken })
+      const refreshtoken = createToken(loginDto, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: expiredPeriod.refreshToken
+      })
 
-      console.log(user)
-
-      console.log({ refreshtoken, access: newToken })
-
-      req.user = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        accessToken: newToken,
-        refreshToken: refreshtoken
-      }
       return res.status(200).json({
         data: user,
-        accessToken: newToken,
-        status: 'success',
-        refreshToken: refreshtoken
+        accessToken,
+        refreshToken: loginDto.isRememberMe ? refreshtoken : null,
+        status: 'success'
       })
-    } catch (error) {
+    } catch (error: any) {
       return res.status(500).json({ error: error.message, status: 'failed to login' })
     }
   }

@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { expiredPeriod } from '../..'
 
 interface TokenOptions {
   expiresIn?: string
@@ -13,9 +14,9 @@ interface UserDto {
 
 export const createToken = (
   userDto: Partial<UserDto>,
-  secret: string = process.env.JWT_SECRET_KEY,
+  secret: string = process.env.JWT_SECRET_KEY as string,
   obj: TokenOptions
 ) => {
   const { id, username, email, role } = userDto
-  return jwt.sign({ id, username, email, role }, secret, { expiresIn: obj.expiresIn || '5m' })
+  return jwt.sign({ id, username, email, role }, secret, { expiresIn: obj.expiresIn || expiredPeriod.accessToken })
 }

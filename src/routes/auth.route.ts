@@ -1,13 +1,14 @@
-import express from 'express'
+import express, { RequestHandler } from 'express'
 import { upload } from '../middlewares/upload'
 import { AuthController } from '../controllers/auth.controller'
 import { PasswordController } from '../controllers/password.controller'
+import { AuthMiddleware } from '../middlewares/auth.middleware'
 
 const router = express.Router()
 
 router.route('/register').post(upload.single('profilePic'), AuthController.register)
 
-router.route('/login').post(AuthController.login as unknown as express.RequestHandler)
+router.route('/login').post(AuthController.login as unknown as RequestHandler)
 
 // passwords
 

@@ -12,7 +12,7 @@ export class UserDto {
   public role: string
   public isEmailConfirm: boolean
 
-  constructor(bodyReq: UserDtoI) {
+  constructor(bodyReq: any) {
     this.id = bodyReq['id']
     this.fullName = bodyReq['fullName']
     this.username = bodyReq['username']

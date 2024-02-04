@@ -2,7 +2,7 @@ import prisma from '../prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
 
 export class UserDao {
-  createUser = async (userDto: UserDtoI) => {
+  createUser = async (userDto: any) => {
     const isExistedUser = await prisma.user.findFirst({
       where: {
         email: userDto.email
@@ -54,11 +54,51 @@ export class UserDao {
     return user
   }
 
-  updateUser = async (user: UserUpdateI) => {
+  searchUser = async (search: string) => {
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            username: {
+              contains: search,
+              mode: 'insensitive'
+            }
+          },
+          {
+            fullName: {
+              contains: search,
+              mode: 'insensitive'
+            }
+          },
+          {
+            email: {
+              contains: search,
+              mode: 'insensitive'
+            }
+          },
+          {
+            phoneNum: {
+              contains: search,
+              mode: 'insensitive'
+            }
+          },
+          {
+            bio: {
+              contains: search,
+              mode: 'insensitive'
+            }
+          }
+        ],
+        isDeleted: false
+      }
+    })
+    return users
+  }
+
+  updateUser = async (user: any) => {
     const updatedUser = await prisma.user.update({
       where: {
-        id: user.id,
-        isDeleted: false
+        id: user.id
       },
       data: user
     })
@@ -69,7 +109,6 @@ export class UserDao {
     const deletedUser = await prisma.user.update({
       where: {
         id: id,
-        isDeleted: false,
         isAvailable: true
       },
       data: {
@@ -85,7 +124,6 @@ export class UserDao {
     const deactivatedUser = await prisma.user.update({
       where: {
         id: id,
-        isDeleted: false,
         isAvailable: true
       },
       data: {
@@ -95,7 +133,7 @@ export class UserDao {
     return deactivatedUser
   }
 
-  hardDeleteUser = async (id: string) => {
+  hardDeleteUser = async (id: string | undefined) => {
     const deletedUser = await prisma.user.delete({
       where: {
         id: id

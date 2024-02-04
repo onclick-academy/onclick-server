@@ -1,9 +1,9 @@
-import express from 'express'
+import express, { RequestHandler } from 'express'
 import { UserController } from '../controllers/user.controller'
 
 const router = express.Router()
 
-router.route('/').get(UserController.getAllUsers as unknown as express.RequestHandler)
+router.route('/search').get(UserController.searchUser)
 
 router.route('/:userId').get(UserController.getUserById).put(UserController.updateUser)
 

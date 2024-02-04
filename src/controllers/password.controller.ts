@@ -69,7 +69,7 @@ export class PasswordController {
           return res.status(200).json({ data: 'email sent', reset_token: resetToken })
         }
       })
-    } catch (error) {
+    } catch (error: any) {
       if (error.message.includes('Email')) {
         return res.status(400).json({ error: error.message })
       }
@@ -98,6 +98,7 @@ export class PasswordController {
       })
 
       if (!user) throw new Error('User not found')
+      if (!user.resetToken) throw new Error('User has not requested to reset password')
 
       if (user.resetToken.expiresAt < new Date()) throw new Error('Token has expired')
 
@@ -125,7 +126,7 @@ export class PasswordController {
       })
 
       return res.status(200).json({ message: 'Password Changed', data: updatedUser, status: 'success', deletedToken })
-    } catch (error) {
+    } catch (error: any) {
       return res.status(500).json({ error: error.message, status: 'failed' })
     }
   }
@@ -164,11 +165,10 @@ export class PasswordController {
       if (!updatedUser) throw new Error('Error when updating user')
 
       return res.status(200).json({ message: 'Password Changed', data: updatedUser, status: 'success' })
-    } catch (error) {
+    } catch (error: any) {
       return res.status(500).json({ error: error.message, status: 'failed' })
     }
   }
 }
-
 
 // TODO: maintain for reset password and change password
