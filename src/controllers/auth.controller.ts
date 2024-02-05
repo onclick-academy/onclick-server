@@ -12,6 +12,7 @@ import { LoginValidation } from '../middlewares/validation/auth/login.auth.valid
 import { AuthDao } from '../models/dao/auth.dao'
 import { LoginDto } from '../models/dto/login.dto'
 import { UserRequest } from '../../types/user.interface'
+import  sendEmail  from '../utilities/email'
 
 export class AuthController {
   static register = async (req: Request, res: Response) => {
@@ -78,50 +79,8 @@ export class AuthController {
       if (!user) throw new Error('User not found')
 
       // TODO: utility
-
-      const token = createToken({ email: user.email, id: user.id }, process.env.JWT_SECRET_KEY as string, {
-        expiresIn: '5m'
-      })
-
-      await prisma.confirmToken.create({
-        data: {
-          token,
-          userId: user.id,
-          expiresAt: new Date(Date.now() + 1 * 60 * 1000)
-        }
-      })
-
-      const url = `http://localhost:3000/api/v1/auth/email/confirmation/${user.id}/${token}`
-
-      const transporter = nodemailer.createTransport({
-        auth: {
-          user: process.env.APP_EMAIL,
-          pass: process.env.APP_PASSWORD
-        },
-        service: 'gmail'
-      })
-
-      const info = await transporter.sendMail({
-        from: process.env.APP_EMAIL,
-        to: user.email,
-        subject: 'Email Confirmation',
-        html: ` <div>
-          <h1>Email Confirmation</h1>
-          <p> dear ${user.username}, You have successfully registered to our platform, but before you can start using it, you need to confirm your email :) if it wasn't you!, please ignore this email,
-          <br> Click on the link below to confirm your email please <br> ${url} <br> ps. this link is VALID for 1 Day.</p>
-        </div>
-        `
-      })
-
-      transporter.sendMail(info, (err, data) => {
-        if (err) {
-          console.log(err)
-          return res.status(500).json({ error: err.message })
-        } else {
-          console.log('email sent')
-          return res.status(200).json({ data: 'email sent' })
-        }
-      })
+      sendEmail(req, res, user, 'Confirm')
+  
     } catch (error: any) {
       if (error.message.includes('Email')) {
         return res.status(400).json({ error: error.message })
