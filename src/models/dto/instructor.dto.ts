@@ -1,17 +1,15 @@
 //instructor DTO
 
 export class InstructorDto {
-  readonly id: string
-  readonly instructorId: string
-  readonly nationalId: string
-  readonly avgRate: number
-  readonly CvLink: string
+  public userId: string
+  public nationalID: string
+  public averageRate: number
+  public cvLink: string
 
   constructor(bodyReq: InstructorDtoI) {
-    this.id = bodyReq['id']
-    this.instructorId = bodyReq['instructorId']
-    this.nationalId = bodyReq['nationalId']
-    this.avgRate = bodyReq['avgRate']
-    this.CvLink = bodyReq['CvLink']
+    this.userId = bodyReq.userId
+    this.nationalID = bodyReq.nationalID
+    this.averageRate = bodyReq.averageRate
+    this.cvLink = bodyReq.cvLink
   }
 }

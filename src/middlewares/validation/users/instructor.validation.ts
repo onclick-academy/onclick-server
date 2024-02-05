@@ -1,6 +1,6 @@
 import joi from 'joi'
 
-export class instructorValidation {
+export class InstructorValidation {
   private static baseSchema = {
     userId: joi.string().required(),
     nationalID: joi.string().required(),
@@ -8,13 +8,13 @@ export class instructorValidation {
     averageRate: joi.number()
   }
 
-  createInstructor() {
-    return joi.object(instructorValidation.baseSchema) // can't use this.baseSchema => to check!
+  static createInstructor(instructorDto: InstructorDtoI) {
+    return joi.object(this.baseSchema).validateAsync(instructorDto)
   }
 
-  updateInstructor() {
+  static updateInstructor() {
     return joi
-      .object({ ...instructorValidation.baseSchema, userId: joi.string().required() })
+      .object({ ...this.baseSchema, userId: joi.string().required() })
       .fork(['nationalID', 'cvLink', 'averageRate'], schema => schema.optional())
   }
 }
