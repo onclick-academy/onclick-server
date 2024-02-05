@@ -45,7 +45,7 @@ export class AuthDao {
         email: userDto.email,
         isDeleted: false
       }
-    })
+    }) as GlobalUserI
     if (!user) throw new Error('Email is not found please register')
     return user
   }

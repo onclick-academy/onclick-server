@@ -1,14 +1,23 @@
 declare global {
   interface GlobalUserI {
     id: string
+    createdAt: Date
+    updatedAt: Date
+
     fullName: string
     username: string
     email: string
+    password: string
     bio: string
     phoneNum: string
     profilePic: string
     birthDate: Date
+    gender: string
     role: string
+    isEmailConfirm: boolean
+    isDeleted: boolean
+    deletedAt: Date
+    isAvailable: boolean
   }
   interface UserDtoI {
     id: string
@@ -53,8 +62,7 @@ declare global {
     isRememberMe?: boolean
   }
 
-  interface AdminI {
-    id: string
+  interface AdminDtoI {
     firstName: string
     lastName: string
     email: string
@@ -111,7 +119,8 @@ declare global {
     period: Date
   }
 
-  interface CourseInterface {
+  interface CourseDtoI {
+    instructorId: string
     adminId: string
     categoryId: string
     subCategoryId: string
@@ -120,16 +129,41 @@ declare global {
     price: number
     rate?: number
     discount?: number
-    isAvailable: boolean
+    available: boolean
     skillsGained: string[]
     duration: string
-    photoUrl: string
+    photo: string
     isDeleted: boolean
     deletedAt?: Date
-    certifiacteUrl: string
-    introVideoUrl?: string
+    certificate : string
+    introVideo?: string
   }
-  interface TopicInterface {
+
+    interface GlobalCourseI {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+
+    instructorId: string
+    adminId: string
+    categoryId: string
+    subCategoryId: string
+    title: string
+    description: string
+    price: number
+    rate: number | null
+    discount: number | null
+    available: boolean
+    skillsGained: string[]
+    duration: string
+    photo: string
+    isDeleted: boolean
+    deletedAt: Date | null
+    certificate : string
+    introVideo: string | null
+  }
+
+  interface TopicDtoI {
     title: string
     isDeleted: boolean
     deletedAt: Date
@@ -182,11 +216,21 @@ declare global {
   }
 
   interface InstructorDtoI {
+    userId: string
+    nationalID: string
+    cvLink: string
+    averageRate: number | 0
+  }
+
+  interface GlobalInstructorI {
     id: string
-    instructorId: string
-    nationalId: string
-    avgRate: number
-    CvLink: string
+    createdAt: Date
+    updatedAt: Date
+
+    userId: string
+    nationalID: string
+    cvLink: string
+    averageRate: number
   }
 
   interface StudentDtoI {
@@ -204,21 +248,43 @@ declare global {
   }
 
   interface CategoryDtoI {
-    id: string
     title: string
     description: string
-    photoUrl: string
+    photo: string
     isDeleted: boolean
     deletedAt: Date
   }
 
-  interface SubCategoryI {
+  interface GlobalCategoryI {
     id: string
+    createdAt: Date
+    updatedAt: Date
+
+    title: string
+    description: string
+    photo: string
+    isDeleted: boolean
+    deletedAt: Date | null
+  }
+
+  interface SubCategoryDtoI {
     categoryId: string
     name: string
     description: string
     isDeleted: boolean
     deletedAt: Date
+  }
+
+  interface GlobalSubCategoryI {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+
+    categoryId: string
+    name: string
+    description: string
+    isDeleted: boolean
+    deletedAt: Date | null
   }
 
   interface NewsDtoI {

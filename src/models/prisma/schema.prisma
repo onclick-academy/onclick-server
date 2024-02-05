@@ -213,7 +213,7 @@ model Course {
   certificate   String
   introVideo    String?
 
-  topics      Topic[]
+  topics      CourseTopic[]
   lectures    Lecture[]
   enrollments CourseEnrollment[]
   WishList    WishList[]
@@ -221,6 +221,22 @@ model Course {
   subCategory SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   instructor  Instructor         @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   ratings     Rating[]
+}
+
+model CourseTopic {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courseId  String
+  topicId   String
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  topic  Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, topicId])
 }
 
 model Lecture {
@@ -280,7 +296,7 @@ model Topic {
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
 
-  courses Course[]
+  courses CourseTopic[]
 }
 
 model Rating {
