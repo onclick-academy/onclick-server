@@ -16,7 +16,8 @@ export class registerValidation {
     role: joi.valid('ADMIN', 'INSTRUCTOR', 'STUDENT').default('STUDENT'),
     isEmailConfirm: joi.boolean().default(false),
     gender: joi.valid('FEMALE', 'MALE').default('MALE'),
-    isDeleted: joi.boolean().default(false)
+    isDeleted: joi.boolean().default(false),
+    isRememberMe: joi.boolean().default(false)
   }
 
   static createUser(userDto: UserDtoI) {
