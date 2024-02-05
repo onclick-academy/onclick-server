@@ -1,5 +1,5 @@
-import express, { RequestHandler } from 'express'
-import { UserController } from '../controllers/user.controller'
+import express from 'express'
+import { UserController } from '@controllers/user.controller'
 
 const router = express.Router()
 

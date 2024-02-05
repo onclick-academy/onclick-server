@@ -1,8 +1,7 @@
 import express, { RequestHandler } from 'express'
-import { upload } from '../middlewares/upload'
-import { AuthController } from '../controllers/auth.controller'
-import { PasswordController } from '../controllers/password.controller'
-import { AuthMiddleware } from '../middlewares/auth.middleware'
+import { upload } from '@middlewares/upload'
+import { AuthController } from '@controllers/auth.controller'
+import { PasswordController } from '@controllers/password.controller'
 
 const router = express.Router()
 

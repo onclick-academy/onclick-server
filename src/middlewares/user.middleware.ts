@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import prisma from '../models/prisma/prisma-client'
-import { UserDao } from '../models/dao/user.dao'
+import { UserDao } from '@dao/user.dao'
 
 export class UserMiddlware {
   static checkIfUserExists = async (req: Request, res: Response, next: NextFunction) => {

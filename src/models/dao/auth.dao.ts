@@ -1,6 +1,6 @@
 import prisma from '../prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
-import { UserTokenI } from '../../../types/user.interface'
+import { UserTokenI } from '../../types/user.interface'
 
 export class AuthDao {
   login = async (userDto: loginDtoI) => {

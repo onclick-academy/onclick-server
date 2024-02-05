@@ -1,12 +1,11 @@
 import joi from 'joi'
-import prisma from '../models/prisma/prisma-client'
 import nodemailer from 'nodemailer'
-
-import { hashPassword } from '../utilities/hash'
-import { UserDao } from '../models/dao/user.dao'
-import { createToken } from '../utilities/token'
 import { Request, Response } from 'express'
-import { AuthDao } from '../models/dao/auth.dao'
+import { AuthDao } from '@dao/auth.dao'
+import { UserDao } from '@dao/user.dao'
+import prisma from '../models/prisma/prisma-client'
+import { hashPassword } from '@utilities/hash'
+import { createToken } from '@utilities/token'
 
 export class PasswordController {
   static forgetPassword = async (req: Request, res: Response) => {

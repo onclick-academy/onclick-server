@@ -1,10 +1,10 @@
+import { expiredPeriod } from '../..'
 import { Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import { UserRequest, UserTokenI } from '../../types/user.interface'
+import { UserRequest, UserTokenI } from 'types/user.interface'
 import prisma from '../models/prisma/prisma-client'
-import { createToken } from '../utilities/token'
-import { expiredPeriod } from '../..'
-// user request -> middleware -> route
+import { createToken } from '@utilities/token'
+
 export class AuthMiddleware {
   static verifyToken = async (req: UserRequest, res: Response, next: NextFunction) => {
     // @ts-ignore-next

@@ -210,8 +210,19 @@ declare global {
     photoUrl: string
     isDeleted: boolean
     deletedAt: Date
+    name: string
   }
 
+  interface LectureInterface {
+    id: string
+    courseId: string
+    title: string
+    description: string
+    videoUrl: string
+    duration: string
+    isDeleted: boolean
+    deletedAt: Date
+  }
   interface SubCategoryI {
     id: string
     categoryId: string
