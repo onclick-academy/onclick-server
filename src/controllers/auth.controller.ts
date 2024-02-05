@@ -1,17 +1,17 @@
-import { expiredPeriod } from './../../index'
-import joi from 'joi'
-import prisma from '../models/prisma/prisma-client'
-import nodemailer from 'nodemailer'
-
-import { UserDao } from '../models/dao/user.dao'
-import { RegisterDto } from '../models/dto/register.dto'
-import { registerValidation } from '../middlewares/validation/auth/register.auth.validation'
-import { createToken } from '../utilities/token'
+import { expiredPeriod } from '../..' // refer to index.ts on the root directory
 import { Request, Response } from 'express'
-import { LoginValidation } from '../middlewares/validation/auth/login.auth.validation'
-import { AuthDao } from '../models/dao/auth.dao'
-import { LoginDto } from '../models/dto/login.dto'
-import { UserRequest } from '../../types/user.interface'
+import joi from 'joi'
+import { UserRequest } from 'types/user.interface'
+import NodeFilter from 'nodemailer'
+
+import { RegisterDto } from '@models/dto/register.dto'
+import { AuthDao } from '@dao/auth.dao'
+import { UserDao } from '@dao/user.dao'
+import { LoginValidation } from '@validation/auth/login.auth.validation'
+import { registerValidation } from '@validation/auth/register.auth.validation'
+import { LoginDto } from '@dto/login.dto'
+import prisma from '../models/prisma/prisma-client'
+import { createToken } from '@utilities/token'
 
 export class AuthController {
   static register = async (req: Request, res: Response) => {
@@ -93,7 +93,7 @@ export class AuthController {
 
       const url = `http://localhost:3000/api/v1/auth/email/confirmation/${user.id}/${token}`
 
-      const transporter = nodemailer.createTransport({
+      const transporter = NodeFilter.createTransport({
         auth: {
           user: process.env.APP_EMAIL,
           pass: process.env.APP_PASSWORD

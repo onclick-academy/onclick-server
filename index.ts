@@ -1,3 +1,5 @@
+import 'module-alias/register'
+
 import { AuthMiddleware } from './src/middlewares/auth.middleware'
 import express, { NextFunction, Request, Response, RequestHandler } from 'express'
 import createError from 'http-errors'
