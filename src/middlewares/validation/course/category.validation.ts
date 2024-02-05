@@ -9,8 +9,8 @@ export class categoryValidation {
     deletedAt: joi.date().allow(null)
   }
 
-  static createCategory() {
-    return joi.object(this.baseSchema)
+  static createCategory(categoryDto: CategoryDtoI) {
+    return joi.object(this.baseSchema).validateAsync(categoryDto)
   }
 
   static updateCategory() {
