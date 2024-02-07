@@ -1,5 +1,12 @@
 import joi from 'joi'
 
+interface InstructorDtoI {
+  userId: string
+  nationalID: string
+  cvLink: string
+  averageRate: number | 0
+}
+
 export class InstructorValidation {
   private static baseSchema = {
     userId: joi.string().required(),

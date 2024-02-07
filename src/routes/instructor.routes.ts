@@ -4,7 +4,8 @@ import { InstructorController } from '../controllers/instructor.controller';
 
 const router = express.Router();
 
-router.post('/:userId', InstructorController.createInstructor);
+
+router.route('/apply').post(InstructorController.ApplyInstructor);
 
 
 export default router;

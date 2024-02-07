@@ -1,4 +1,10 @@
 //instructor DTO
+interface InstructorDtoI {
+  userId: string
+  nationalID: string
+  cvLink: string
+  averageRate: number | 0
+}
 
 export class InstructorDto {
   public userId: string
