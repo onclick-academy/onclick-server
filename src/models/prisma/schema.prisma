@@ -78,12 +78,14 @@ model ResetToken {
   createdAt DateTime @default(now())
 
   token     String   @unique
-  userId    String   @unique
+  userId    String?   @unique
+  adminId   String?   @unique
   expiresAt DateTime
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
-  @@index([userId], name: "idx_reset_token_user")
+  @@index([userId, adminId], name: "idx_reset_token_user")
 }
 
 model RefreshToken {
@@ -91,12 +93,14 @@ model RefreshToken {
   createdAt DateTime @default(now())
 
   token     String   @unique
-  userId    String   @unique
+  userId    String?   @unique
+  adminId   String? @unique
   expiresAt DateTime
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
-  @@index([userId], name: "idx_refresh_token_user")
+  @@index([userId, adminId], name: "idx_refresh_token_user")
 }
 
 model ConfirmToken {
@@ -104,12 +108,14 @@ model ConfirmToken {
   createdAt DateTime @default(now())
 
   token     String   @unique
-  userId    String   @unique
+  userId    String?   @unique
+  adminId   String? @unique
   expiresAt DateTime
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
-  @@index([userId], name: "idx_confirm_token_user")
+  @@index([userId, adminId], name: "idx_confirm_token_user")
 }
 
 model Admin {
@@ -124,7 +130,12 @@ model Admin {
   profilePic String?
   isDeleted  Boolean   @default(false)
   deletedAt  DateTime?
+  isEmailConfirm Boolean     @default(false)
 
+
+  resetToken    ResetToken?
+  refreshTokens RefreshToken?
+  confirmToken  ConfirmToken?
   coursesApproved Course[]
   suspendStates   SuspendState[]
   blockStates     BlockState[]
@@ -141,6 +152,7 @@ model Instructor {
   nationalID  String
   cvLink      String
   averageRate Float?
+  isVerified  Boolean @default(false)
 
   courses Course[]
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)

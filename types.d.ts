@@ -63,6 +63,7 @@ declare global {
   }
 
   interface AdminDtoI {
+    id: string | undefined
     firstName: string
     lastName: string
     email: string
@@ -72,7 +73,7 @@ declare global {
     deletedAt: Date
   }
 
-  interface LectureI {
+  interface LectureDtoI {
     id: string
     courseId: string
     title: string
@@ -168,6 +169,17 @@ declare global {
     isDeleted: boolean
     deletedAt: Date
   }
+
+  interface GlobalTopicI {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+
+    title: string
+    isDeleted: boolean
+    deletedAt: Date | null
+  }
+
   interface ContactUsInterface {
     id: string
     name: string
@@ -231,12 +243,22 @@ declare global {
     nationalID: string
     cvLink: string
     averageRate: number
+    isVerified: boolean
   }
 
   interface StudentDtoI {
+    userId: string
+    educationLevel: EDUCATION_LEVEL
+
+  }
+
+  interface GlobalStudentI {
     id: string
-    studentId: string
-    educationLevel: string
+    createdAt: Date
+    updatedAt: Date
+
+    userId: string
+    educationLevel: EDUCATION_LEVEL
   }
 
   interface NotificationDtoI {
