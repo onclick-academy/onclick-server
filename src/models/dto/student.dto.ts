@@ -1,11 +1,12 @@
-export class studentDto {
-  readonly id: string
-  readonly studentId: string
-  readonly educationLevel: string
+import { EDUCATION_LEVEL } from "@prisma/client"
+
+export class StudentDto {
+
+  public userId: string
+  public educationLevel: EDUCATION_LEVEL
 
   constructor(bodyReq: StudentDtoI) {
-    this.id = bodyReq['id']
-    this.studentId = bodyReq['studentId']
-    this.educationLevel = bodyReq['educationLevel']
+    this.userId = bodyReq.userId
+    this.educationLevel = bodyReq.educationLevel
   }
 }
