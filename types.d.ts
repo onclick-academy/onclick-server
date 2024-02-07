@@ -104,7 +104,7 @@ declare global {
 
   interface BlockStateI {
     id: string
-    UserDtoId: string
+    UserDtoId: string //why!!
     adminId: string
     state: boolean
     reason: string
@@ -178,7 +178,7 @@ declare global {
     rate: number
     comment?: string
     userId: string
-    courseId?: string
+    courseId: string //removed optional
   }
 
   interface InstructorDtoI {
@@ -192,7 +192,7 @@ declare global {
   interface StudentDtoI {
     id: string
     studentId: string
-    educationLevel: string
+    educationLevel: EDUCATION_LEVEL // string replaced 
   }
 
   interface NotificationDtoI {
@@ -201,6 +201,7 @@ declare global {
     title: string
     message: string
     isRead: boolean
+    type: NOTIFICATION_TYPE // string replaced
   }
 
   interface CategoryDtoI {
