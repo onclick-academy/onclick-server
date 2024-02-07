@@ -178,7 +178,7 @@ declare global {
     rate: number
     comment?: string
     userId: string
-    courseId?: string
+    courseId: string // optional removed 
   }
 
   interface InstructorDtoI {
