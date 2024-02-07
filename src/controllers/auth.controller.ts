@@ -12,20 +12,29 @@ import { LoginValidation } from '../middlewares/validation/auth/login.auth.valid
 import { AuthDao } from '../models/dao/auth.dao'
 import { LoginDto } from '../models/dto/login.dto'
 import { UserRequest } from '../../types/user.interface'
-import  sendEmail  from '../utilities/email'
+import sendEmail from '../utilities/email'
+import { StudentDto } from '../models/dto/student.dto'
+import { StudentDao } from '../models/dao/student.dao'
+import { StudentValidation } from '../middlewares/validation/users/student.validation'
+import { send } from 'process'
+import { AdminDao } from '../models/dao/admin.dao'
 
 export class AuthController {
   static register = async (req: Request, res: Response) => {
     const userDto = new RegisterDto(req.body)
+    const studentDto = new StudentDto(req.body)
 
     if (req.file) {
       userDto.profilePic = req.file.path
     }
 
     const userDao = new UserDao()
+    const studentDao = new StudentDao()
 
     try {
       const { error } = await registerValidation.createUser(userDto)
+
+      const { error: studentError } = await StudentValidation.createUpdateStudent(studentDto)
 
       if (error) {
         if (error.details && error.details.length > 0) {
@@ -36,7 +45,20 @@ export class AuthController {
         return res.status(400).json({ error: 'Error when creating user' })
       }
 
+      if (studentError) {
+        if (studentError.details && studentError.details.length > 0) {
+          console.error(studentError.details[0].message)
+          return res.status(400).json({ error: studentError.details[0].message })
+        }
+
+        return res.status(400).json({ error: 'Error when creating student' })
+      }
+
       const newUser = await userDao.createUser(userDto)
+      studentDto.userId = newUser.id
+
+      const newStudent = await studentDao.createStudent(studentDto)
+
       const accessToken = createToken(newUser, process.env.JWT_SECRET_KEY, { expiresIn: expiredPeriod.accessToken })
 
       const refreshToken = createToken(newUser, process.env.REFRESH_TOKEN_SECRET, {
@@ -47,6 +69,7 @@ export class AuthController {
 
       return res.status(200).json({
         data: newUser,
+        dataStudent: newStudent,
         accessToken: accessToken,
         refreshToken: userDto.isRememberMe ? refreshToken : null,
         status: 'success'
@@ -73,14 +96,24 @@ export class AuthController {
       if (error) {
         return res.status(400).json({ error: 'Email is not valid' })
       }
+      try {
+        let user = await authDao.getUserByEmail({ email: userEmail })
 
-      const user = await authDao.getUserByEmail({ email: userEmail })
+        if (!user) throw new Error('User not found')
+        sendEmail(req, res, user, 'Confirm')
+      } catch (e) {
+        // TODO: utility
 
-      if (!user) throw new Error('User not found')
+        const admin = await prisma.admin.findUnique({
+          where: {
+            email: userEmail
+          }
+        })
+        if (!admin) throw new Error('Admin not found')
+        sendEmail(req, res, admin, 'Confirm')
 
-      // TODO: utility
-      sendEmail(req, res, user, 'Confirm')
-  
+        // return res.status(400).json({ error: 'User not found' })
+      }
     } catch (error: any) {
       if (error.message.includes('Email')) {
         return res.status(400).json({ error: error.message })
@@ -111,6 +144,28 @@ export class AuthController {
 
       return res.status(200).json({ data: updatedUser, status: 'success' })
     } catch (error: any) {
+      try {
+        const admin = await prisma.admin.findUnique({
+          where: {
+            id: userId
+          },
+          include: {
+            confirmToken: true
+          }
+        })
+        if (!admin) throw new Error('Admin not found')
+        if (!admin.confirmToken) throw new Error('Token not found')
+        if (admin.confirmToken.expiresAt < new Date()) throw new Error('Token has expired')
+        if (admin.confirmToken.token !== token) throw new Error('Token is not valid')
+        if (admin.isEmailConfirm) throw new Error('Email is already confirmed')
+
+        const adminDao = new AdminDao()
+        const updatedAdmin = await adminDao.updateAdmin({ id: admin.id, isEmailConfirm: true })
+
+        return res.status(200).json({ data: updatedAdmin, status: 'success' })
+      } catch (error: any) {
+        return res.status(500).json({ error: error.message, status: 'failed' })
+      }
       return res.status(500).json({ error: error.message, status: 'failed' })
     }
   }
