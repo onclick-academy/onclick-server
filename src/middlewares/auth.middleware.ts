@@ -2,7 +2,7 @@ import { expiredPeriod } from '../..'
 import { Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { UserRequest, UserTokenI } from 'types/user.interface'
-import prisma from '../models/prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 import { createToken } from '@utilities/token'
 
 export class AuthMiddleware {

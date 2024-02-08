@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer'
 import { Request, Response } from 'express'
 import { AuthDao } from '@dao/auth.dao'
 import { UserDao } from '@dao/user.dao'
-import prisma from '../models/prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 import { hashPassword } from '@utilities/hash'
 import { createToken } from '@utilities/token'
 
@@ -169,5 +169,3 @@ export class PasswordController {
     }
   }
 }
-
-// TODO: maintain for reset password and change password

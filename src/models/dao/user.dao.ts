@@ -1,5 +1,5 @@
-import prisma from '../prisma/prisma-client'
-import { hashPassword } from '../../utilities/hash'
+import prisma from '@models/prisma/prisma-client'
+import { hashPassword } from '@utilities/hash'
 
 export class UserDao {
   createUser = async (userDto: any) => {

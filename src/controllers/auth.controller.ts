@@ -10,7 +10,7 @@ import { UserDao } from '@dao/user.dao'
 import { LoginValidation } from '@validation/auth/login.auth.validation'
 import { registerValidation } from '@validation/auth/register.auth.validation'
 import { LoginDto } from '@dto/login.dto'
-import prisma from '../models/prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 import { createToken } from '@utilities/token'
 
 export class AuthController {
