@@ -1,3 +1,5 @@
+import { NOTIFICATION_TYPE } from '@prisma/client'
+
 declare global {
   interface GlobalUserI {
     id: string
@@ -199,8 +201,10 @@ declare global {
     id: string
     recipientId: string
     title: string
-    message: string
+    message?: string
     isRead: boolean
+    type: NOTIFICATION_TYPE
+    additionalInfo?: any
   }
 
   interface CategoryDtoI {
