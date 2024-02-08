@@ -8,23 +8,22 @@ import { RegisterDto } from '@models/dto/register.dto'
 import { AuthDao } from '@dao/auth.dao'
 import { UserDao } from '@dao/user.dao'
 import { LoginValidation } from '@validation/auth/login.auth.validation'
-import { registerValidation } from '@validation/auth/register.auth.validation'
+import { RegisterValidation } from '@validation/auth/register.auth.validation'
 import { LoginDto } from '@dto/login.dto'
 import prisma from '../models/prisma/prisma-client'
 import { createToken } from '@utilities/token'
 
 export class AuthController {
-  static register = async (req: Request, res: Response) => {
+  public static register = async (req: Request, res: Response) => {
     const userDto = new RegisterDto(req.body)
+    const userDao = new UserDao()
 
     if (req.file) {
       userDto.profilePic = req.file.path
     }
 
-    const userDao = new UserDao()
-
     try {
-      const { error } = await registerValidation.createUser(userDto)
+      const { error } = await RegisterValidation.createUser(userDto)
 
       if (error) {
         if (error.details && error.details.length > 0) {
@@ -42,7 +41,7 @@ export class AuthController {
         expiresIn: expiredPeriod.refreshToken
       })
 
-      this.sendConfirmationEmail(req, res)
+      AuthController.sendConfirmationEmail(req, res)
 
       return res.status(200).json({
         data: newUser,

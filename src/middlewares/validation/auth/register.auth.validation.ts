@@ -1,7 +1,7 @@
 /// <reference types="../../../../types.d.ts" />
 import joi from 'joi'
 
-export class registerValidation {
+export class RegisterValidation {
   private static baseSchema = {
     id: joi.string(),
     fullName: joi.string().required().min(6).max(255),
@@ -16,7 +16,8 @@ export class registerValidation {
     role: joi.valid('ADMIN', 'INSTRUCTOR', 'STUDENT').default('STUDENT'),
     isEmailConfirm: joi.boolean().default(false),
     gender: joi.valid('FEMALE', 'MALE').default('MALE'),
-    isDeleted: joi.boolean().default(false)
+    isDeleted: joi.boolean().default(false),
+    isRememberMe: joi.boolean().default(false)
   }
 
   static createUser(userDto: UserDtoI) {
