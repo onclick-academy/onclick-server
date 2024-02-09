@@ -42,5 +42,12 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   })
 })
 
+// category routes
+app.use(
+  '/api/v1/categories',
+  require('./src/routes/category.routes').default
+)
+
+
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`))

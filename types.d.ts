@@ -207,16 +207,6 @@ declare global {
     additionalInfo?: any
   }
 
-  interface CategoryDtoI {
-    id: string
-    title: string
-    description: string
-    photoUrl: string
-    isDeleted: boolean
-    deletedAt: Date
-    name: string
-  }
-
   interface LectureInterface {
     id: string
     courseId: string
