@@ -1,4 +1,5 @@
 export class CategoryDto {
+        public id: string | undefined;
         public title: string;
         public description: string;
         public photo: string;
@@ -6,10 +7,11 @@ export class CategoryDto {
         public deletedAt: Date;
 
     constructor(bodyReq : CategoryDtoI) {
-        this.title = bodyReq['title'];
-        this.description = bodyReq['description'];
-        this.photo = bodyReq['photo'];
-        this.isDeleted = bodyReq['isDeleted'];
-        this.deletedAt = bodyReq['deletedAt'];
+        this.id = bodyReq.id;
+        this.title = bodyReq.title;
+        this.description = bodyReq.description;
+        this.photo = bodyReq.photo;
+        this.isDeleted = bodyReq.isDeleted;
+        this.deletedAt = bodyReq.deletedAt;
     }
 }

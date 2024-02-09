@@ -23,7 +23,20 @@ export class CategoryDao {
     return category
   }
 
-  updateCategory = async (categoryDto: GlobalCategoryI) => {
+  // getSubCategoriesByCategoryId = async (categoryId: string) => {
+  //   const subCategories = await prisma.category.findMany({
+  //     where: {
+  //       id: categoryId,
+  //       isDeleted: false
+  //     },
+  //     include: {
+  //       subCategories: true
+  //     }
+  //   })
+  //   return subCategories
+  // }
+
+  updateCategory = async (categoryDto: CategoryUpdateI) => {
     const updatedCategory = (await prisma.category.update({
       where: {
         id: categoryDto.id,
