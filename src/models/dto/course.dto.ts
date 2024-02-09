@@ -1,4 +1,5 @@
 export class CourseDto {
+  public id: string | undefined
   public instructorId: string
   public adminId: string
   public categoryId: string
@@ -18,6 +19,7 @@ export class CourseDto {
   public introVideo?: string
 
   constructor(bodyReq: CourseDtoI) {
+    this.id = bodyReq['id']
     this.instructorId = bodyReq['instructorId']
     this.adminId = bodyReq['adminId']
     this.categoryId = bodyReq['categoryId']

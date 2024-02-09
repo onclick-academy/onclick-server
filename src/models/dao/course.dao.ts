@@ -115,7 +115,7 @@ export class CourseDao {
         return courses
     }
 
-    updateCourse = async (courseDto: GlobalCourseI) => {
+    updateCourse = async (courseDto: CourseUpdateI) => {
         const updatedCourse = await prisma.course.update({
             where: {
                 id: courseDto.id
