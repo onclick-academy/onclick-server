@@ -9,6 +9,7 @@ interface InstructorDtoI {
 
 export class InstructorValidation {
   private static baseSchema = {
+    id: joi.string().optional(),
     userId: joi.string().required(),
     nationalID: joi.string().required(),
     cvLink: joi.string().required(),

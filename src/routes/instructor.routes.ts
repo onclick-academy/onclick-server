@@ -1,11 +1,21 @@
-import express from 'express';
+import express from 'express'
 
-import { InstructorController } from '../controllers/instructor.controller';
+import { InstructorController } from '../controllers/instructor.controller'
 
-const router = express.Router();
+const router = express.Router()
 
+router.route('/apply').post(InstructorController.ApplyInstructor)
 
-router.route('/apply').post(InstructorController.ApplyInstructor);
+// to admin route
 
+router
+  .route('/:instructorId')
+  .get(InstructorController.getInstructorUserById)
+  .put(InstructorController.updateInstructor)
 
-export default router;
+router
+  .route('/delete/:instructorId')
+  .put(InstructorController.softDeleteInstructor)
+  .delete(InstructorController.hardDeleteInstructor)
+
+export default router
