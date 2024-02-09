@@ -2,6 +2,7 @@ import joi from 'joi'
 
 export class SubCategoryValidation {
   private static baseSchema = {
+    id: joi.string().allow(null),
     categoryId: joi.string().required(),
     name: joi.string().required().min(6).max(255),
     description: joi.string().required().min(6),
@@ -13,9 +14,9 @@ export class SubCategoryValidation {
     return joi.object(this.baseSchema).validateAsync(subCategoryDto)
   }
 
-  static updateSubCategory() {
+  static updateSubCategory(subCategoryDto: SubCategoryDtoI) {
     return joi
       .object({ ...this.baseSchema, categoryId: joi.string().required() })
-      .fork(['name', 'description', 'isDeleted'], schema => schema.optional())
+      .fork(['name', 'description', 'isDeleted'], schema => schema.optional()).validateAsync(subCategoryDto)
   }
 }

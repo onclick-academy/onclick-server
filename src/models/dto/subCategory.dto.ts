@@ -1,4 +1,5 @@
 export class SubCategoryDto {
+  public id?: string | undefined
   public categoryId: string
   public name: string
   public description: string
@@ -6,6 +7,7 @@ export class SubCategoryDto {
   public deletedAt: Date
 
   constructor(body: SubCategoryDtoI) {
+    this.id = body.id
     this.categoryId = body.categoryId
     this.name = body.name
     this.description = body.description

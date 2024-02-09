@@ -28,6 +28,7 @@ export class SubCategoryDao {
   }
 
   getSubCategoryByCategoryId = async (categoryId: string) => {
+    // console.log('categoryId', categoryId)
     const subCategories = await prisma.subCategory.findMany({
       where: {
         categoryId: categoryId,
@@ -37,7 +38,7 @@ export class SubCategoryDao {
     return subCategories
   }
 
-  updateSubCategory = async (subCategoryDto: GlobalSubCategoryI) => {
+  updateSubCategory = async (subCategoryDto: SubCategoryUpdateI) => {
     const updatedSubCategory = (await prisma.subCategory.update({
       where: {
         id: subCategoryDto.id,
