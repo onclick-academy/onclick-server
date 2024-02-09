@@ -1,3 +1,5 @@
+import { GENDER, ROLE, EDUCATION_LEVEL } from "@prisma/client"
+
 export class UserDto {
   public id: string
   public fullName: string
@@ -8,8 +10,9 @@ export class UserDto {
   public phoneNum: string
   public profilePic?: string
   public birthDate: Date
-  public gender: string
-  public role: string
+  public gender: GENDER
+  public role: ROLE
+  public educationLevel: EDUCATION_LEVEL
   public isEmailConfirm: boolean
 
   constructor(bodyReq: any) {
@@ -23,6 +26,7 @@ export class UserDto {
     this.profilePic = bodyReq['profilePic']
     this.birthDate = bodyReq['birthDate']
     this.gender = bodyReq['gender']
+    this.educationLevel = bodyReq['educationLevel']
     this.role = bodyReq['role']
     this.isEmailConfirm = bodyReq['isEmailConfirm']
   }

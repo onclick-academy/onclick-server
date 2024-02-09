@@ -1,3 +1,5 @@
+import { EDUCATION_LEVEL, GENDER, ROLE } from "@prisma/client"
+
 export class RegisterDto {
   // [key: string]: UserDtoI[keyof UserDtoI]
   // TODO find another weay to devcalre typess - all attributes have "any" type
@@ -10,8 +12,9 @@ export class RegisterDto {
   public phoneNum: string
   public profilePic?: string
   public birthDate: Date
-  public gender: string
-  public role: string
+  public gender: GENDER
+  public role: ROLE
+  educationLevel: EDUCATION_LEVEL
   public isEmailConfirm: boolean
   public isDeleted?: boolean
   public isRememberMe?: boolean
@@ -27,6 +30,7 @@ export class RegisterDto {
     this.profilePic = bodyReq['profilePic']
     this.birthDate = bodyReq['birthDate']
     this.gender = bodyReq['gender']
+    this.educationLevel = bodyReq['educationLevel']
     this.role = bodyReq['role']
     this.isEmailConfirm = bodyReq['isEmailConfirm']
     this.isDeleted = bodyReq['isDeleted']

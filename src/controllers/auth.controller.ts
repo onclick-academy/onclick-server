@@ -1,7 +1,7 @@
 import { expiredPeriod } from './../../index'
 import joi from 'joi'
 import prisma from '../models/prisma/prisma-client'
-import nodemailer from 'nodemailer'
+import sendEmail from '../utilities/email'
 
 import { UserDao } from '../models/dao/user.dao'
 import { RegisterDto } from '../models/dto/register.dto'
@@ -12,12 +12,11 @@ import { LoginValidation } from '../middlewares/validation/auth/login.auth.valid
 import { AuthDao } from '../models/dao/auth.dao'
 import { LoginDto } from '../models/dto/login.dto'
 import { UserRequest } from '../../types/user.interface'
-import sendEmail from '../utilities/email'
 import { StudentDto } from '../models/dto/student.dto'
 import { StudentDao } from '../models/dao/student.dao'
 import { StudentValidation } from '../middlewares/validation/users/student.validation'
-import { send } from 'process'
 import { AdminDao } from '../models/dao/admin.dao'
+
 
 export class AuthController {
   static register = async (req: Request, res: Response) => {
@@ -102,8 +101,6 @@ export class AuthController {
         if (!user) throw new Error('User not found')
         sendEmail(req, res, user, 'Confirm')
       } catch (e) {
-        // TODO: utility
-
         const admin = await prisma.admin.findUnique({
           where: {
             email: userEmail
@@ -175,6 +172,14 @@ export class AuthController {
     const authDao = new AuthDao()
     try {
       const { error } = await LoginValidation.validateLoginInput(loginDto)
+
+      const userLogged = await prisma.user.findUnique({
+        where: {
+          email: loginDto.email
+        }
+      })
+
+      loginDto.id = userLogged?.id
 
       if (error) {
         if (error.details && error.details.length > 0) {

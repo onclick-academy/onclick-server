@@ -1,6 +1,7 @@
 import prisma from '../prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
 import { UserTokenI } from '../../../types/user.interface'
+import { GENDER , ROLE, EDUCATION_LEVEL} from '@prisma/client'
 
 interface GlobalUserI {
   id: string
@@ -15,8 +16,9 @@ interface GlobalUserI {
   phoneNum: string
   profilePic: string
   birthDate: Date
-  gender: string
-  role: string
+  gender: GENDER
+  role: ROLE
+  educationLevel: EDUCATION_LEVEL
   isEmailConfirm: boolean
   isDeleted: boolean
   deletedAt: Date
@@ -32,8 +34,9 @@ interface UserDtoI {
   phoneNum: string
   profilePic?: string
   birthDate: Date
-  gender: string
-  role: string
+  gender: GENDER
+  role: ROLE
+  educationLevel: EDUCATION_LEVEL
   isEmailConfirm: boolean
   isDeleted?: boolean
   isRememberMe?: boolean
@@ -49,8 +52,9 @@ interface UserUpdateI {
   phoneNum?: string
   profilePic?: string
   birthDate?: Date
-  gender?: string
-  role?: string
+  gender?: GENDER
+  role?: ROLE
+  educationLevel?: EDUCATION_LEVEL
   isEmailConfirm?: boolean
   isDeleted?: boolean
 }
