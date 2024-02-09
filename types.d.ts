@@ -1,3 +1,5 @@
+import { GENDER } from "@prisma/client"
+
 declare global {
   interface GlobalUserI {
     id: string
@@ -12,8 +14,9 @@ declare global {
     phoneNum: string
     profilePic: string
     birthDate: Date
-    gender: string
-    role: string
+    gender: GENDER
+    role: ROLE
+    educationLevel: EDUCATION_LEVEL
     isEmailConfirm: boolean
     isDeleted: boolean
     deletedAt: Date
@@ -27,10 +30,11 @@ declare global {
     bio: string
     password: string
     phoneNum: string
+    educationLevel: EDUCATION_LEVEL
     profilePic?: string
     birthDate: Date
-    gender: string
-    role: string
+    gender: GENDER
+    role: ROLE
     isEmailConfirm: boolean
     isDeleted?: boolean
     isRememberMe?: boolean
@@ -44,10 +48,11 @@ declare global {
     bio?: string
     password?: string
     phoneNum?: string
+    educationLevel?: EDUCATION_LEVEL
     profilePic?: string
     birthDate?: Date
-    gender?: string
-    role?: string
+    gender?: GENDER
+    role?: ROLE
     isEmailConfirm?: boolean
     isDeleted?: boolean
   }
@@ -121,6 +126,8 @@ declare global {
   }
 
   interface CourseDtoI {
+    id?: string | undefined
+    topicId: string
     instructorId: string
     adminId: string
     categoryId: string
@@ -137,6 +144,27 @@ declare global {
     isDeleted: boolean
     deletedAt?: Date
     certificate : string
+    introVideo?: string
+  }
+
+  interface CourseUpdateI {
+    id: string
+    instructorId?: string
+    adminId?: string
+    categoryId?: string
+    subCategoryId?: string
+    title?: string
+    description?: string
+    price?: number
+    rate?: number
+    discount?: number
+    available?: boolean
+    skillsGained?: string[]
+    duration?: string
+    photo?: string
+    isDeleted?: boolean
+    deletedAt?: Date
+    certificate ?: string
     introVideo?: string
   }
 
@@ -248,8 +276,6 @@ declare global {
 
   interface StudentDtoI {
     userId: string
-    educationLevel: EDUCATION_LEVEL
-
   }
 
   interface GlobalStudentI {
@@ -258,7 +284,6 @@ declare global {
     updatedAt: Date
 
     userId: string
-    educationLevel: EDUCATION_LEVEL
   }
 
   interface NotificationDtoI {
@@ -270,11 +295,21 @@ declare global {
   }
 
   interface CategoryDtoI {
+    id?: string | undefined
     title: string
     description: string
     photo: string
     isDeleted: boolean
     deletedAt: Date
+  }
+
+interface CategoryUpdateI {
+    id?: string
+    title?: string
+    description?: string
+    photo?: string
+    isDeleted?: boolean
+    deletedAt?: Date
   }
 
   interface GlobalCategoryI {
@@ -290,6 +325,7 @@ declare global {
   }
 
   interface SubCategoryDtoI {
+    id?: string
     categoryId: string
     name: string
     description: string
@@ -297,6 +333,14 @@ declare global {
     deletedAt: Date
   }
 
+  interface SubCategoryUpdateI {
+    id?: string
+    categoryId: string
+    name?: string
+    description?: string
+    isDeleted?: boolean
+    deletedAt?: Date
+  }
   interface GlobalSubCategoryI {
     id: string
     createdAt: Date
