@@ -6,6 +6,12 @@ import { InstructorController } from '../controllers/instructor.controller'
 
 const router = express.Router()
 
+// user routes
+
+router
+  .route('/users')
+  .get(AuthMiddleware.verifyToken as unknown as RequestHandler, UserController.getAllUsers as unknown as RequestHandler)
+
 // admin routes
 router
   .route('/')
@@ -21,16 +27,21 @@ router
   .put(AdminController.softDeleteAdmin as unknown as RequestHandler)
   .delete(AdminController.hardDeleteAdmin as unknown as RequestHandler)
 
-router
-  .route('/users')
-  .get(AuthMiddleware.verifyToken as unknown as RequestHandler, UserController.getAllUsers as unknown as RequestHandler)
+// ========================================
+// instructor routes
 
-// create a new instructor
 router
   .route('/instructor')
   .post(
     AuthMiddleware.verifyToken as unknown as RequestHandler,
     InstructorController.approveAndCreateInstructor as unknown as RequestHandler
   )
+  .get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
+
+router.route('/instructor/approve').post(InstructorController.approveAndCreateInstructor as unknown as RequestHandler)
+
+router.route('/instructor/decline').post(InstructorController.declineInstructor as unknown as RequestHandler)
+
+router.route('/instructor/pending').get(InstructorController.getPendingInstructors as unknown as RequestHandler)
 
 export default router

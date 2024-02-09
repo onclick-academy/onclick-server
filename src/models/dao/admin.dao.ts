@@ -12,14 +12,31 @@ interface AdminDtoI {
   isEmailConfirm: boolean
 }
 export class AdminDao {
-  createAdmin = async (adminDto: AdminDtoI) => {
-    const isExist = await prisma.admin.findUnique({
-      where: {
-        email: adminDto.email
-      }
-    })
 
-    if (isExist) throw new Error('Admin already exist')
+  isExist = async (ele: string, type: string) => {
+    let isExist
+    if (type === 'email') {
+      isExist = await prisma.admin.findUnique({
+        where: {
+          email: ele
+        }
+      })
+    }
+    // else if (type === 'username') {
+    //   isExist = await prisma.admin.findUnique({
+    //     where: {
+    //       username: ele
+    //     }
+    //   })
+    // }
+    if (isExist) {
+      throw new Error(`${type ==="email"? "Email": type === "username"? "Username" : "Phone Number"} is already in use`)
+    }
+  }
+
+
+  createAdmin = async (adminDto: AdminDtoI) => {
+    await this.isExist(adminDto.email, 'email')
 
     const newAdmin = await prisma.admin.create({
       data: adminDto
@@ -62,6 +79,8 @@ export class AdminDao {
     const admin = await this.getAdminById(adminDto.id as string)
 
     if (!admin) throw new Error('Admin not found')
+
+    if (adminDto.email) await this.isExist(adminDto.email, 'email')
 
     const updatedAdmin = await prisma.admin.update({
       where: {
