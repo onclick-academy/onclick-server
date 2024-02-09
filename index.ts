@@ -24,9 +24,11 @@ app.use('/api/v1/admin', require('./src/routes/admin.route').default)
 
 app.use('/api/v1/auth', require('./src/routes/auth.route').default)
 
-
 // category routes
 app.use('/api/v1/categories', require('./src/routes/category.routes').default)
+
+// sub-category routes
+app.use('/api/v1/subcategories', require('./src/routes/subCategory.routes').default)
 
 app.use(
   '/api/v1/users',
