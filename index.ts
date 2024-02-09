@@ -24,6 +24,10 @@ app.use('/api/v1/admin', require('./src/routes/admin.route').default)
 
 app.use('/api/v1/auth', require('./src/routes/auth.route').default)
 
+
+// category routes
+app.use('/api/v1/categories', require('./src/routes/category.routes').default)
+
 app.use(
   '/api/v1/users',
   AuthMiddleware.verifyToken as unknown as RequestHandler,
@@ -41,13 +45,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     message: err.message
   })
 })
-
-// category routes
-app.use(
-  '/api/v1/categories',
-  require('./src/routes/category.routes').default
-)
-
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`))
