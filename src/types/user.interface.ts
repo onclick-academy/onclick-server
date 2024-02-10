@@ -1,3 +1,5 @@
+import { GENDER, ROLE, EDUCATION_LEVEL } from "@prisma/client"
+
 export interface UserTokenI {
   id: string
   username: string
@@ -12,14 +14,24 @@ export interface UserTokenI {
 
 export interface GlobalUserI {
   id: string
+  createdAt: Date
+  updatedAt: Date
+
   fullName: string
   username: string
   email: string
+  password: string
   bio: string
   phoneNum: string
   profilePic: string
   birthDate: Date
-  role: string
+  gender: GENDER
+  role: ROLE
+  educationLevel: EDUCATION_LEVEL
+  isEmailConfirm: boolean
+  isDeleted: boolean
+  deletedAt: Date
+  isAvailable: boolean
 }
 export interface UserDtoI {
   id: string
@@ -29,10 +41,11 @@ export interface UserDtoI {
   bio: string
   password: string
   phoneNum: string
+  educationLevel: EDUCATION_LEVEL
   profilePic?: string
   birthDate: Date
-  gender: string
-  role: string
+  gender: GENDER
+  role: ROLE
   isEmailConfirm: boolean
   isDeleted?: boolean
   isRememberMe?: boolean
@@ -46,10 +59,11 @@ export interface UserUpdateI {
   bio?: string
   password?: string
   phoneNum?: string
+  educationLevel?: EDUCATION_LEVEL
   profilePic?: string
   birthDate?: Date
-  gender?: string
-  role?: string
+  gender?: GENDER
+  role?: ROLE
   isEmailConfirm?: boolean
   isDeleted?: boolean
 }
