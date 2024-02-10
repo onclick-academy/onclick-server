@@ -1,6 +1,6 @@
 import joi from 'joi'
 
-export class topicValidation {
+export class TopicValidation {
   private static baseSchema = {
     title: joi.string().required(),
     isDeleted: joi.boolean().default(false),
@@ -8,14 +8,11 @@ export class topicValidation {
     courses: joi.array().items(joi.string()).allow(null)
   }
 
-  static createTopic() {
-    return joi.object(this.baseSchema)
+  static createTopic(topicDto: TopicDtoI) {
+    return joi.object(this.baseSchema).validateAsync(topicDto)
   }
 
   static updateTopic() {
-    return joi
-      .object(this.baseSchema)
-      .fork(['title', 'isDeleted', 'deletedAt'], schema => schema.optional())
+    return joi.object(this.baseSchema).fork(['title', 'isDeleted', 'deletedAt'], schema => schema.optional())
   }
 }
-
