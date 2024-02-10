@@ -30,10 +30,7 @@ router
 
 // ========================================
 // instructor routes
-
-router
-  .route('/instructor/getAll')
-  .get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
+router.route('/instructor/getAll').get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
 
 router.route('/instructor/approve').post(InstructorController.approveAndCreateInstructor as unknown as RequestHandler)
 

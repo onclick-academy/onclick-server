@@ -12,7 +12,6 @@ interface AdminDtoI {
   isEmailConfirm: boolean
 }
 export class AdminDao {
-
   isExist = async (ele: string, type: string) => {
     let isExist
     if (type === 'email') {
@@ -22,18 +21,10 @@ export class AdminDao {
         }
       })
     }
-    // else if (type === 'username') {
-    //   isExist = await prisma.admin.findUnique({
-    //     where: {
-    //       username: ele
-    //     }
-    //   })
-    // }
     if (isExist) {
-      throw new Error(`${type ==="email"? "Email": type === "username"? "Username" : "Phone Number"} is already in use`)
+      throw new Error('Email is already in use')
     }
   }
-
 
   createAdmin = async (adminDto: AdminDtoI) => {
     await this.isExist(adminDto.email, 'email')
