@@ -1,7 +1,7 @@
 import prisma from '../prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
-import { UserTokenI } from "../../types/user.interface"
-import { GENDER , ROLE, EDUCATION_LEVEL} from '@prisma/client'
+import { UserTokenI } from '../../types/user.interface'
+import { GENDER, ROLE, EDUCATION_LEVEL } from '@prisma/client'
 
 interface GlobalUserI {
   id: string
@@ -23,40 +23,6 @@ interface GlobalUserI {
   isDeleted: boolean
   deletedAt: Date
   isAvailable: boolean
-}
-interface UserDtoI {
-  id: string
-  fullName: string
-  username: string
-  email: string
-  bio: string
-  password: string
-  phoneNum: string
-  profilePic?: string
-  birthDate: Date
-  gender: GENDER
-  role: ROLE
-  educationLevel: EDUCATION_LEVEL
-  isEmailConfirm: boolean
-  isDeleted?: boolean
-  isRememberMe?: boolean
-}
-
-interface UserUpdateI {
-  id: string
-  fullName?: string
-  username?: string
-  email?: string
-  bio?: string
-  password?: string
-  phoneNum?: string
-  profilePic?: string
-  birthDate?: Date
-  gender?: GENDER
-  role?: ROLE
-  educationLevel?: EDUCATION_LEVEL
-  isEmailConfirm?: boolean
-  isDeleted?: boolean
 }
 
 interface loginDtoI {
@@ -113,7 +79,8 @@ export class AuthDao {
         isDeleted: false
       }
     })) as GlobalUserI
-    if (!user) throw new Error('Email is not found please register')
+    if (!user) return false
+
     return user
   }
 }

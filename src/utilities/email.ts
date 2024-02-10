@@ -4,15 +4,16 @@ import { createToken } from './token'
 
 import { Request, Response } from 'express'
 
-export default async function sendEmail(req: Request, res: Response, user: any, type?: string) {
+export default async function sendEmail(req: Request, res: Response, user: any, type?: 'RESET' | 'CONFIRM') {
   try {
     const secret = process.env.JWT_SECRET_KEY
     const token = createToken({ email: user.email, id: user.id }, secret, { expiresIn: '15m' })
 
     let resetToken = null as any
 
-    if (type === 'Reset') {
+    if (type === 'RESET') {
       if (user.fullName) {
+        // User
         resetToken = await prisma.resetToken.create({
           data: {
             token,
@@ -21,6 +22,7 @@ export default async function sendEmail(req: Request, res: Response, user: any, 
           }
         })
       } else {
+        // Admin
         resetToken = await prisma.resetToken.create({
           data: {
             token,
@@ -33,7 +35,7 @@ export default async function sendEmail(req: Request, res: Response, user: any, 
 
     let confirmToken = null as any
 
-    if (!type || type === 'Confirm') {
+    if (!type || type === 'CONFIRM') {
       if (user.fullName) {
         confirmToken = await prisma.confirmToken.create({
           data: {
@@ -54,8 +56,10 @@ export default async function sendEmail(req: Request, res: Response, user: any, 
     }
 
     const url =
-      type === 'Confirm'
-        ? `http://localhost:3000/api/v1/auth/email/confirmation/${user.id}/${token}`
+      type === 'CONFIRM'
+        ? user.fullName
+          ? `http://localhost:3000/api/v1/auth/email/user/${user.id}/${token}`
+          : `http://localhost:3000/api/v1/auth/email/admin/${user.id}/${token}`
         : `http://localhost:3000/api/v1/auth/password/resetpassword/${user.id}/${token}`
 
     const transporter = nodemailer.createTransport({
@@ -69,9 +73,9 @@ export default async function sendEmail(req: Request, res: Response, user: any, 
     const info = await transporter.sendMail({
       from: process.env.APP_EMAIL,
       to: user.email,
-      subject: type === 'Reset' ? 'Reset Password Verification' : 'Email Confirmation',
+      subject: 'no-reply',
       html:
-        type === 'Reset'
+        type === 'RESET'
           ? `     <div>
                 <h1>Reset Password</h1>
                 <p> dear ${
@@ -93,14 +97,11 @@ export default async function sendEmail(req: Request, res: Response, user: any, 
     transporter.sendMail(info, (err, data) => {
       if (err) {
         console.log(err)
-        return res.status(500).json({ error: err.message })
       } else {
         console.log('email sent')
-        return res.status(200).json({ data: 'email sent', reset_token: resetToken, confirm_token: confirmToken })
       }
     })
   } catch (error) {
     console.error(error)
-    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
