@@ -131,7 +131,7 @@ declare global {
     photo: string
     isDeleted: boolean
     deletedAt?: Date
-    certificate : string
+    certificate: string
     introVideo?: string
   }
 
@@ -152,11 +152,11 @@ declare global {
     photo?: string
     isDeleted?: boolean
     deletedAt?: Date
-    certificate ?: string
+    certificate?: string
     introVideo?: string
   }
 
-    interface GlobalCourseI {
+  interface GlobalCourseI {
     id: string
     createdAt: Date
     updatedAt: Date
@@ -176,10 +176,9 @@ declare global {
     photo: string
     isDeleted: boolean
     deletedAt: Date | null
-    certificate : string
+    certificate: string
     introVideo: string | null
   }
-
 
   interface TopicDtoI {
     title: string
@@ -251,11 +250,6 @@ declare global {
     avgRate: number
     CvLink: string
   }
-
-  interface StudentDtoI {
-    userId: string
-  }
-
   interface GlobalStudentI {
     id: string
     createdAt: Date
@@ -263,7 +257,6 @@ declare global {
 
     userId: string
   }
-
 
   interface NotificationDtoI {
     id: string

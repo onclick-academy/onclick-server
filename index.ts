@@ -27,31 +27,21 @@ app.use('/api/v1/admin', require('./src/routes/admin.route').default)
 app.use('/api/v1/auth', require('./src/routes/auth.route').default)
 
 // category routes
-app.use('/api/v1/categories', require('./src/routes/category.routes').default)
+app.use('/api/v1/categories', require('./src/routes/category.route').default)
 
 // sub-category routes
 app.use('/api/v1/subcategories', require('./src/routes/subCategory.routes').default)
 
 // course routes
 
-app.use(
-  '/api/v1/courses',
-  require('./src/routes/course.routes').default
-)
+app.use('/api/v1/courses', require('./src/routes/course.routes').default)
 
 // instructor routes
 
-app.use(
-  '/api/v1/instructors',
-  require('./src/routes/instructor.routes').default
-)
+app.use('/api/v1/instructors', require('./src/routes/instructor.routes').default)
 
 // topic routes
-app.use(
-  '/api/v1/topics',
-  require('./src/routes/topic.routes').default
-)
-
+app.use('/api/v1/topics', require('./src/routes/topic.routes').default)
 
 app.use(
   '/api/v1/users',
