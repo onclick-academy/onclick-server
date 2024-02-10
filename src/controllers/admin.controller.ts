@@ -8,15 +8,18 @@ import { AuthController } from './auth.controller'
 
 export class AdminController {
   static createAdmin = async (req: Request, res: Response) => {
+
     const adminDto = new AdminDto(req.body)
 
     const authDao = new AuthDao()
     const adminDao = new AdminDao()
+    console.log('req.body', adminDto)
 
     try {
       try {
         const isExist = await authDao.getUserByEmail({ email: adminDto.email })
 
+        console.log('isExist', isExist)
         if (isExist) return res.status(400).json({ error: 'Email is in use FOR USER.' })
       } catch (e) {
         const { error } = await AdminValidation.createAdmin(adminDto)

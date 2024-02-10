@@ -43,6 +43,8 @@ export class InstructorController {
 
     const { instructorId } = req.body // TODO - discuss with team
 
+    console.log(instructorId)
+
     try {
       const instructor = await instructorDao.approveInstructor(instructorId)
 
