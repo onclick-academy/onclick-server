@@ -113,7 +113,10 @@ declare global {
     period: Date
   }
 
-  interface CourseInterface {
+  interface CourseDtoI {
+    id?: string | undefined
+    topicId: string
+    instructorId: string
     adminId: string
     categoryId: string
     subCategoryId: string
@@ -122,15 +125,61 @@ declare global {
     price: number
     rate?: number
     discount?: number
-    isAvailable: boolean
+    available: boolean
     skillsGained: string[]
     duration: string
-    photoUrl: string
+    photo: string
     isDeleted: boolean
     deletedAt?: Date
-    certifiacteUrl: string
-    introVideoUrl?: string
+    certificate : string
+    introVideo?: string
   }
+
+  interface CourseUpdateI {
+    id: string
+    instructorId?: string
+    adminId?: string
+    categoryId?: string
+    subCategoryId?: string
+    title?: string
+    description?: string
+    price?: number
+    rate?: number
+    discount?: number
+    available?: boolean
+    skillsGained?: string[]
+    duration?: string
+    photo?: string
+    isDeleted?: boolean
+    deletedAt?: Date
+    certificate ?: string
+    introVideo?: string
+  }
+
+    interface GlobalCourseI {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+
+    instructorId: string
+    adminId: string
+    categoryId: string
+    subCategoryId: string
+    title: string
+    description: string
+    price: number
+    rate: number | null
+    discount: number | null
+    available: boolean
+    skillsGained: string[]
+    duration: string
+    photo: string
+    isDeleted: boolean
+    deletedAt: Date | null
+    certificate : string
+    introVideo: string | null
+  }
+
 
   interface TopicDtoI {
     title: string
@@ -204,10 +253,17 @@ declare global {
   }
 
   interface StudentDtoI {
-    id: string
-    studentId: string
-    educationLevel: string
+    userId: string
   }
+
+  interface GlobalStudentI {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+
+    userId: string
+  }
+
 
   interface NotificationDtoI {
     id: string
