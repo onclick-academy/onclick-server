@@ -28,7 +28,7 @@ router
   .delete(AdminController.hardDeleteAdmin as unknown as RequestHandler)
 
 // ========================================
-instructor routes
+// instructor routes
 
 router
   .route('/instructor')

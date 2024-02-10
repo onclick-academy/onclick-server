@@ -39,8 +39,8 @@ declare global {
     phoneNum?: string
     profilePic?: string
     birthDate?: Date
-    gender?: string
-    role?: string
+    gender?: GENDER
+    role?: ROLE
     isEmailConfirm?: boolean
     isDeleted?: boolean
   }
