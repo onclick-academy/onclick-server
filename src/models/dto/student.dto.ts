@@ -1,11 +1,8 @@
-export class studentDto {
-  readonly id: string
-  readonly studentId: string
-  readonly educationLevel: string
+export class StudentDto {
+
+  public userId: string
 
   constructor(bodyReq: StudentDtoI) {
-    this.id = bodyReq['id']
-    this.studentId = bodyReq['studentId']
-    this.educationLevel = bodyReq['educationLevel']
+    this.userId = bodyReq.userId
   }
 }

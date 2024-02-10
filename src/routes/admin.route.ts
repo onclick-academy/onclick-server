@@ -18,9 +18,10 @@ router
   .post(AdminController.createAdmin as unknown as RequestHandler)
   .get(AdminController.getAllAdmins as unknown as RequestHandler)
 
-router.route('/:adminId').get(AdminController.getAdminById as unknown as RequestHandler)
-
-router.route('/:adminId').put(AdminController.updateAdmin as unknown as RequestHandler)
+router
+  .route('/:adminId')
+  .get(AdminController.getAdminById as unknown as RequestHandler)
+  .put(AdminController.updateAdmin as unknown as RequestHandler)
 
 router
   .route('/delete/:adminId')
@@ -31,11 +32,7 @@ router
 // instructor routes
 
 router
-  .route('/instructor')
-  .post(
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    InstructorController.approveAndCreateInstructor as unknown as RequestHandler
-  )
+  .route('/instructor/getAll')
   .get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
 
 router.route('/instructor/approve').post(InstructorController.approveAndCreateInstructor as unknown as RequestHandler)
