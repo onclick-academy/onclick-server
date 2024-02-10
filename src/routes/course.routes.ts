@@ -1,25 +1,25 @@
-import express from 'express';
+import express from 'express'
 
-import { CourseController } from '../controllers/course.controller';
+import { CourseController } from '../controllers/course.controller'
 
-const router = express.Router();
+const router = express.Router()
 
-router.route('/:topicId/:adminId').post( CourseController.createCourse)
-router.route('/').get( CourseController.getAllCourses)
+router.route('/:topicId/:adminId').post(CourseController.createCourse)
+
+router.route('/').get(CourseController.getAllCourses)
 
 router
-    .route('/:courseId')
-    .get( CourseController.getCourseById)
-    .put( CourseController.updateCourse)
-    .delete( CourseController.deleteCourse)
+  .route('/:courseId')
+  .get(CourseController.getCourseById)
+  .put(CourseController.updateCourse)
+  .delete(CourseController.deleteCourse)
 
+router.route('/instructor/:instructorId').get(CourseController.getCoursesByInstructorId)
 
-router.route('/instructor/:instructorId').get( CourseController.getCoursesByInstructorId)
+router.route('/category/:categoryId').get(CourseController.getCoursesByCategoryId)
 
-router.route('/category/:categoryId').get( CourseController.getCoursesByCategoryId)
+router.route('/subCategory/:subCategoryId').get(CourseController.getCoursesBySubCategoryId)
 
-router.route('/subCategory/:subCategoryId').get( CourseController.getCoursesBySubCategoryId)
+router.route('/topic/:topicId').get(CourseController.getCoursesByTopicId)
 
-router.route('/topic/:topicId').get( CourseController.getCoursesByTopicId)
-
-export default router;
+export default router
