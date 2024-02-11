@@ -1,29 +1,38 @@
-import prisma from '@models/prisma/prisma-client'
-import { hashPassword } from '@utilities/hash'
+import prisma from '../prisma/prisma-client'
+import { hashPassword } from '../../utilities/hash'
 
 export class UserDao {
+
+  isExist = async (ele: string, type: string) => {
+    let isExist
+    if (type === 'email') {
+      isExist = await prisma.user.findUnique({
+        where: {
+          email: ele
+        }
+      })
+    } else if (type === 'username') {
+      isExist = await prisma.user.findUnique({
+        where: {
+          username: ele
+        }
+      })
+    } else if (type === 'phoneNum') {
+      isExist = await prisma.user.findUnique({
+        where: {
+          phoneNum: ele
+        }
+      })
+    }
+    if (isExist) {
+      throw new Error(`${type ==="email"? "Email": type === "username"? "Username" : "Phone Number"} is already in use`)
+    }
+  }
+
   createUser = async (userDto: any) => {
-    const isExistedUser = await prisma.user.findFirst({
-      where: {
-        email: userDto.email
-      }
-    })
-    if (isExistedUser) throw new Error('Email is already in use')
-
-    const isExistedUsername = await prisma.user.findUnique({
-      where: {
-        username: userDto.username
-      }
-    })
-    if (isExistedUsername) throw new Error('Username is not available')
-
-    const isExistedPhone = await prisma.user.findUnique({
-      where: {
-        phoneNum: userDto.phoneNum
-      }
-    })
-    if (isExistedPhone) throw new Error('Phone number is already in use')
-
+    await this.isExist(userDto.email, 'email')
+    await this.isExist(userDto.username, 'username')
+    await this.isExist(userDto.phoneNum, 'phoneNum')
     // TODO check valid birthDate
     const hashedPassword = await hashPassword(userDto.password)
     userDto.password = hashedPassword
@@ -96,6 +105,17 @@ export class UserDao {
   }
 
   updateUser = async (user: any) => {
+        // TODO Check if email to update is existed
+        // TODO check if phoneNum to update is existed
+
+    await this.getUserById(user.id)
+
+    user.updatedAt = new Date()
+    if (user.birthDate) user.birthDate = new Date(user.birthDate)
+    if (user.username) await this.isExist(user.username, 'username')
+    if (user.email) await this.isExist(user.email, 'email')
+    if (user.phoneNum) await this.isExist(user.phoneNum, 'phoneNum')
+
     const updatedUser = await prisma.user.update({
       where: {
         id: user.id
@@ -106,6 +126,9 @@ export class UserDao {
   }
 
   softDeleteUser = async (id: string) => {
+
+    await this.getUserById(id)
+
     const deletedUser = await prisma.user.update({
       where: {
         id: id,
@@ -121,6 +144,9 @@ export class UserDao {
   }
 
   deactivateUser = async (id: string) => {
+
+    await this.getUserById(id)
+
     const deactivatedUser = await prisma.user.update({
       where: {
         id: id,
@@ -134,6 +160,7 @@ export class UserDao {
   }
 
   hardDeleteUser = async (id: string | undefined) => {
+
     const deletedUser = await prisma.user.delete({
       where: {
         id: id
