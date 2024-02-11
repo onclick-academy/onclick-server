@@ -207,7 +207,7 @@ model Course {
   updatedAt DateTime @updatedAt
 
   instructorId  String
-  adminId       String
+  adminId       String?
   categoryId    String
   subCategoryId String
   title         String
@@ -215,7 +215,7 @@ model Course {
   price         Float
   rate          Float?
   discount      Float?
-  available     Boolean   @default(false)
+  isAvailable   Boolean   @default(false)
   skillsGained  String[]
   duration      String
   photo         String
@@ -223,12 +223,13 @@ model Course {
   deletedAt     DateTime?
   certificate   String
   introVideo    String?
+  isApproved    Boolean   @default(false)
 
   topics      CourseTopic[]
   lectures    Lecture[]
   enrollments CourseEnrollment[]
   WishList    WishList[]
-  createdBy   Admin              @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  createdBy   Admin?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
   subCategory SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   instructor  Instructor         @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   ratings     Rating[]
@@ -303,7 +304,7 @@ model Topic {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title     String
+  title     String    @unique
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
 
@@ -335,7 +336,7 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title       String
+  title       String    @unique
   description String
   photo       String
   isDeleted   Boolean   @default(false)
@@ -350,7 +351,7 @@ model SubCategory {
   updatedAt DateTime @updatedAt
 
   categoryId  String
-  name        String
+  name        String    @unique
   description String
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?
