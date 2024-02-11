@@ -1,6 +1,6 @@
 import 'module-alias/register'
 
-import { AuthMiddleware } from './src/middlewares/auth.middleware'
+import { AuthMiddleware } from '@middlewares/auth.middleware'
 import express, { NextFunction, Request, Response, RequestHandler } from 'express'
 import createError from 'http-errors'
 import morgan from 'morgan'
@@ -18,9 +18,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(morgan('dev'))
 
-app.use('/api', require('./src/routes/home.route').default)
+app.use('/api', require('@routes/home.route').default)
 
-app.use('/api/v1/admin', require('./src/routes/admin.route').default)
+app.use('/api/v1/admin', require('@routes/admin.route').default)
+
+app.use('/api/v1/auth', require('@routes/auth.route').default)
+
+app.use('/api/v1/users', AuthMiddleware.verifyToken as unknown as RequestHandler, require('@routes/user.route').default)
 
 app.use('/api/v1/admin', require('./src/routes/admin.route').default)
 
@@ -41,7 +45,6 @@ app.use(
 )
 
 // course routes
-
 app.use(
     '/api/v1/courses',
     AuthMiddleware.verifyToken as unknown as RequestHandler,
@@ -49,7 +52,6 @@ app.use(
 )
 
 // instructor routes
-
 app.use(
     '/api/v1/instructors',
     AuthMiddleware.verifyToken as unknown as RequestHandler,
@@ -63,10 +65,17 @@ app.use(
     require('./src/routes/topic.routes').default
 )
 
+// Notifications route
 app.use(
-    '/api/v1/users',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/user.route').default
+  '/api/v1/notifications',
+  AuthMiddleware.verifyToken as unknown as RequestHandler,
+  require('@routes/notification.route.ts').default
+)
+
+app.use(
+  '/api/v1/users',
+   AuthMiddleware.verifyToken as unknown as RequestHandler,
+   require('./src/routes/user.route').default
 )
 
 app.use((req, res, next) => {
