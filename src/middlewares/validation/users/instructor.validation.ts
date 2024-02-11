@@ -1,20 +1,28 @@
 import joi from 'joi'
 
-export class instructorValidation {
+interface InstructorDtoI {
+  userId: string
+  nationalID: string
+  cvLink: string
+  averageRate: number | 0
+}
+
+export class InstructorValidation {
   private static baseSchema = {
+    id: joi.string().optional(),
     userId: joi.string().required(),
     nationalID: joi.string().required(),
     cvLink: joi.string().required(),
     averageRate: joi.number()
   }
 
-  createInstructor() {
-    return joi.object(instructorValidation.baseSchema) // can't use this.baseSchema => to check!
+  static createInstructor(instructorDto: InstructorDtoI) {
+    return joi.object(this.baseSchema).validateAsync(instructorDto)
   }
 
-  updateInstructor() {
+  static updateInstructor() {
     return joi
-      .object({ ...instructorValidation.baseSchema, userId: joi.string().required() })
+      .object({ ...this.baseSchema, userId: joi.string().required() })
       .fork(['nationalID', 'cvLink', 'averageRate'], schema => schema.optional())
   }
 }

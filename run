@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# This script is used to delete node_modules and dist then run yarn install and yarn build and npx prisma generate
+sudo rm -rf node_modules dist
+yarn install
+npx prisma generate
+yarn build
+yarn dev
