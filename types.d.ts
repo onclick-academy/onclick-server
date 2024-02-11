@@ -131,11 +131,23 @@ declare global {
     certifiacteUrl: string
     introVideoUrl?: string
   }
-  interface TopicInterface {
+
+  interface TopicDtoI {
     title: string
     isDeleted: boolean
     deletedAt: Date
   }
+
+  interface GlobalTopicI {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+
+    title: string
+    isDeleted: boolean
+    deletedAt: Date | null
+  }
+
   interface ContactUsInterface {
     id: string
     name: string
