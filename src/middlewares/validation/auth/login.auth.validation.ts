@@ -1,4 +1,5 @@
 import Joi from 'joi'
+import { loginDtoI } from '../../../types/user.interface'
 
 export class LoginValidation {
   private static baseSchema = {

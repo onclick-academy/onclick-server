@@ -1,6 +1,6 @@
-import { UserRequest } from 'types/user.interface'
-import { UserDao } from '@dao/user.dao'
-import { UserDto } from '@dto/user.dto'
+import { UserRequest } from '../types/user.interface'
+import { UserDao } from '../models/dao/user.dao'
+import { UserDto } from '../models/dto/user.dto'
 import { Request, Response } from 'express'
 
 export class UserController {

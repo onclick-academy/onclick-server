@@ -1,11 +1,11 @@
 import joi from 'joi'
-import nodemailer from 'nodemailer'
-import { Request, Response } from 'express'
-import { AuthDao } from '@dao/auth.dao'
-import { UserDao } from '@dao/user.dao'
-import prisma from '../models/prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
+
 import { hashPassword } from '@utilities/hash'
-import { createToken } from '@utilities/token'
+import { UserDao } from '@models/dao/user.dao'
+import { Request, Response } from 'express'
+import { AuthDao } from '@models/dao/auth.dao'
+import sendEmail from '@utilities/email'
 
 export class PasswordController {
   static forgetPassword = async (req: Request, res: Response) => {
@@ -26,48 +26,7 @@ export class PasswordController {
 
       if (!user) throw new Error('User not found')
 
-      const secret = process.env.JWT_SECRET_KEY + user.password
-      const token = createToken({ email: user.email, id: user.id }, secret, { expiresIn: '15m' })
-
-      const resetToken = await prisma.resetToken.create({
-        data: {
-          token,
-          userId: user.id,
-          expiresAt: new Date(Date.now() + 15 * 60 * 1000)
-        }
-      })
-
-      const url = `http://localhost:3000/api/v1/auth/password/resetpassword/${user.id}/${token}`
-
-      const transporter = nodemailer.createTransport({
-        auth: {
-          user: process.env.APP_EMAIL,
-          pass: process.env.APP_PASSWORD
-        },
-        service: 'gmail'
-      })
-
-      const info = await transporter.sendMail({
-        from: process.env.APP_EMAIL,
-        to: user.email,
-        subject: 'Reset Password Verification',
-        html: ` <div>
-              <h1>Reset Password</h1>
-              <p> dear ${user.username}, You requested to RESET you password if it wasn't you!, please ignore this email,
-              otherwise, Click on the link below to reset your password please <br> ${url} <br> ps. this link is VALID for 15m.</p>
-            </div>
-            `
-      })
-
-      transporter.sendMail(info, (err, data) => {
-        if (err) {
-          console.log(err)
-          return res.status(500).json({ error: err.message })
-        } else {
-          console.log('email sent')
-          return res.status(200).json({ data: 'email sent', reset_token: resetToken })
-        }
-      })
+      await sendEmail(req, res, user, 'RESET')
     } catch (error: any) {
       if (error.message.includes('Email')) {
         return res.status(400).json({ error: error.message })
@@ -169,5 +128,3 @@ export class PasswordController {
     }
   }
 }
-
-// TODO: maintain for reset password and change password

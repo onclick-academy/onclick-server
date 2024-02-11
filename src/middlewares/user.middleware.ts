@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import prisma from '../models/prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 import { UserDao } from '@dao/user.dao'
 
 export class UserMiddlware {

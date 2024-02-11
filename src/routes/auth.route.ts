@@ -9,16 +9,13 @@ router.route('/register').post(upload.single('profilePic'), AuthController.regis
 
 router.route('/login').post(AuthController.login as unknown as RequestHandler)
 
-// passwords
-
 router.route('/password/forgetpassword').post(PasswordController.forgetPassword)
 
 router.route('/password/resetpassword/:userId/:token').post(PasswordController.resetPassword)
 
 router.route('/password/changepassword/:userId').post(PasswordController.changePassword)
 
-// email confirmation
-
-router.route('/email/confirmation/:userId/:token').post(AuthController.emailConfirmation)
+router.route('/email/user/:userId/:token').get(AuthController.emailUserConfirmation)
+router.route('/email/admin/:adminId/:token').get(AuthController.emailAdminConfirmation)
 
 export default router
