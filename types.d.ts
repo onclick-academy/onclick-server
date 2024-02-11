@@ -217,14 +217,14 @@ declare global {
     isDeleted: boolean
     deletedAt: Date
   }
-  interface SubCategoryI {
-    id: string
-    categoryId: string
-    name: string
-    description: string
-    isDeleted: boolean
-    deletedAt: Date
-  }
+  // interface SubCategoryI {
+  //   id: string
+  //   categoryId: string
+  //   name: string
+  //   description: string
+  //   isDeleted: boolean
+  //   deletedAt: Date
+  // }
 
   interface NewsDtoI {
     id: string
