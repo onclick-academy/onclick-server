@@ -47,20 +47,20 @@ model User {
   updatedAt DateTime @updatedAt
 
   fullName       String
-  username       String      @unique
-  email          String      @unique
+  username       String          @unique
+  email          String          @unique
   bio            String?
   password       String
-  phoneNum       String      @unique
+  phoneNum       String          @unique
   profilePic     String?
   birthDate      DateTime
-  educationLevel EDUCATION_LEVEL  @default(COLLEGE)
-  gender         GENDER      @default(MALE)
-  role           ROLE        @default(STUDENT)
-  isEmailConfirm Boolean     @default(false)
-  isDeleted      Boolean     @default(false)
+  educationLevel EDUCATION_LEVEL @default(COLLEGE)
+  gender         GENDER          @default(MALE)
+  role           ROLE            @default(STUDENT)
+  isEmailConfirm Boolean         @default(false)
+  isDeleted      Boolean         @default(false)
   deletedAt      DateTime?
-  isAvailable    Boolean     @default(true)
+  isAvailable    Boolean         @default(true)
   instructor     Instructor?
   student        Student?
 
@@ -79,11 +79,11 @@ model ResetToken {
   createdAt DateTime @default(now())
 
   token     String   @unique
-  userId    String?   @unique
-  adminId   String?   @unique
+  userId    String?  @unique
+  adminId   String?  @unique
   expiresAt DateTime
 
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
   admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([userId, adminId], name: "idx_reset_token_user")
@@ -94,11 +94,11 @@ model RefreshToken {
   createdAt DateTime @default(now())
 
   token     String   @unique
-  userId    String?   @unique
-  adminId   String? @unique
+  userId    String?  @unique
+  adminId   String?  @unique
   expiresAt DateTime
 
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
   admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([userId, adminId], name: "idx_refresh_token_user")
@@ -109,11 +109,11 @@ model ConfirmToken {
   createdAt DateTime @default(now())
 
   token     String   @unique
-  userId    String?   @unique
-  adminId   String? @unique
+  userId    String?  @unique
+  adminId   String?  @unique
   expiresAt DateTime
 
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
   admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([userId, adminId], name: "idx_confirm_token_user")
@@ -124,19 +124,18 @@ model Admin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  firstName  String
-  lastName   String
-  email      String    @unique
-  password   String
-  profilePic String?
-  isDeleted  Boolean   @default(false)
-  deletedAt  DateTime?
-  isEmailConfirm Boolean     @default(false)
+  firstName      String
+  lastName       String
+  email          String    @unique
+  password       String
+  profilePic     String?
+  isDeleted      Boolean   @default(false)
+  deletedAt      DateTime?
+  isEmailConfirm Boolean   @default(false)
 
-
-  resetToken    ResetToken?
-  refreshTokens RefreshToken?
-  confirmToken  ConfirmToken?
+  resetToken      ResetToken?
+  refreshTokens   RefreshToken?
+  confirmToken    ConfirmToken?
   coursesApproved Course[]
   suspendStates   SuspendState[]
   blockStates     BlockState[]
@@ -149,7 +148,7 @@ model Instructor {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId      String @unique
+  userId      String  @unique
   nationalID  String
   cvLink      String
   averageRate Float?
@@ -164,7 +163,7 @@ model Student {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId         String          @unique
+  userId String @unique
 
   enrollments CourseEnrollment[]
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -208,7 +207,7 @@ model Course {
   updatedAt DateTime @updatedAt
 
   instructorId  String
-  adminId       String
+  adminId       String?
   categoryId    String
   subCategoryId String
   title         String
@@ -216,7 +215,7 @@ model Course {
   price         Float
   rate          Float?
   discount      Float?
-  available     Boolean   @default(false)
+  isAvailable   Boolean   @default(false)
   skillsGained  String[]
   duration      String
   photo         String
@@ -224,12 +223,13 @@ model Course {
   deletedAt     DateTime?
   certificate   String
   introVideo    String?
+  isApproved    Boolean   @default(false)
 
   topics      CourseTopic[]
   lectures    Lecture[]
   enrollments CourseEnrollment[]
   WishList    WishList[]
-  createdBy   Admin              @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  createdBy   Admin?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
   subCategory SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   instructor  Instructor         @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   ratings     Rating[]
@@ -304,7 +304,7 @@ model Topic {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title     String
+  title     String    @unique
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
 
@@ -336,7 +336,7 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title       String
+  title       String    @unique
   description String
   photo       String
   isDeleted   Boolean   @default(false)
@@ -351,7 +351,7 @@ model SubCategory {
   updatedAt DateTime @updatedAt
 
   categoryId  String
-  name        String
+  name        String    @unique
   description String
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?

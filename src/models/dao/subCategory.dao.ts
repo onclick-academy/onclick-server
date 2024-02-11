@@ -1,12 +1,12 @@
-import { GlobalSubCategoryI, SubCategoryDtoI, SubCategoryUpdateI } from "../../types/subCategory.interfaces"
-import prisma from '../prisma/prisma-client'
-
+import { GlobalSubCategoryI, SubCategoryDtoI, SubCategoryUpdateI } from '../../types/subCategory.interfaces'
+import prisma from '@models/prisma/prisma-client'
 
 export class SubCategoryDao {
   createSubCategory = async (categoryDto: SubCategoryDtoI) => {
     const newSubCategory = (await prisma.subCategory.create({
       data: categoryDto
     })) as GlobalSubCategoryI
+
     return newSubCategory
   }
 
@@ -16,6 +16,7 @@ export class SubCategoryDao {
         isDeleted: false
       }
     })
+
     return subCategories
   }
 
