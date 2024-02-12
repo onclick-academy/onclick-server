@@ -7,26 +7,28 @@ import { InstructorController } from '../controllers/instructor.controller'
 const router = express.Router()
 
 // user routes
-
 router
-  .route('/users')
-  .get(AuthMiddleware.verifyToken as unknown as RequestHandler, UserController.getAllUsers as unknown as RequestHandler)
+    .route('/users')
+    .get(
+        AuthMiddleware.verifyToken as unknown as RequestHandler,
+        UserController.getAllUsers as unknown as RequestHandler
+    )
 
 // admin routes
 router
-  .route('/')
-  .post(AdminController.createAdmin as unknown as RequestHandler)
-  .get(AdminController.getAllAdmins as unknown as RequestHandler)
+    .route('/')
+    .post(AdminController.createAdmin as unknown as RequestHandler)
+    .get(AdminController.getAllAdmins as unknown as RequestHandler)
 
 router
-  .route('/:adminId')
-  .get(AdminController.getAdminById as unknown as RequestHandler)
-  .put(AdminController.updateAdmin as unknown as RequestHandler)
+    .route('/:adminId')
+    .get(AdminController.getAdminById as unknown as RequestHandler)
+    .put(AdminController.updateAdmin as unknown as RequestHandler)
 
 router
-  .route('/delete/:adminId')
-  .put(AdminController.softDeleteAdmin as unknown as RequestHandler)
-  .delete(AdminController.hardDeleteAdmin as unknown as RequestHandler)
+    .route('/delete/:adminId')
+    .put(AdminController.softDeleteAdmin as unknown as RequestHandler)
+    .delete(AdminController.hardDeleteAdmin as unknown as RequestHandler)
 
 // ========================================
 // instructor routes

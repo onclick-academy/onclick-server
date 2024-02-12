@@ -26,10 +26,6 @@ app.use('/api/v1/auth', require('@routes/auth.route').default)
 
 app.use('/api/v1/users', AuthMiddleware.verifyToken as unknown as RequestHandler, require('@routes/user.route').default)
 
-app.use('/api/v1/admin', require('./src/routes/admin.route').default)
-
-app.use('/api/v1/auth', require('./src/routes/auth.route').default)
-
 // category routes
 app.use(
     '/api/v1/categories',
@@ -67,15 +63,15 @@ app.use(
 
 // Notifications route
 app.use(
-  '/api/v1/notifications',
-  AuthMiddleware.verifyToken as unknown as RequestHandler,
-  require('@routes/notification.route.ts').default
+    '/api/v1/notifications',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('@routes/notification.route.ts').default
 )
 
 app.use(
-  '/api/v1/users',
-   AuthMiddleware.verifyToken as unknown as RequestHandler,
-   require('./src/routes/user.route').default
+    '/api/v1/users',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/user.route').default
 )
 
 app.use((req, res, next) => {

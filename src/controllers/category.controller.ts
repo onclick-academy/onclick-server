@@ -3,6 +3,7 @@ import { CategoryDto } from '../models/dto/category.dto'
 import { categoryValidation } from '../middlewares/validation/course/category.validation'
 
 import { Request, Response } from 'express'
+import { sendNotificationToAll } from '@utilities/notification'
 
 export class CategoryController {
     static createCategory = async (req: Request, res: Response) => {
@@ -14,9 +15,16 @@ export class CategoryController {
             if (error) throw new Error(error.details[0].message)
             const newCategory = await categoryDao.createCategory(categoryDto)
 
+            const notification = await sendNotificationToAll({
+                title: 'New Category Created',
+                message: `A new category with the name ${newCategory.title} has been created`,
+                type: 'COURSE_ENROLLMENT',
+                additionalInfo: JSON.stringify(newCategory),
+            })
+            console.log(notification)
             return res
                 .status(201)
-                .json({ message: 'Category created successfuly', data: newCategory, status: 'success' })
+                .json({ message: 'Category created successfuly', data: newCategory, notification, status: 'success' })
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })
         }
