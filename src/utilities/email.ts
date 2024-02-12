@@ -1,107 +1,88 @@
 import nodemailer from 'nodemailer'
 import prisma from '../models/prisma/prisma-client'
 import { createToken } from './token'
+import fs from 'fs'
+import handlebars from 'handlebars'
+import path from 'path'
 
-import { Request, Response } from 'express'
+interface User {
+    id: string
+    email: string
+    fullName?: string
+    username?: string
+}
 
-export default async function sendEmail(req: Request, res: Response, user: any, type?: 'RESET' | 'CONFIRM') {
-  try {
-    const secret = process.env.JWT_SECRET_KEY
-    const token = createToken({ email: user.email, id: user.id }, secret, { expiresIn: '15m' })
-
-    let resetToken = null as any
-
-    if (type === 'RESET') {
-      if (user.fullName) {
-        // User
-        resetToken = await prisma.resetToken.create({
-          data: {
-            token,
-            userId: user.id,
-            expiresAt: new Date(Date.now() + 15 * 60 * 1000)
-          }
-        })
-      } else {
-        // Admin
-        resetToken = await prisma.resetToken.create({
-          data: {
-            token,
-            adminId: user.id,
-            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
-          }
-        })
-      }
+async function generateTokenAndURL(user: User, action: 'RESET' | 'CONFIRM') {
+    const secret = process.env.JWT_SECRET_KEY as string
+    const expiresIn = action === 'RESET' ? '15m' : '24h'
+    const expiresAt = new Date(Date.now() + (action === 'RESET' ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000))
+    const token = createToken({ email: user.email, id: user.id }, secret, { expiresIn })
+    const isAdmin = !user.username
+    try {
+        if (action === 'RESET') {
+            const resetTokenData = {
+                token,
+                expiresAt,
+                ...(isAdmin ? { adminId: user.id } : { userId: user.id })
+            }
+            await prisma.resetToken.upsert({
+                where: { userId: user.id },
+                update: resetTokenData,
+                create: resetTokenData
+            })
+        } else {
+            const confirmTokenData = {
+                token,
+                expiresAt,
+                ...(isAdmin ? { adminId: user.id } : { userId: user.id })
+            }
+            await prisma.confirmToken.upsert({
+                where: { userId: user.id },
+                update: confirmTokenData,
+                create: confirmTokenData
+            })
+        }
+    } catch (error) {
+        console.error(`Failed to upsert token:`, error)
+        throw new Error(`Failed to handle ${action.toLowerCase()} token.`)
     }
 
-    let confirmToken = null as any
+    const urlPath = action === 'RESET' ? 'password/resetpassword' : `email/${isAdmin ? 'admin' : 'user'}`
+    const url = `http://localhost:3000/api/v1/auth/${urlPath}/${user.id}/${token}`
 
-    if (!type || type === 'CONFIRM') {
-      if (user.fullName) {
-        confirmToken = await prisma.confirmToken.create({
-          data: {
-            token,
-            userId: user.id,
-            expiresAt: new Date(Date.now() + 15 * 60 * 1000)
-          }
+    return url
+}
+
+export default async function sendEmail(user: User, action: 'RESET' | 'CONFIRM') {
+    try {
+        const url = await generateTokenAndURL(user, action)
+        const transporter = nodemailer.createTransport({
+            auth: {
+                user: process.env.APP_EMAIL,
+                pass: process.env.APP_PASSWORD
+            },
+            service: 'gmail'
         })
-      } else {
-        confirmToken = await prisma.confirmToken.create({
-          data: {
-            token,
-            adminId: user.id,
-            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
-          }
-        })
-      }
+
+        const source = fs.readFileSync(
+            path.join(__dirname, '..', 'views', `${action === 'RESET' ? 'resetPassword' : 'confirmEmail'}.html`),
+            'utf-8'
+        )
+
+        const template = handlebars.compile(source)
+        const htmlToSend = template({ url, username: user.username || user.fullName })
+
+        console.log('htmlToSend', htmlToSend)
+        const mailOptions = {
+            from: process.env.APP_EMAIL,
+            to: user.email,
+            subject: 'no-reply OnClick Academy',
+            html: htmlToSend
+        }
+
+        await transporter.sendMail(mailOptions)
+        console.log('Email sent')
+    } catch (error) {
+        console.error('Failed to send email:', error)
     }
-
-    const url =
-      type === 'CONFIRM'
-        ? user.fullName
-          ? `http://localhost:3000/api/v1/auth/email/user/${user.id}/${token}`
-          : `http://localhost:3000/api/v1/auth/email/admin/${user.id}/${token}`
-        : `http://localhost:3000/api/v1/auth/password/resetpassword/${user.id}/${token}`
-
-    const transporter = nodemailer.createTransport({
-      auth: {
-        user: process.env.APP_EMAIL,
-        pass: process.env.APP_PASSWORD
-      },
-      service: 'gmail'
-    })
-
-    const info = await transporter.sendMail({
-      from: process.env.APP_EMAIL,
-      to: user.email,
-      subject: 'no-reply',
-      html:
-        type === 'RESET'
-          ? `     <div>
-                <h1>Reset Password</h1>
-                <p> dear ${
-                  user.username ? user.username : user.fullName ? user.fullName : 'ADMIN'
-                }, You requested to RESET your password if it wasn't you!, please ignore this email,
-                otherwise, Click on the link below to reset your password please <br> ${url} <br> ps. this link is VALID for 15m.</p>
-              </div>
-              `
-          : ` <div>
-              <h1>Email Confirmation</h1>
-              <p> dear ${
-                user.username ? user.username : user.fullName ? user.fullName : 'Admin'
-              }, You have successfully registered to our platform, but before you can start using it, you need to confirm your email :) if it wasn't you!, please ignore this email,
-              <br> Click on the link below to confirm your email please <br> ${url} <br> ps. this link is VALID for 1 Day.</p>
-          </div>
-      `
-    })
-
-    transporter.sendMail(info, (err, data) => {
-      if (err) {
-        console.log(err)
-      } else {
-        console.log('email sent')
-      }
-    })
-  } catch (error) {
-    console.error(error)
-  }
 }
