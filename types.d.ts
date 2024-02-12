@@ -236,7 +236,7 @@ declare global {
     }
 
     interface NotificationDtoI {
-        id: string
+        id?: string
         recipientId: string
         title: string
         message?: string
