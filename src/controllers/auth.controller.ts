@@ -61,9 +61,9 @@ export class AuthController {
             if (
                 error.message.includes('Email is already in use') ||
                 error.message.includes('Username is not available')
-            ) {
+            )
                 return res.status(400).json({ error: error.message, status: 'failed' })
-            }
+
             console.log(error.message)
             return res.status(500).json({ error: error.message, status: 'failed' })
         }
@@ -92,9 +92,9 @@ export class AuthController {
                     }
                 })
                 if (!admin) throw new Error('User not found')
-                await sendEmail(req, res, admin, 'CONFIRM')
+                await sendEmail(admin, 'CONFIRM')
             }
-            await sendEmail(req, res, user, 'CONFIRM')
+            await sendEmail(user as any, 'CONFIRM')
         } catch (error: any) {
             if (error.message.includes('Email')) {
                 return res.status(400).json({ error: error.message })
@@ -222,3 +222,5 @@ export class AuthController {
         }
     }
 }
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExYjRjZjk4LTI2MmQtNGNlNy04YWFkLTcwNmE1NmM3YWJlZSIsImVtYWlsIjoib21hci5zYWxhaDE1OTdAZ21haWwuY29tIiwiaWF0IjoxNzA3Nzc3NTU4LCJleHAiOjE3MDc4NjM5NTh9.1HJtIs_faYtL4439fU48r_ECkiDuTfBq_yIBPIopi2k
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExYjRjZjk4LTI2MmQtNGNlNy04YWFkLTcwNmE1NmM3YWJlZSIsImVtYWlsIjoib21hci5zYWxhaDE1OTdAZ21haWwuY29tIiwiaWF0IjoxNzA3Nzc3NTE5LCJleHAiOjE3MDc4NjM5MTl9.qGvcEOMVrcUd8dZyp84bWyJUyUEFAWSeEGNcRfnTptI
