@@ -12,6 +12,17 @@ export interface UserTokenI {
   isDeleted?: boolean
 }
 
+export interface AdminTokenI {
+  id: string
+  email: string
+  role: string
+  refreshToken?: string
+  accessToken?: string
+  password?: string
+  isAvailable?: boolean
+  isDeleted?: boolean
+}
+
 export interface GlobalUserI {
   id: string
   createdAt: Date

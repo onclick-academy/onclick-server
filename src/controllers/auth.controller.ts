@@ -170,14 +170,15 @@ export class AuthController {
                         email: loginDto.email
                     }
                 })
-            } else {
+               if (!userLogged) {
                 userLogged = await prisma.admin.findUnique({
                     where: {
                         email: loginDto.username
                     }
                 })
+                if (!userLogged) res.status(400).json({ error: 'User not found' })  
             }
-
+        }
             if (loginDto.username) {
                 userLogged = await prisma.user.findUnique({
                     where: {
