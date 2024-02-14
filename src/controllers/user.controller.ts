@@ -2,6 +2,9 @@ import { UserRequest } from '../types/user.interface'
 import { UserDao } from '../models/dao/user.dao'
 import { UserDto } from '../models/dto/user.dto'
 import { Request, Response } from 'express'
+import { AuthController } from './auth.controller'
+import { hashPassword } from '@utilities/hash'
+import { registerValidation } from '@middlewares/validation/auth/register.auth.validation'
 
 export class UserController {
   static getAllUsers = async (req: UserRequest, res: Response) => {
@@ -51,7 +54,16 @@ export class UserController {
       const user = await userDao.getUserById(userDto.id)
       if (!user) return res.status(404).json({ error: 'User not found' })
 
+      const {error} = await registerValidation.updateUser(userDto)
+      if (error) return res.status(400).json({ error: error.details[0].message })
+
+      if (req.body.password) userDto.password = await hashPassword(req.body.password) // TODO => res.json({redirect: '/changepassword'})???
       const updatedUser = await userDao.updateUser(userDto)
+
+
+      if (req.body.email) {
+        await AuthController.sendConfirmationEmail(req, res)
+      }
 
       if (!updatedUser) return res.status(404).json({ error: 'User not found' })
 

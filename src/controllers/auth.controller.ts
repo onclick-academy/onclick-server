@@ -27,6 +27,14 @@ export class AuthController {
         const studentDao = new StudentDao()
 
         try {
+
+            const isExist = await prisma.admin.findUnique({
+                where: {
+                    email: userDto.email
+                }
+            })
+            if (isExist) return res.status(400).json({ error: 'Email is already in use', status: 'failed' })
+
             const { error } = await registerValidation.createUser(userDto)
             if (error) {
                 return res.status(400).json({ error: 'Error when creating user' })
