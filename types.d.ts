@@ -181,17 +181,34 @@ declare global {
         phone?: string | null
         isRead: boolean
     }
-    interface EventsInterface {
+    interface EventDtoI {
+        id: string | undefined
         adminId: string
         title: string
+        subtitle: string
         description: string
+        images?: string[]
         startDate: Date
         endDate: Date
         isDeleted: boolean
         deletedAt?: Date
         isAvailable: boolean
         cover: string
+    }
+
+    interface EventUpdateI {
+        id: string
+        adminId?: string
+        title?: string
+        subtitle?: string
+        description?: string
         images?: string[]
+        startDate?: Date
+        endDate?: Date
+        isDeleted?: boolean
+        deletedAt?: Date
+        isAvailable?: boolean
+        cover?: string
     }
     interface AppSettingsInterface {
         mainEmail: string
