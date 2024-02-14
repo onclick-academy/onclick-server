@@ -193,7 +193,9 @@ declare global {
         cover: string
         images?: string[]
     }
-    interface AppSettingsInterface {
+    interface AppSettingsDtoI {
+        id?: string
+        adminId: string
         mainEmail: string
         contactEmail: string
         contactPhone: string
@@ -204,6 +206,26 @@ declare global {
         favicon: string
         coverSlides: string[]
         socialLinks: {
+            facebook: string
+            twitter: string
+            instagram: string
+            linkedin: string
+        }
+    }
+
+    interface AppSettingsUpdateI {
+        id: string | undefined
+        adminId?: string
+        mainEmail?: string
+        contactEmail?: string
+        contactPhone?: string
+        aboutUs?: string
+        terms?: string
+        privacy?: string
+        logo?: string
+        favicon?: string
+        coverSlides?: string[]
+        socialLinks?: {
             facebook: string
             twitter: string
             instagram: string
