@@ -93,7 +93,7 @@ app.use(
 // lecture routes
 app.use(
     '/api/v1/lectures',
-    
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
     require('./src/routes/lecture.route').default
 )
 
