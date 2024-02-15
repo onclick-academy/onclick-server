@@ -66,8 +66,8 @@ declare global {
         deletedAt: Date
     }
 
-    interface LectureI {
-        id: string
+    interface LectureDtoI {
+        id?: string | undefined
         courseId: string
         title: string
         description: string
@@ -75,6 +75,17 @@ declare global {
         duration: string
         isDeleted: boolean
         deletedAt: Date
+    }
+
+    interface LectureUpdateI {
+        id?: string | undefined
+        courseId?: string
+        title?: string
+        description?: string
+        videoUrl?: string
+        duration?: string
+        isDeleted?: boolean
+        deletedAt?: Date
     }
 
     interface LectureContentI {
@@ -245,16 +256,16 @@ declare global {
         additionalInfo?: any
     }
 
-    interface LectureInterface {
-        id: string
-        courseId: string
-        title: string
-        description: string
-        videoUrl: string
-        duration: string
-        isDeleted: boolean
-        deletedAt: Date
-    }
+    // interface LectureInterface {
+    //     id: string
+    //     courseId: string
+    //     title: string
+    //     description: string
+    //     videoUrl: string
+    //     duration: string
+    //     isDeleted: boolean
+    //     deletedAt: Date
+    // }
     // interface SubCategoryI {
     //   id: string
     //   categoryId: string

@@ -74,6 +74,29 @@ app.use(
     require('./src/routes/user.route').default
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// lecture routes
+app.use(
+    '/api/v1/lectures',
+    
+    require('./src/routes/lecture.route').default
+)
+
 app.use((req, res, next) => {
     next(createError.NotFound())
 })
