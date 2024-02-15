@@ -74,6 +74,37 @@ app.use(
     require('./src/routes/user.route').default
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// lecture content routes
+app.use(
+    '/api/v1/lecturescontent',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/lectureContent.route').default
+)
+
+
 app.use((req, res, next) => {
     next(createError.NotFound())
 })
