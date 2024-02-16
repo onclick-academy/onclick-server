@@ -256,25 +256,6 @@ declare global {
         additionalInfo?: any
     }
 
-    // interface LectureInterface {
-    //     id: string
-    //     courseId: string
-    //     title: string
-    //     description: string
-    //     videoUrl: string
-    //     duration: string
-    //     isDeleted: boolean
-    //     deletedAt: Date
-    // }
-    // interface SubCategoryI {
-    //   id: string
-    //   categoryId: string
-    //   name: string
-    //   description: string
-    //   isDeleted: boolean
-    //   deletedAt: Date
-    // }
-
     interface NewsDtoI {
         id: string
         adminId: string
