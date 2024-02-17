@@ -74,6 +74,13 @@ app.use(
     require('./src/routes/user.route').default
 )
 
+// wishlist routes
+app.use(
+    '/api/v1/wishlist',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/wishlist.route').default
+)
+
 // event routes
 app.use(
     '/api/v1/events',

@@ -308,7 +308,14 @@ declare global {
         courseId: string
         isDeleted: boolean
         deletedAt: Date
-        studentId: string
+    }
+
+    interface WishlistUpdateI {
+        id: string
+        userId?: string
+        courseId?: string
+        isDeleted?: boolean
+        deletedAt?: Date
     }
 }
 
