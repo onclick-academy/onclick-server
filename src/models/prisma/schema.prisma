@@ -124,7 +124,7 @@ model Admin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  appSettingsId String? @unique
+  appSettingsId  String?   @unique
   firstName      String
   lastName       String
   email          String    @unique
@@ -142,7 +142,7 @@ model Admin {
   blockStates     BlockState[]
   News            News[]
   events          Event[]
-  appSettings     AppSettings?  @relation(fields: [appSettingsId], references: [id], onDelete: Cascade)
+  appSettings     AppSettings?   @relation(fields: [appSettingsId], references: [id], onDelete: Cascade)
 }
 
 model Instructor {
@@ -277,14 +277,14 @@ model LecturesContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order      Int       @unique @default(autoincrement())
-  lectureId  String
-  content    String
-  isDeleted  Boolean   @default(false)
-  deletedAt  DateTime?
+  order     Int       @unique @default(autoincrement())
+  lectureId String
+  content   String
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
 
   material LecturesMaterials[]
-  lecture  Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  lecture  Lecture             @relation(fields: [lectureId], references: [id], onDelete: Cascade)
 }
 
 model LecturesMaterials {
@@ -293,12 +293,12 @@ model LecturesMaterials {
   updatedAt DateTime @updatedAt
 
   lectureContentId String
-  title       String
-  description String
-  isDeleted   Boolean   @default(false)
-  deletedAt   DateTime?
+  title            String
+  description      String
+  isDeleted        Boolean   @default(false)
+  deletedAt        DateTime?
 
-  contents LecturesContent[] 
+  lecturecontents LecturesContent @relation(fields: [lectureContentId], references: [id], onDelete: Cascade)
 }
 
 model Topic {
@@ -310,7 +310,7 @@ model Topic {
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
 
-  courses CourseTopic[]
+  courses     CourseTopic[]
   subCategory SubCategoryTopic[]
 }
 
@@ -325,7 +325,7 @@ model SubCategoryTopic {
   deletedAt     DateTime?
 
   subCategory SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  topic      Topic       @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topic       Topic       @relation(fields: [topicId], references: [id], onDelete: Cascade)
 
   @@unique([subCategoryId, topicId])
 }
@@ -375,9 +375,9 @@ model SubCategory {
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?
 
-  topics SubCategoryTopic[]
+  topics   SubCategoryTopic[]
   courses  Course[]
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model SuspendState {
@@ -411,9 +411,9 @@ model BlockState {
 }
 
 model AppSettings {
-  id           String @id @default(uuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   adminId      String?
   mainEmail    String
