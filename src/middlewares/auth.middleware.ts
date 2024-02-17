@@ -17,7 +17,6 @@ export class AuthMiddleware {
         try {
             const user = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
             req.user = user
-            // console.log('from auth middleware', req.user)
             next()
         } catch (error: any) {
             if (error.name === 'TokenExpiredError') {
