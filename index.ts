@@ -74,6 +74,12 @@ app.use(
     require('./src/routes/user.route').default
 )
 
+// lecture routes
+app.use(
+    '/api/v1/lectures',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/lecture.route').default
+
 // wishlist routes
 app.use(
     '/api/v1/wishlist',
@@ -87,15 +93,6 @@ app.use(
     AuthMiddleware.verifyToken as unknown as RequestHandler,
     require('./src/routes/event.route').default
 )
-
-
-
-
-
-
-
-
-
 
 // appSettings routes
 app.use(

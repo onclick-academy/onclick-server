@@ -1,14 +1,14 @@
 export class LectureDto {
-  readonly id: string
-  readonly courseId: string
-  readonly title: string
-  readonly description: string
-  readonly videoUrl: string
-  readonly duration: string
-  readonly isDeleted: boolean
-  readonly deletedAt: Date
+  public id?: string
+  public courseId: string
+  public title: string
+  public description: string
+  public videoUrl: string
+  public duration: string
+  public isDeleted: boolean
+  public deletedAt: Date
 
-  constructor(body: LectureInterface) {
+  constructor(body: LectureDtoI) {
     this.id = body.id
     this.courseId = body.courseId
     this.title = body.title

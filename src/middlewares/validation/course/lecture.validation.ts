@@ -1,23 +1,27 @@
 import joi from 'joi'
 
 export class lectureValidation {
-  private static baseSchema = {
-    courseId: joi.string().required(),
-    title: joi.string().required(),
-    description: joi.string().required(),
-    videoUrl: joi.string().required(),
-    duration: joi.number().required(),
-    isDeleted: joi.boolean().default(false),
-    deletedAt: joi.date().allow(null)
-  }
+    private static baseSchema = {
+        id: joi.string().allow(null),
+        courseId: joi.string().required(),
+        title: joi.string().required(),
+        description: joi.string().required(),
+        videoUrl: joi.string().required(),
+        duration: joi.string().required(),
+        isDeleted: joi.boolean().default(false),
+        deletedAt: joi.date().allow(null)
+    }
 
-  static createLecture() {
-    return joi.object(this.baseSchema)
-  }
+    static createLecture(lectureDto: LectureDtoI) {
+        return joi.object(this.baseSchema).validateAsync(lectureDto)
+    }
 
-  static updateLecture() {
-    return joi
-      .object(this.baseSchema)
-      .fork(['title', 'description', 'videoUrl', 'duration', 'isDeleted', 'deletedAt'], schema => schema.optional())
-  }
+    static updateLecture(lectureDto: LectureUpdateI) {
+        return joi
+            .object(this.baseSchema)
+            .fork(['title', 'description', 'videoUrl', 'duration', 'isDeleted', 'deletedAt'], schema =>
+                schema.optional()
+            )
+            .validateAsync(lectureDto)
+    }
 }
