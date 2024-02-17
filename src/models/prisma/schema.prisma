@@ -309,6 +309,23 @@ model Topic {
   deletedAt DateTime?
 
   courses CourseTopic[]
+  subCategory SubCategoryTopic[]
+}
+
+model SubCategoryTopic {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subCategoryId String
+  topicId       String
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+
+  subCategory SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  topic      Topic       @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([subCategoryId, topicId])
 }
 
 model Rating {
@@ -356,6 +373,7 @@ model SubCategory {
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?
 
+  topics SubCategoryTopic[]
   courses  Course[]
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }

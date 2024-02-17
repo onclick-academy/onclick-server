@@ -20,6 +20,7 @@ export class SubCategoryController {
         .status(201)
         .json({ message: 'SubCategory created successfuly', data: newSubCategory, status: 'success' })
     } catch (error: any) {
+      console.log(error);
       return res.status(400).json({ error: error.message, status: 'failed' })
     }
   }
@@ -34,6 +35,7 @@ export class SubCategoryController {
         .status(200)
         .json({ message: 'All SubCategories retreived successfully', data: subCategories, status: 'success' })
     } catch (error: any) {
+      console.log(error);
       return res.status(400).json({ error: error.message, status: 'failed' })
     }
   }
@@ -50,6 +52,24 @@ export class SubCategoryController {
       return res
         .status(200)
         .json({ message: 'SubCategory retreived successfully', data: subCategory, status: 'success' })
+    } catch (error: any) {
+      return res.status(400).json({ error: error.message, status: 'failed' })
+    }
+  }
+
+  static linkTopicsToSubCategory = async (req: Request, res: Response) => {
+    const subCategoryDao = new SubCategoryDao()
+    const {id, topicIds} = req.body
+
+
+    try {
+      const { error } = await SubCategoryValidation.linkTopicsToSubCategory({id, topicIds})
+      if (error) throw new Error(error.details[0].message)
+      const newSubCategoryTopics = await subCategoryDao.linkTopicsToSubCategory({id, topicIds})
+
+      return res
+        .status(201)
+        .json({ message: 'Topics linked to SubCategory successfully', data: newSubCategoryTopics, status: 'success' })
     } catch (error: any) {
       return res.status(400).json({ error: error.message, status: 'failed' })
     }
