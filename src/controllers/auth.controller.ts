@@ -1,7 +1,6 @@
 import { expiredPeriod } from '../..' // refer to index.ts on the root directory
 import { Request, Response } from 'express'
 import joi from 'joi'
-import { UserRequest } from 'types/user.interface'
 
 import { RegisterDto } from '@models/dto/register.dto'
 import { AuthDao } from '@dao/auth.dao'
@@ -11,7 +10,6 @@ import { registerValidation } from '@validation/auth/register.auth.validation'
 import { LoginDto } from '@dto/login.dto'
 import prisma from '@models/prisma/prisma-client'
 import { createToken } from '@utilities/token'
-import { StudentDao } from '@models/dao/student.dao'
 import sendEmail from '@utilities/email'
 import { AdminDao } from '@models/dao/admin.dao'
 
@@ -24,10 +22,8 @@ export class AuthController {
         }
 
         const userDao = new UserDao()
-        const studentDao = new StudentDao()
 
         try {
-
             const isExist = await prisma.admin.findUnique({
                 where: {
                     email: userDto.email
@@ -41,7 +37,6 @@ export class AuthController {
             }
 
             const newUser = await userDao.createUser(userDto)
-            const newStudent = await studentDao.createStudent({ userId: newUser.id })
 
             const accessToken = createToken(newUser, process.env.JWT_SECRET_KEY, {
                 expiresIn: expiredPeriod.accessToken
@@ -60,7 +55,6 @@ export class AuthController {
 
             return res.status(200).json({
                 data: newUser,
-                dataStudent: newStudent,
                 accessToken: accessToken,
                 refreshToken: userDto.isRememberMe ? refreshToken : null,
                 status: 'success'
@@ -171,11 +165,7 @@ export class AuthController {
             const { error } = await LoginValidation.validateLoginInput(loginDto)
 
             if (error) {
-                if (error.details && error.details.length > 0) {
-                    console.error(error.details[0].message)
-                    return res.status(400).json({ error: error.details[0].message })
-                }
-                return res.status(400).json({ error: 'Error when validating the login' })
+                return res.status(400).json({ message: 'Error when validating the login', error })
             }
 
             const user: loginDtoI | undefined = await authDao.login(loginDto)
@@ -191,7 +181,6 @@ export class AuthController {
                 role: user?.role,
                 email: user?.email
             }
-            console.log('from login', req.user)
 
             return res.status(200).json({
                 data: user,
@@ -204,5 +193,3 @@ export class AuthController {
         }
     }
 }
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExYjRjZjk4LTI2MmQtNGNlNy04YWFkLTcwNmE1NmM3YWJlZSIsImVtYWlsIjoib21hci5zYWxhaDE1OTdAZ21haWwuY29tIiwiaWF0IjoxNzA3Nzc3NTU4LCJleHAiOjE3MDc4NjM5NTh9.1HJtIs_faYtL4439fU48r_ECkiDuTfBq_yIBPIopi2k
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExYjRjZjk4LTI2MmQtNGNlNy04YWFkLTcwNmE1NmM3YWJlZSIsImVtYWlsIjoib21hci5zYWxhaDE1OTdAZ21haWwuY29tIiwiaWF0IjoxNzA3Nzc3NTE5LCJleHAiOjE3MDc4NjM5MTl9.qGvcEOMVrcUd8dZyp84bWyJUyUEFAWSeEGNcRfnTptI

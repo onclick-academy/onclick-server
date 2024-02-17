@@ -6,6 +6,7 @@ import { Request, Response } from 'express'
 import { UserDao } from '../models/dao/user.dao'
 import jwt from 'jsonwebtoken'
 import { UserDto } from '../models/dto/user.dto'
+import { roles } from '../..'
 
 export class InstructorController {
     static ApplyInstructor = async (req: any, res: Response) => {
@@ -52,7 +53,8 @@ export class InstructorController {
                 state: 'success'
             })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            console.log(error)
+            res.status(500).json({ error: error.message, status: 'failed' })
         }
     }
 

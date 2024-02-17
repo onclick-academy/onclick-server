@@ -77,8 +77,8 @@ declare global {
         deletedAt: Date
     }
 
-    interface LectureUpdateI {
-        id?: string | undefined
+    interface LectureUpdateDtoI {
+        id?: string
         courseId?: string
         title?: string
         description?: string
@@ -88,8 +88,8 @@ declare global {
         deletedAt?: Date
     }
 
-    interface LectureContentI {
-        id: string
+    interface LectureContentDtoI {
+        id?: string
         lectureId: string
         order: number
         content: string
@@ -112,6 +112,7 @@ declare global {
         description: string
         isDeleted: boolean
         deletedAt: Date
+        lectureContentId: string
     }
 
     interface SuspendStateDtoI {

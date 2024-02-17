@@ -1,16 +1,23 @@
 import 'module-alias/register'
 
-import { AuthMiddleware } from '@middlewares/auth.middleware'
+import { AuthMiddleware } from 'middlewares/auth.middleware'
 import express, { NextFunction, Request, Response, RequestHandler } from 'express'
 import createError from 'http-errors'
 import morgan from 'morgan'
 import dotenv from 'dotenv'
+import { ROLE } from '@prisma/client'
 
 dotenv.config()
 
 export const expiredPeriod = {
     accessToken: '3d',
     refreshToken: '5d'
+}
+
+export const roles = {
+    admin: 'ADMIN',
+    instructor: 'INSTRUCTOR',
+    student: 'STUDENT'
 }
 
 const app = express()
@@ -86,6 +93,7 @@ app.use(
     '/api/v1/lectures',
     AuthMiddleware.verifyToken as unknown as RequestHandler,
     require('./src/routes/lecture.route').default
+)
 
 // wishlist routes
 app.use(
@@ -108,9 +116,12 @@ app.use(
     require('./src/routes/appSettings.route').default
 )
 
-app.use((req, res, next) => {
-    next(createError.NotFound())
-})
+// susspendState routes
+app.use(
+    '/api/v1/susspendState',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/suspendState.route').default
+)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500)
@@ -120,12 +131,9 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-// susspendState routes
-app.use(
-    '/api/v1/susspendState',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/suspendState.route').default
-)
+app.use((req, res, next) => {
+    next(createError.NotFound())
+})
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`))

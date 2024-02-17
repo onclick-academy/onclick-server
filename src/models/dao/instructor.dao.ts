@@ -27,14 +27,6 @@ interface GlobalInstructorI {
     isVerified: boolean
 }
 
-interface GlobalStudentI {
-    id: string
-    createdAt: Date
-    updatedAt: Date
-
-    userId: string
-}
-
 export class InstructorDao {
     createInstructor = async (instructorDto: InstructorDtoI) => {
         const isExist = (await prisma.instructor.findUnique({
@@ -42,46 +34,27 @@ export class InstructorDao {
                 userId: instructorDto.userId
             }
         })) as GlobalInstructorI
-
         if (isExist) {
             throw new Error('Instructor already exists')
         }
 
-        const isStudent = (await prisma.student.findUnique({
+        const instructorUser = await prisma.user.update({
             where: {
-                userId: instructorDto.userId
+                id: instructorDto.userId
+            },
+            data: {
+                role: 'INSTRUCTOR'
             }
-        })) as GlobalStudentI
-
-        if (isStudent) {
-            const deletedStudent = await prisma.student.delete({
-                where: {
-                    id: isStudent.id
-                }
-            })
-            console.log('deletedStudent', deletedStudent)
-
-            await prisma.user.update({
-                where: {
-                    id: instructorDto.userId
-                },
-                data: {
-                    role: 'INSTRUCTOR'
-                }
-            })
-
-            const instructor = (await prisma.instructor.create({
-                data: instructorDto
-            })) as GlobalInstructorI
-
-            return instructor
-        }
+        })
 
         const instructor = (await prisma.instructor.create({
             data: instructorDto
         })) as GlobalInstructorI
 
-        return instructor
+        return {
+            instructor: instructor,
+            user: instructorUser
+        }
     }
 
     approveInstructor = async (id: string) => {
@@ -107,7 +80,7 @@ export class InstructorDao {
         return updatedInstructor
     }
 
-    // TODO should we make a table to hold the declined instructors?
+    // TODO should we make a table to hold the declined instructors? NO
     declineInstructor = async (id: string) => {
         const instructor = await this.getInstructorById(id)
 
@@ -116,43 +89,32 @@ export class InstructorDao {
                 id: instructor.userId
             }
         })) as GlobalUserI
-
-        let createdStudent = null
-        let deletedInstructor = null
-        let updatedUser = null
-
-        if (user) {
-            updatedUser = await prisma.user.update({
-                where: {
-                    id: user.id
-                },
-                data: {
-                    role: 'STUDENT'
-                }
-            })
-
-            console.log('updatedUser', updatedUser)
-
-            deletedInstructor = await prisma.instructor.delete({
-                where: {
-                    id
-                }
-            })
-
-            console.log('deletedInstructor', deletedInstructor)
-
-            createdStudent = (await prisma.student.create({
-                data: {
-                    userId: user.id
-                }
-            })) as GlobalStudentI
-
-            console.log('createdStudent', createdStudent)
+        if (!user) {
+            throw new Error('No user found')
         }
+
+        let deletedInstructor
+        let updatedUser
+
+        updatedUser = await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                role: 'STUDENT'
+            }
+        })
+        console.log('updatedUser', updatedUser)
+
+        deletedInstructor = await prisma.instructor.delete({
+            where: {
+                id
+            }
+        })
+        console.log('deletedInstructor', deletedInstructor)
 
         return {
             message: 'Instructor declined',
-            createdStudent: createdStudent,
             deletedInstructor: deletedInstructor,
             updatedUser: updatedUser
         }

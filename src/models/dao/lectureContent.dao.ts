@@ -1,8 +1,7 @@
-import prisma from "@models/prisma/prisma-client";
+import prisma from '@models/prisma/prisma-client'
 
 export class LectureContentDao {
-
-    createLectureContent = async (lectureContentDto: LectureContentDtoI) => {
+    createLectureContent = async (lectureContentDto: any) => {
         // validate lectureId
         const lectureContent = await prisma.lecturesContent.create({
             data: lectureContentDto
