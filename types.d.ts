@@ -158,9 +158,17 @@ declare global {
     }
 
     interface TopicDtoI {
+        id?: string
         title: string
         isDeleted: boolean
         deletedAt: Date
+    }
+
+    interface TopicUpdateI {
+        id?: string
+        title?: string
+        isDeleted?: boolean
+        deletedAt?: Date
     }
 
     interface GlobalTopicI {

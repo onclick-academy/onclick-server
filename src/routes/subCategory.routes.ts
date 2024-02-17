@@ -4,8 +4,10 @@ import { SubCategoryController } from '@controllers/subCategory.controller'
 
 const router = express.Router()
 
+router.route('/').get(SubCategoryController.linkTopicsToSubCategory)
+
 router
-  .route('/:categoryId')
+  .route('/sub/:categoryId')
   .post(SubCategoryController.createSubCategory)
   .get(SubCategoryController.getAllSubCategories)
 

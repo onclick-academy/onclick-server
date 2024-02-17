@@ -29,6 +29,16 @@ export class AdminDao {
   createAdmin = async (adminDto: AdminDtoI) => {
     await this.isExist(adminDto.email, 'email')
 
+    const user = await prisma.user.findUnique({
+      where: {
+        email: adminDto.email
+      }
+    })
+
+    if (user) {
+      throw new Error('Email is already in use')
+    }
+
     const newAdmin = await prisma.admin.create({
       data: adminDto
     })
@@ -71,7 +81,14 @@ export class AdminDao {
 
     if (!admin) throw new Error('Admin not found')
 
-    if (adminDto.email) await this.isExist(adminDto.email, 'email')
+    if (adminDto.email) {
+      await this.isExist(adminDto.email, 'email')
+      const user = await prisma.admin.findUnique({
+        where: {
+          email: adminDto.email
+        }
+      })
+    }
 
     const updatedAdmin = await prisma.admin.update({
       where: {
