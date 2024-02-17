@@ -106,13 +106,22 @@ declare global {
         deletedAt: Date
     }
 
-    interface SusspendStateI {
+    interface SuspendStateDtoI {
         id: string
-        UserDtoId: string
+        userId: string
         adminId: string
         isValid: boolean
         reason: string
         period: Date
+    }
+
+    interface SuspendStateUpdateI {
+        id?: string
+        userId: string
+        adminId: string
+        isValid?: boolean
+        reason?: string
+        period?: Date
     }
 
     interface BlockStateI {
@@ -169,9 +178,17 @@ declare global {
     }
 
     interface TopicDtoI {
+        id?: string
         title: string
         isDeleted: boolean
         deletedAt: Date
+    }
+
+    interface TopicUpdateI {
+        id?: string
+        title?: string
+        isDeleted?: boolean
+        deletedAt?: Date
     }
 
     interface GlobalTopicI {
@@ -192,19 +209,38 @@ declare global {
         phone?: string | null
         isRead: boolean
     }
-    interface EventsInterface {
+    interface EventDtoI {
+        id: string | undefined
         adminId: string
         title: string
+        subtitle: string
         description: string
+        images?: string[]
         startDate: Date
         endDate: Date
         isDeleted: boolean
         deletedAt?: Date
         isAvailable: boolean
         cover: string
-        images?: string[]
     }
-    interface AppSettingsInterface {
+
+    interface EventUpdateI {
+        id: string
+        adminId?: string
+        title?: string
+        subtitle?: string
+        description?: string
+        images?: string[]
+        startDate?: Date
+        endDate?: Date
+        isDeleted?: boolean
+        deletedAt?: Date
+        isAvailable?: boolean
+        cover?: string
+    }
+    interface AppSettingsDtoI {
+        id?: string
+        adminId: string
         mainEmail: string
         contactEmail: string
         contactPhone: string
@@ -215,6 +251,26 @@ declare global {
         favicon: string
         coverSlides: string[]
         socialLinks: {
+            facebook: string
+            twitter: string
+            instagram: string
+            linkedin: string
+        }
+    }
+
+    interface AppSettingsUpdateI {
+        id: string | undefined
+        adminId?: string
+        mainEmail?: string
+        contactEmail?: string
+        contactPhone?: string
+        aboutUs?: string
+        terms?: string
+        privacy?: string
+        logo?: string
+        favicon?: string
+        coverSlides?: string[]
+        socialLinks?: {
             facebook: string
             twitter: string
             instagram: string
@@ -275,7 +331,14 @@ declare global {
         courseId: string
         isDeleted: boolean
         deletedAt: Date
-        studentId: string
+    }
+
+    interface WishlistUpdateI {
+        id: string
+        userId?: string
+        courseId?: string
+        isDeleted?: boolean
+        deletedAt?: Date
     }
 }
 

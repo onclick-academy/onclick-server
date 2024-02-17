@@ -74,27 +74,31 @@ app.use(
     require('./src/routes/user.route').default
 )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // lecture routes
 app.use(
     '/api/v1/lectures',
     AuthMiddleware.verifyToken as unknown as RequestHandler,
     require('./src/routes/lecture.route').default
+
+// wishlist routes
+app.use(
+    '/api/v1/wishlist',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/wishlist.route').default
+)
+
+// event routes
+app.use(
+    '/api/v1/events',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/event.route').default
+)
+
+// appSettings routes
+app.use(
+    '/api/v1/settings',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/appSettings.route').default
 )
 
 app.use((req, res, next) => {
@@ -108,6 +112,22 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         message: err.message
     })
 })
+
+
+
+
+
+
+
+
+
+
+// susspendState routes
+app.use(
+    '/api/v1/susspendState',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/suspendState.route').default
+)
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`))

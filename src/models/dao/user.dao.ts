@@ -2,7 +2,6 @@ import prisma from '../prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
 
 export class UserDao {
-
   isExist = async (ele: string, type: string) => {
     let isExist
     if (type === 'email') {
@@ -25,7 +24,9 @@ export class UserDao {
       })
     }
     if (isExist) {
-      throw new Error(`${type ==="email"? "Email": type === "username"? "Username" : "Phone Number"} is already in use`)
+      throw new Error(
+        `${type === 'email' ? 'Email' : type === 'username' ? 'Username' : 'Phone Number'} is already in use`
+      )
     }
   }
 
@@ -105,15 +106,25 @@ export class UserDao {
   }
 
   updateUser = async (user: any) => {
-        // TODO Check if email to update is existed
-        // TODO check if phoneNum to update is existed
 
     await this.getUserById(user.id)
 
     user.updatedAt = new Date()
     if (user.birthDate) user.birthDate = new Date(user.birthDate)
     if (user.username) await this.isExist(user.username, 'username')
-    if (user.email) await this.isExist(user.email, 'email')
+    if (user.email) {
+      await this.isExist(user.email, 'email')
+      const admin = await prisma.admin.findUnique({
+        where: {
+          email: user.email
+        }
+      })
+      if (admin) {
+        throw new Error('Email is already in use')
+      } else {
+        user.isEmailConfirm = false
+      }
+    }
     if (user.phoneNum) await this.isExist(user.phoneNum, 'phoneNum')
 
     const updatedUser = await prisma.user.update({
@@ -126,7 +137,6 @@ export class UserDao {
   }
 
   softDeleteUser = async (id: string) => {
-
     await this.getUserById(id)
 
     const deletedUser = await prisma.user.update({
@@ -144,7 +154,6 @@ export class UserDao {
   }
 
   deactivateUser = async (id: string) => {
-
     await this.getUserById(id)
 
     const deactivatedUser = await prisma.user.update({
@@ -160,7 +169,6 @@ export class UserDao {
   }
 
   hardDeleteUser = async (id: string | undefined) => {
-
     const deletedUser = await prisma.user.delete({
       where: {
         id: id
