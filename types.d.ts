@@ -95,13 +95,22 @@ declare global {
         deletedAt: Date
     }
 
-    interface SusspendStateI {
+    interface SuspendStateDtoI {
         id: string
-        UserDtoId: string
+        userId: string
         adminId: string
         isValid: boolean
         reason: string
         period: Date
+    }
+
+    interface SuspendStateUpdateI {
+        id?: string
+        userId: string
+        adminId: string
+        isValid?: boolean
+        reason?: string
+        period?: Date
     }
 
     interface BlockStateI {

@@ -116,5 +116,21 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     })
 })
 
+
+
+
+
+
+
+
+
+
+// susspendState routes
+app.use(
+    '/api/v1/susspendState',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/suspendState.route').default
+)
+
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`))
