@@ -89,9 +89,7 @@ app.use(
 )
 
 
-app.use((req, res, next) => {
-    next(createError.NotFound())
-})
+
 
 
 
@@ -100,12 +98,15 @@ app.use((req, res, next) => {
 
 
 // appSettings routes
-
 app.use(
     '/api/v1/settings',
     AuthMiddleware.verifyToken as unknown as RequestHandler,
     require('./src/routes/appSettings.route').default
 )
+
+app.use((req, res, next) => {
+    next(createError.NotFound())
+})
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500)
