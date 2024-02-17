@@ -57,9 +57,7 @@ export class UserController {
       const {error} = await registerValidation.updateUser(userDto)
       if (error) return res.status(400).json({ error: error.details[0].message })
 
-      if (req.body.password) userDto.password = await hashPassword(req.body.password) // TODO => res.json({redirect: '/changepassword'})???
       const updatedUser = await userDao.updateUser(userDto)
-
 
       if (req.body.email) {
         await AuthController.sendConfirmationEmail(req, res)
