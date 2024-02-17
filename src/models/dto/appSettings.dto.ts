@@ -1,4 +1,6 @@
-class AppSettingsDto {
+export class AppSettingsDto {
+  id: string | undefined
+  adminId: string
   mainEmail: string
   contactEmail: string
   contactPhone: string
@@ -15,7 +17,9 @@ class AppSettingsDto {
     linkedin: string
   }
 
-  constructor(bodyReq: AppSettingsInterface) {
+  constructor(bodyReq: AppSettingsDtoI) {
+    this.id = bodyReq['id']
+    this.adminId = bodyReq['adminId']
     this.mainEmail = bodyReq['mainEmail']
     this.contactEmail = bodyReq['contactEmail']
     this.contactPhone = bodyReq['contactPhone']

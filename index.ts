@@ -93,6 +93,20 @@ app.use((req, res, next) => {
     next(createError.NotFound())
 })
 
+
+
+
+
+
+
+// appSettings routes
+
+app.use(
+    '/api/v1/settings',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/appSettings.route').default
+)
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500)
     res.send({
