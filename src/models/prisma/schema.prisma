@@ -278,13 +278,12 @@ model LecturesContent {
   updatedAt DateTime @updatedAt
 
   order      Int       @unique @default(autoincrement())
-  materialId String
   lectureId  String
   content    String
   isDeleted  Boolean   @default(false)
   deletedAt  DateTime?
 
-  material LecturesMaterials @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  material LecturesMaterials[]
   lecture  Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
 }
 
@@ -293,12 +292,13 @@ model LecturesMaterials {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  lectureContentId String
   title       String
   description String
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?
 
-  contents LecturesContent[]
+  contents LecturesContent[] 
 }
 
 model Topic {

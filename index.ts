@@ -74,6 +74,13 @@ app.use(
     require('./src/routes/user.route').default
 )
 
+// lecture content routes
+app.use(
+    '/api/v1/lecturescontent',
+    AuthMiddleware.verifyToken as unknown as RequestHandler,
+    require('./src/routes/lectureContent.route').default
+)
+
 // lecture routes
 app.use(
     '/api/v1/lectures',
@@ -112,15 +119,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         message: err.message
     })
 })
-
-
-
-
-
-
-
-
-
 
 // susspendState routes
 app.use(

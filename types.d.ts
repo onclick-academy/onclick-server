@@ -91,11 +91,19 @@ declare global {
     interface LectureContentI {
         id: string
         lectureId: string
-        materialId: string
         order: number
         content: string
         isDeleted: boolean
         deletedAt: Date
+    }
+
+    interface LectureContentUpdateI {
+        id?: string | undefined
+        lectureId?: string
+        order?: number
+        content?: string
+        isDeleted?: boolean
+        deletedAt?: Date
     }
 
     interface lectureMaterialI {
