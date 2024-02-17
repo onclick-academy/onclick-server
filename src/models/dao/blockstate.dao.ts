@@ -4,14 +4,7 @@ import prisma from '../prisma/prisma-client'
 export class BlockStateDao {
         createBlockState = async (blockStateDto: BlockStateI) => {
         const blockState = await prisma.blockState.create({
-        data: {
-                id: blockStateDto.id,
-                userId: blockStateDto.UserDtoId,
-                adminId: blockStateDto.adminId,
-                state: blockStateDto.state,
-                reason: blockStateDto.reason,
-                period: blockStateDto.period
-        }
+        data: blockStateDto
         })
         return blockState
         }
@@ -30,13 +23,7 @@ export class BlockStateDao {
         where: {
                 id: blockStateDto.id
         },
-        data: {
-                userId: blockStateDto.UserDtoId,
-                adminId: blockStateDto.adminId,
-                state: blockStateDto.state,
-                reason: blockStateDto.reason,
-                period: blockStateDto.period
-        }
+        data: blockStateDto
         })
         return blockState
         }
