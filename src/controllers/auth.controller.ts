@@ -162,33 +162,6 @@ export class AuthController {
         try {
             const { error } = await LoginValidation.validateLoginInput(loginDto)
 
-            let userLogged: any
-
-            if (loginDto.email) {
-                userLogged = await prisma.user.findUnique({
-                    where: {
-                        email: loginDto.email
-                    }
-                })
-               if (!userLogged) {
-                userLogged = await prisma.admin.findUnique({
-                    where: {
-                        email: loginDto.username
-                    }
-                })
-                if (!userLogged) res.status(400).json({ error: 'User not found' })  
-            }
-        }
-            if (loginDto.username) {
-                userLogged = await prisma.user.findUnique({
-                    where: {
-                        username: loginDto.username
-                    }
-                })
-            }
-
-            loginDto.id = userLogged?.id
-
             if (error) {
                 if (error.details && error.details.length > 0) {
                     console.error(error.details[0].message)
