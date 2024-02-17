@@ -27,6 +27,14 @@ export class AuthController {
         const studentDao = new StudentDao()
 
         try {
+
+            const isExist = await prisma.admin.findUnique({
+                where: {
+                    email: userDto.email
+                }
+            })
+            if (isExist) return res.status(400).json({ error: 'Email is already in use', status: 'failed' })
+
             const { error } = await registerValidation.createUser(userDto)
             if (error) {
                 return res.status(400).json({ error: 'Error when creating user' })
@@ -161,32 +169,6 @@ export class AuthController {
         const authDao = new AuthDao()
         try {
             const { error } = await LoginValidation.validateLoginInput(loginDto)
-
-            let userLogged: any
-
-            if (loginDto.email) {
-                userLogged = await prisma.user.findUnique({
-                    where: {
-                        email: loginDto.email
-                    }
-                })
-            } else {
-                userLogged = await prisma.admin.findUnique({
-                    where: {
-                        email: loginDto.username
-                    }
-                })
-            }
-
-            if (loginDto.username) {
-                userLogged = await prisma.user.findUnique({
-                    where: {
-                        username: loginDto.username
-                    }
-                })
-            }
-
-            loginDto.id = userLogged?.id
 
             if (error) {
                 if (error.details && error.details.length > 0) {

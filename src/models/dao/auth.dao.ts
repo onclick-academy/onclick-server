@@ -1,7 +1,7 @@
 import prisma from '../prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
 import { UserTokenI } from '../../types/user.interface'
-import { GENDER, ROLE, EDUCATION_LEVEL } from '@prisma/client'
+import { GENDER, ROLE, EDUCATION_LEVEL, Admin } from '@prisma/client'
 
 interface GlobalUserI {
     id: string
@@ -37,7 +37,7 @@ interface loginDtoI {
 
 export class AuthDao {
     login = async (userDto: loginDtoI) => {
-        let user: UserTokenI | undefined
+        let user: UserTokenI | any
 
         if (userDto.email) {
             user = (await prisma.user.findUnique({
@@ -46,7 +46,14 @@ export class AuthDao {
                     isDeleted: false
                 }
             })) as GlobalUserI
-
+            if (!user) {
+                user = (await prisma.admin.findUnique({
+                    where: {
+                        email: userDto.email,
+                        isDeleted: false
+                    }
+                }))
+            }
             if (!user) throw new Error('Email is not found please register')
             if (!user.isAvailable) {
                 user.isAvailable = true

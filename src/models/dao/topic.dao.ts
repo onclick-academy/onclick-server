@@ -27,12 +27,24 @@ export class TopicDao {
     return topic
   }
 
-  getTopicBySubCategoryId = async (subCategoryId: string) => {
-    const topics = await prisma.topic.findMany({}) // TODO fix schema to include subCategoryId
+
+  getTopicsBySubCategoryId = async (topicId: string ,subCategoryId: string) => {
+    const topics = await prisma.topic.findMany({
+      where: {
+        id: topicId,
+      },
+      include: {
+        subCategory: {
+          include: {
+            subCategory: true
+      }
+      }
+    }
+  })
     return topics
   }
 
-  updateTopic = async (topicDto: GlobalTopicI) => {
+  updateTopic = async (topicDto: TopicUpdateI) => {
     const updatedTopic = await prisma.topic.update({
       where: {
         id: topicDto.id,

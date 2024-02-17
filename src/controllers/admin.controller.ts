@@ -6,6 +6,7 @@ import e, { Request, Response } from 'express'
 import { AuthDao } from '../models/dao/auth.dao'
 import { AuthController } from './auth.controller'
 import prisma from '@models/prisma/prisma-client'
+import { hashPassword } from '@utilities/hash'
 
 export class AdminController {
   // TODO send email to admin
@@ -25,6 +26,8 @@ export class AdminController {
       const { error } = await AdminValidation.createAdmin(adminDto)
       if (error) return res.status(400).json({ error: error.details[0].message })
 
+      const hashed = await hashPassword(adminDto.password);
+      adminDto.password = hashed;
       const admin = await adminDao.createAdmin(adminDto)
 
       await AuthController.sendConfirmationEmail(req, res)
@@ -69,7 +72,14 @@ export class AdminController {
       const { error } = await AdminValidation.updateAdmin(adminDto)
       if (error) return res.status(400).json({ error: error.details[0].message })
 
+      if (req.body.password) adminDto.password = await hashPassword(adminDto.password)
+
       const admin = await adminDao.updateAdmin(adminDto)
+
+      if (req.body.email) {
+        await AuthController.sendConfirmationEmail(req, res)
+      }
+
       res.status(200).json({ message: 'Admin Updated Successfully', data: admin, state: 'success' })
     } catch (error: any) {
       if (error.message.includes('Admin')) return res.status(400).json({ error: error.message })
