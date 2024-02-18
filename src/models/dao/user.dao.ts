@@ -107,7 +107,6 @@ export class UserDao {
 
     updateUser = async (user: any) => {
         await this.getUserById(user.id)
-
         user.updatedAt = new Date()
 
         if (user.birthDate) user.birthDate = new Date(user.birthDate)

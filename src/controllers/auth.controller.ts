@@ -144,12 +144,6 @@ export class AuthController {
                 expiresIn: expiredPeriod.refreshToken
             })
 
-            req.user = {
-                id: user?.id,
-                role: user?.role,
-                email: user?.email
-            }
-
             return res.status(200).json({
                 data: user,
                 accessToken,

@@ -1,4 +1,4 @@
-import { expiredPeriod } from '../..'
+import { expiredPeriod, roles } from '../..'
 import { Response, NextFunction, RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 import { UserRequest, UserTokenI } from 'types/user.interface'
@@ -62,6 +62,64 @@ export class AuthMiddleware {
                 return res.status(401).json({ error: 'Invalid token', redirectUrl: '/api/v1/auth/login' })
             }
         }
+    }) as unknown as RequestHandler
+
+    static studentAuthorization = ((req: any, res: Response, next: NextFunction) => {
+        const authHeader = req.headers['authorization']
+        const accessToken = authHeader?.split(' ')[1]
+
+        if (accessToken == null)
+            return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
+
+        try {
+            const requester = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
+            req.user = requester
+            if (
+                requester.role === roles.ADMIN ||
+                requester.role === roles.SUPER_ADMIN ||
+                requester.role === roles.STUDENT
+            ) {
+                if (req.body.role) {
+                    if (requester.role === roles.SUPER_ADMIN) {
+                        next()
+                    } else {
+                        return res.status(401).json({ error: 'Unauthorized' })
+                    }
+                }
+                next()
+            } else {
+                return res.status(401).json({ error: 'Unauthorized' })
+            }
+        } catch (error: any) {}
+    }) as unknown as RequestHandler
+
+    static instructorAuthorization = ((req: any, res: Response, next: NextFunction) => {
+        const authHeader = req.headers['authorization']
+        const accessToken = authHeader?.split(' ')[1]
+
+        if (accessToken == null)
+            return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
+
+        try {
+            const requester = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
+            req.user = requester
+            if (
+                requester.role === roles.ADMIN ||
+                requester.role === roles.SUPER_ADMIN ||
+                requester.role === roles.INSTRUCTOR
+            ) {
+                if (req.body.role) {
+                    if (requester.role === roles.SUPER_ADMIN) {
+                        next()
+                    } else {
+                        return res.status(401).json({ error: 'Unauthorized' })
+                    }
+                }
+                next()
+            } else {
+                return res.status(401).json({ error: 'Unauthorized' })
+            }
+        } catch (error: any) {}
     }) as unknown as RequestHandler
 
     static checkUserIsDeleted = async (req: UserRequest, res: Response, next: NextFunction) => {

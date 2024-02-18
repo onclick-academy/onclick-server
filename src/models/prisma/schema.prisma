@@ -8,6 +8,7 @@ datasource db {
 }
 
 enum ROLE {
+  SUPER_ADMIN
   ADMIN
   INSTRUCTOR
   STUDENT
