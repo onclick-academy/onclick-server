@@ -5,7 +5,10 @@ import { AuthMiddleware } from '@middlewares/auth.middleware'
 
 const router = express.Router()
 
-router.route('/').post(AuthMiddleware.verifyToken as unknown as RequestHandler, InstructorController.ApplyInstructor)
+router
+    .route('/')
+    .post(InstructorController.ApplyInstructor)
+    .get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
 
 // to admin route
 
