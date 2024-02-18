@@ -15,25 +15,13 @@ interface InstructorUpdateI {
     averageRate: number | 0
 }
 
-interface GlobalInstructorI {
-    id: string
-    createdAt: Date
-    updatedAt: Date
-
-    userId: string
-    nationalID: string
-    cvLink: string
-    averageRate: number
-    isVerified: boolean
-}
-
 export class InstructorDao {
     createInstructor = async (instructorDto: InstructorDtoI) => {
-        const isExist = (await prisma.instructor.findUnique({
+        const isExist = await prisma.instructor.findUnique({
             where: {
                 userId: instructorDto.userId
             }
-        })) as GlobalInstructorI
+        })
         if (isExist) {
             throw new Error('Instructor already exists')
         }
@@ -47,9 +35,9 @@ export class InstructorDao {
             }
         })
 
-        const instructor = (await prisma.instructor.create({
+        const instructor = await prisma.instructor.create({
             data: instructorDto
-        })) as GlobalInstructorI
+        })
 
         return {
             instructor: instructor,
@@ -58,24 +46,24 @@ export class InstructorDao {
     }
 
     approveInstructor = async (id: string) => {
-        const instructor = (await prisma.instructor.findUnique({
+        const instructor = await prisma.instructor.findUnique({
             where: {
                 id: id
             }
-        })) as GlobalInstructorI
+        })
 
         if (!instructor) {
             throw new Error('No instructor to approve')
         }
 
-        const updatedInstructor = (await prisma.instructor.update({
+        const updatedInstructor = await prisma.instructor.update({
             where: {
                 id: instructor.id
             },
             data: {
                 isVerified: true
             }
-        })) as GlobalInstructorI
+        })
 
         return updatedInstructor
     }
@@ -84,11 +72,11 @@ export class InstructorDao {
     declineInstructor = async (id: string) => {
         const instructor = await this.getInstructorById(id)
 
-        const user = (await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 id: instructor.userId
             }
-        })) as GlobalUserI
+        })
         if (!user) {
             throw new Error('No user found')
         }
@@ -121,33 +109,33 @@ export class InstructorDao {
     }
 
     getPendingInstructors = async () => {
-        const instructors = (await prisma.instructor.findMany({
+        const instructors = await prisma.instructor.findMany({
             where: {
                 isVerified: false
             }
-        })) as GlobalInstructorI[]
+        })
         return instructors
     }
 
     getAllInstructors = async () => {
-        const instructors = (await prisma.instructor.findMany({
+        const instructors = await prisma.instructor.findMany({
             where: {
                 isVerified: true
             },
             include: {
                 user: true
             }
-        })) as GlobalInstructorI[]
+        })
         return instructors
     }
 
     getInstructorById = async (instructorId: string | undefined) => {
-        const instructor = (await prisma.instructor.findUnique({
+        const instructor = await prisma.instructor.findUnique({
             where: {
                 id: instructorId,
                 isVerified: true
             }
-        })) as GlobalInstructorI
+        })
 
         if (!instructor) {
             throw new Error('No instructor found')
@@ -158,14 +146,14 @@ export class InstructorDao {
 
     getInstructorUserById = async (instructorId: string) => {
         const instructor = await this.getInstructorById(instructorId)
-        const userInstructor = (await prisma.user.findUnique({
+        const userInstructor = await prisma.user.findUnique({
             where: {
                 id: instructor.userId
             },
             include: {
                 instructor: true
             }
-        })) as GlobalUserI
+        })
 
         return userInstructor
     }
@@ -175,20 +163,20 @@ export class InstructorDao {
         let updatedUser = null
 
         if (userDto) {
-            updatedUser = (await prisma.user.update({
+            updatedUser = await prisma.user.update({
                 where: {
                     id: instructor.userId
                 },
                 data: userDto
-            })) as GlobalUserI
+            })
         }
 
-        const updatedInstructor = (await prisma.instructor.update({
+        const updatedInstructor = await prisma.instructor.update({
             where: {
                 id: instructorDto.id
             },
             data: instructorDto
-        })) as GlobalInstructorI
+        })
 
         const updatedInstructorWithUser = {
             ...updatedInstructor,

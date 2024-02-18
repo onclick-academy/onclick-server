@@ -44,7 +44,7 @@ export class InstructorController {
         try {
             const instructor = await instructorDao.approveInstructor(instructorId)
 
-            const updatedUser = await userDao.updateUser({ id: instructor.userId, role: 'INSTRUCTOR' })
+            const updatedUser = await userDao.updateUser({ id: instructor.userId, role: roles.INSTRUCTOR })
 
             res.status(201).json({
                 message: 'Instructor created successfully',

@@ -1,134 +1,122 @@
+import { roles } from '../../..'
 import prisma from '../prisma/prisma-client'
-
-interface AdminDtoI {
-  id: string | undefined
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  profilePic: string
-  isDeleted: boolean
-  deletedAt: Date
-  isEmailConfirm: boolean
-}
 export class AdminDao {
-  isExist = async (ele: string, type: string) => {
-    let isExist
-    if (type === 'email') {
-      isExist = await prisma.admin.findUnique({
-        where: {
-          email: ele
+    isExist = async (ele: string, type: string) => {
+        let isExist
+        if (type === 'email') {
+            isExist = await prisma.user.findUnique({
+                where: {
+                    email: ele
+                }
+            })
         }
-      })
-    }
-    if (isExist) {
-      throw new Error('Email is already in use')
-    }
-  }
-
-  createAdmin = async (adminDto: AdminDtoI) => {
-    await this.isExist(adminDto.email, 'email')
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: adminDto.email
-      }
-    })
-
-    if (user) {
-      throw new Error('Email is already in use')
-    }
-
-    const newAdmin = await prisma.admin.create({
-      data: adminDto
-    })
-
-    return newAdmin
-  }
-
-  getAllAdmins = async () => {
-    const admins = await prisma.admin.findMany({
-      where: {
-        isDeleted: false
-      }
-    })
-
-    return admins
-  }
-
-  getAdminById = async (id: string) => {
-    const admin = await prisma.admin.findUnique({
-      where: {
-        id
-      }
-    })
-
-    return admin
-  }
-
-  updateAdmin = async (adminDto: {
-    id: string | undefined
-    firstName?: string
-    lastName?: string
-    email?: string
-    password?: string
-    profilePic?: string
-    isDeleted?: boolean
-    deletedAt?: Date
-    isEmailConfirm?: boolean
-  }) => {
-    const admin = await this.getAdminById(adminDto.id as string)
-
-    if (!admin) throw new Error('Admin not found')
-
-    if (adminDto.email) {
-      await this.isExist(adminDto.email, 'email')
-      const user = await prisma.admin.findUnique({
-        where: {
-          email: adminDto.email
+        if (isExist) {
+            throw new Error('Email is already in use')
         }
-      })
     }
 
-    const updatedAdmin = await prisma.admin.update({
-      where: {
-        id: adminDto.id
-      },
-      data: adminDto
-    })
+    // TODO update User table role: ADMIN or WHAT WE SHOULD DO??
+    createAdmin = async (adminDto: UserDtoI) => {
+        await this.isExist(adminDto.email, 'email')
 
-    return updatedAdmin
-  }
+        const user = await prisma.user.findUnique({
+            where: {
+                email: adminDto.email
+            }
+        })
+        if (!user) throw Error()
 
-  softDeleteAdmin = async (id: string) => {
-    const admin = await this.getAdminById(id)
+        const newAdmin = await prisma.user.create({
+            data: adminDto
+        })
 
-    if (!admin) throw new Error('Admin not found')
+        return newAdmin
+    }
 
-    const deletedAdmin = await prisma.admin.update({
-      where: {
-        id
-      },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date()
-      }
-    })
+    getAllAdmins = async () => {
+        const admins = await prisma.user.findMany({
+            where: {
+                isDeleted: false
+            }
+        })
 
-    return deletedAdmin
-  }
+        return admins
+    }
 
-  hardDeleteAdmin = async (id: string) => {
-    const admin = await this.getAdminById(id)
+    getAdminById = async (id: string) => {
+        const admin = await prisma.user.findUnique({
+            where: {
+                id
+            }
+        })
 
-    if (!admin) throw new Error('Admin not found')
+        return admin
+    }
 
-    const deletedAdmin = await prisma.admin.delete({
-      where: {
-        id
-      }
-    })
+    updateAdmin = async (adminDto: {
+        id?: string
+        firstName?: string
+        lastName?: string
+        email?: string
+        password?: string
+        profilePic?: string
+        isDeleted?: boolean
+        deletedAt?: Date
+        isEmailConfirm?: boolean
+    }) => {
+        const admin = await this.getAdminById(adminDto.id as string)
 
-    return deletedAdmin
-  }
+        if (!admin) throw new Error('Admin not found')
+
+        if (adminDto.email) {
+            await this.isExist(adminDto.email, 'email')
+            await prisma.user.findUnique({
+                where: {
+                    email: adminDto.email,
+                    role: roles.ADMIN
+                }
+            })
+        }
+
+        const updatedAdmin = await prisma.user.update({
+            where: {
+                id: adminDto.id
+            },
+            data: adminDto
+        })
+
+        return updatedAdmin
+    }
+
+    softDeleteAdmin = async (id: string) => {
+        const admin = await this.getAdminById(id)
+
+        if (!admin) throw new Error('Admin not found')
+
+        const deletedAdmin = await prisma.user.update({
+            where: {
+                id
+            },
+            data: {
+                isDeleted: true,
+                deletedAt: new Date()
+            }
+        })
+
+        return deletedAdmin
+    }
+
+    hardDeleteAdmin = async (id: string) => {
+        const admin = await this.getAdminById(id)
+
+        if (!admin) throw new Error('Admin not found')
+
+        const deletedAdmin = await prisma.user.delete({
+            where: {
+                id
+            }
+        })
+
+        return deletedAdmin
+    }
 }

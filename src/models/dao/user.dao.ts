@@ -2,178 +2,174 @@ import prisma from '../prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
 
 export class UserDao {
-  isExist = async (ele: string, type: string) => {
-    let isExist
-    if (type === 'email') {
-      isExist = await prisma.user.findUnique({
-        where: {
-          email: ele
+    isExist = async (ele: string, type: string) => {
+        let isExist
+        if (type === 'email') {
+            isExist = await prisma.user.findUnique({
+                where: {
+                    email: ele
+                }
+            })
+        } else if (type === 'username') {
+            isExist = await prisma.user.findUnique({
+                where: {
+                    username: ele
+                }
+            })
+        } else if (type === 'phoneNum') {
+            isExist = await prisma.user.findUnique({
+                where: {
+                    phoneNum: ele
+                }
+            })
         }
-      })
-    } else if (type === 'username') {
-      isExist = await prisma.user.findUnique({
-        where: {
-          username: ele
+        if (isExist) {
+            throw new Error(
+                `${type === 'email' ? 'Email' : type === 'username' ? 'Username' : 'Phone Number'} is already in use`
+            )
         }
-      })
-    } else if (type === 'phoneNum') {
-      isExist = await prisma.user.findUnique({
-        where: {
-          phoneNum: ele
-        }
-      })
     }
-    if (isExist) {
-      throw new Error(
-        `${type === 'email' ? 'Email' : type === 'username' ? 'Username' : 'Phone Number'} is already in use`
-      )
+
+    createUser = async (userDto: any) => {
+        await this.isExist(userDto.email, 'email')
+        await this.isExist(userDto.username, 'username')
+        await this.isExist(userDto.phoneNum, 'phoneNum')
+        // TODO check valid birthDate
+        const hashedPassword = await hashPassword(userDto.password)
+        userDto.password = hashedPassword
+        userDto.birthDate = new Date(userDto.birthDate)
+
+        const newUser = await prisma.user.create({
+            data: userDto
+        })
+        return newUser
     }
-  }
 
-  createUser = async (userDto: any) => {
-    await this.isExist(userDto.email, 'email')
-    await this.isExist(userDto.username, 'username')
-    await this.isExist(userDto.phoneNum, 'phoneNum')
-    // TODO check valid birthDate
-    const hashedPassword = await hashPassword(userDto.password)
-    userDto.password = hashedPassword
-    userDto.birthDate = new Date(userDto.birthDate)
-
-    const newUser = await prisma.user.create({
-      data: userDto
-    })
-    return newUser
-  }
-
-  getAllUsers = async () => {
-    const users = await prisma.user.findMany({
-      where: {
-        isDeleted: false
-      }
-    })
-    return users
-  }
-
-  getUserById = async (id: string) => {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: id,
-        isDeleted: false
-      }
-    })
-    return user
-  }
-
-  searchUser = async (search: string) => {
-    const users = await prisma.user.findMany({
-      where: {
-        OR: [
-          {
-            username: {
-              contains: search,
-              mode: 'insensitive'
+    getAllUsers = async () => {
+        const users = await prisma.user.findMany({
+            where: {
+                isDeleted: false
             }
-          },
-          {
-            fullName: {
-              contains: search,
-              mode: 'insensitive'
-            }
-          },
-          {
-            email: {
-              contains: search,
-              mode: 'insensitive'
-            }
-          },
-          {
-            phoneNum: {
-              contains: search,
-              mode: 'insensitive'
-            }
-          },
-          {
-            bio: {
-              contains: search,
-              mode: 'insensitive'
-            }
-          }
-        ],
-        isDeleted: false
-      }
-    })
-    return users
-  }
+        })
+        return users
+    }
 
-  updateUser = async (user: any) => {
+    getUserById = async (id: string) => {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: id,
+                isDeleted: false
+            }
+        })
+        return user
+    }
 
-    await this.getUserById(user.id)
+    searchUser = async (search: string) => {
+        const users = await prisma.user.findMany({
+            where: {
+                OR: [
+                    {
+                        username: {
+                            contains: search,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        fullName: {
+                            contains: search,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        email: {
+                            contains: search,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        phoneNum: {
+                            contains: search,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        bio: {
+                            contains: search,
+                            mode: 'insensitive'
+                        }
+                    }
+                ],
+                isDeleted: false
+            }
+        })
+        return users
+    }
 
-    user.updatedAt = new Date()
-    if (user.birthDate) user.birthDate = new Date(user.birthDate)
-    if (user.username) await this.isExist(user.username, 'username')
-    if (user.email) {
-      await this.isExist(user.email, 'email')
-      const admin = await prisma.admin.findUnique({
-        where: {
-          email: user.email
+    updateUser = async (user: any) => {
+        await this.getUserById(user.id)
+
+        user.updatedAt = new Date()
+
+        if (user.birthDate) user.birthDate = new Date(user.birthDate)
+        if (user.username) await this.isExist(user.username, 'username')
+        if (user.email) {
+            await this.isExist(user.email, 'email')
+            const pUser = await prisma.user.findUnique({
+                where: {
+                    email: user.email
+                }
+            })
+            if (!pUser) throw Error('Invalid Email')
         }
-      })
-      if (admin) {
-        throw new Error('Email is already in use')
-      } else {
-        user.isEmailConfirm = false
-      }
+        if (user.phoneNum) await this.isExist(user.phoneNum, 'phoneNum')
+
+        const updatedUser = await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: user
+        })
+        return updatedUser
     }
-    if (user.phoneNum) await this.isExist(user.phoneNum, 'phoneNum')
 
-    const updatedUser = await prisma.user.update({
-      where: {
-        id: user.id
-      },
-      data: user
-    })
-    return updatedUser
-  }
+    softDeleteUser = async (id: string) => {
+        await this.getUserById(id)
 
-  softDeleteUser = async (id: string) => {
-    await this.getUserById(id)
+        const deletedUser = await prisma.user.update({
+            where: {
+                id: id,
+                isAvailable: true
+            },
+            data: {
+                isDeleted: true,
+                deletedAt: new Date(),
+                isAvailable: false
+            }
+        })
+        return deletedUser
+    }
 
-    const deletedUser = await prisma.user.update({
-      where: {
-        id: id,
-        isAvailable: true
-      },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date(),
-        isAvailable: false
-      }
-    })
-    return deletedUser
-  }
+    deactivateUser = async (id: string) => {
+        await this.getUserById(id)
 
-  deactivateUser = async (id: string) => {
-    await this.getUserById(id)
+        const deactivatedUser = await prisma.user.update({
+            where: {
+                id: id,
+                isAvailable: true
+            },
+            data: {
+                isAvailable: false
+            }
+        })
+        return deactivatedUser
+    }
 
-    const deactivatedUser = await prisma.user.update({
-      where: {
-        id: id,
-        isAvailable: true
-      },
-      data: {
-        isAvailable: false
-      }
-    })
-    return deactivatedUser
-  }
-
-  hardDeleteUser = async (id: string | undefined) => {
-    const deletedUser = await prisma.user.delete({
-      where: {
-        id: id
-      }
-    })
-    return deletedUser
-  }
+    hardDeleteUser = async (id: string | undefined) => {
+        const deletedUser = await prisma.user.delete({
+            where: {
+                id: id
+            }
+        })
+        return deletedUser
+    }
 }

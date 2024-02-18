@@ -18,10 +18,10 @@ export class PasswordController {
 
         try {
             const { error } = schema.validate({ email: userEmail })
-
             if (error) {
-                return res.status(400).json({ error: error.details[0].message })
+                return res.status(400).json({ error: error.details[0].message, status: 'error' })
             }
+
             const user = await authDao.getUserByEmail({ email: userEmail })
 
             if (!user) throw new Error('User not found')
@@ -29,9 +29,9 @@ export class PasswordController {
             await sendEmail(user, 'RESET')
         } catch (error: any) {
             if (error.message.includes('Email')) {
-                return res.status(400).json({ error: error.message })
+                return res.status(400).json({ error: error.message, status: 'error' })
             }
-            return res.status(500).json({ error: error.message })
+            return res.status(500).json({ error: error.message, status: 'error' })
         }
     }
 
@@ -41,7 +41,7 @@ export class PasswordController {
         const hashedPassword = await hashPassword(password)
 
         if (password !== passwordConfirm) {
-            return res.status(400).json({ error: 'Passwords are not the same' })
+            return res.status(400).json({ error: 'Passwords are not the same', status: 'error' })
         }
 
         try {
@@ -68,10 +68,10 @@ export class PasswordController {
             })
 
             const { error } = schema.validate({ password, passwordConfirm })
-
             if (error) {
-                return res.status(400).json({ error: error.details[0].message })
+                return res.status(400).json({ error: error.details[0].message, status: 'error' })
             }
+
             const userDao = new UserDao()
             const updatedUser = await userDao.updateUser({ id: user.id, password: hashedPassword })
 
