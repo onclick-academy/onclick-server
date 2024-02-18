@@ -1,17 +1,6 @@
-import { NOTIFICATION_TYPE } from '@prisma/client'
+import { GENDER, NOTIFICATION_TYPE, ROLE } from '@prisma/client'
 
 declare global {
-    interface GlobalUserI {
-        id: string
-        fullName: string
-        username: string
-        email: string
-        bio: string
-        phoneNum: string
-        profilePic: string
-        birthDate: Date
-        role: string
-    }
     interface UserDtoI {
         id: string
         fullName: string
@@ -22,8 +11,8 @@ declare global {
         phoneNum: string
         profilePic?: string
         birthDate: Date
-        gender: string
-        role: string
+        gender?: GENDER
+        role?: ROLE
         isEmailConfirm: boolean
         isDeleted?: boolean
         isRememberMe?: boolean
@@ -53,17 +42,6 @@ declare global {
         id?: string
         isAvailable?: boolean
         isRememberMe?: boolean
-    }
-
-    interface AdminI {
-        id: string
-        firstName: string
-        lastName: string
-        email: string
-        password: string
-        profilePic: string
-        isDeleted: boolean
-        deletedAt: Date
     }
 
     interface LectureDtoI {
@@ -200,16 +178,6 @@ declare global {
         deletedAt?: Date
     }
 
-    interface GlobalTopicI {
-        id: string
-        createdAt: Date
-        updatedAt: Date
-
-        title: string
-        isDeleted: boolean
-        deletedAt: Date | null
-    }
-
     interface ContactUsInterface {
         id: string
         name: string
@@ -302,13 +270,6 @@ declare global {
         nationalId: string
         avgRate: number
         CvLink: string
-    }
-    interface GlobalStudentI {
-        id: string
-        createdAt: Date
-        updatedAt: Date
-
-        userId: string
     }
 
     interface NotificationDtoI {
