@@ -4,6 +4,7 @@ import { SubCategoryDto } from '../models/dto/subcategory.dto'
 import { SubCategoryValidation } from '../middlewares/validation/course/subCategory.validations'
 
 import { Request, Response } from 'express'
+import { CategoryIdValidation, SubCategoryIdValidation, TopicIdValidation } from '@utilities/IdValidation/coursePackage.id'
 
 export class SubCategoryController {
   static createSubCategory = async (req: Request, res: Response) => {
@@ -12,6 +13,9 @@ export class SubCategoryController {
     subCategoryDto.categoryId = req.params.categoryId
 
     try {
+
+      await CategoryIdValidation(subCategoryDto.categoryId)
+
       const { error } = await SubCategoryValidation.createSubCategory(subCategoryDto)
       if (error) throw new Error(error.details[0].message)
       const newSubCategory = await subCategoryDao.createSubCategory(subCategoryDto)
@@ -63,6 +67,13 @@ export class SubCategoryController {
 
 
     try {
+
+      topicIds.forEach(async (topicId: string) => {
+        await TopicIdValidation(topicId)
+      })
+
+      await SubCategoryIdValidation(id)
+
       const { error } = await SubCategoryValidation.linkTopicsToSubCategory({id, topicIds})
       if (error) throw new Error(error.details[0].message)
       const newSubCategoryTopics = await subCategoryDao.linkTopicsToSubCategory({id, topicIds})
@@ -81,6 +92,9 @@ export class SubCategoryController {
 
     // console.log('categoryId Controller', categoryId)
     try {
+
+      await CategoryIdValidation(categoryId)
+
       const subCategories = await subCategoryDao.getSubCategoryByCategoryId(categoryId)
 
       return res
@@ -97,6 +111,10 @@ export class SubCategoryController {
     subCategoryDto.id = req.params.subCategoryId
 
     try {
+
+      await SubCategoryIdValidation(subCategoryDto.id)
+      // await CategoryIdValidation(subCategoryDto.categoryId)
+
       const { error } = await SubCategoryValidation.updateSubCategory(subCategoryDto)
       if (error) throw new Error(error.details[0].message)
       const updatedSubCategory = await subCategoryDao.updateSubCategory(subCategoryDto)
@@ -114,6 +132,9 @@ export class SubCategoryController {
     const subCategoryId = req.params.subCategoryId
 
     try {
+
+      await SubCategoryIdValidation(subCategoryId)
+
       const deletedSubCategory = await subCategoryDao.deleteSubCategory(subCategoryId)
 
       return res

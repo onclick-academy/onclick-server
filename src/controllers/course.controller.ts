@@ -3,6 +3,8 @@ import { CourseDto } from '../models/dto/course.dto'
 import { CourseValidation } from '../middlewares/validation/course/course.validation'
 
 import { Request, Response } from 'express'
+import { InstructorIdValidation } from '@utilities/IdValidation/users.id'
+import { CategoryIdValidation, CourseIdValidation, SubCategoryIdValidation, TopicIdValidation } from '@utilities/IdValidation/coursePackage.id'
 
 export class CourseController {
     static applyCourse = async (req: Request, res: Response) => {
@@ -12,6 +14,15 @@ export class CourseController {
         console.log('course dto', courseDto)
 
         try {
+            await InstructorIdValidation(courseDto.instructorId)
+            // await AdminIdValidation(courseDto.adminId)
+            await CategoryIdValidation(courseDto.categoryId)
+            await SubCategoryIdValidation(courseDto.subCategoryId)
+
+            courseDto.topicIds.forEach(async (topicId) => {
+                await TopicIdValidation(topicId)
+            })
+
             const { error } = await CourseValidation.createCourse(courseDto as CourseDtoI)
             if (error) throw new Error(error.details[0].message)
 
@@ -36,6 +47,7 @@ export class CourseController {
     static getCourseById = async (req: Request, res: Response) => {
         const courseDao = new CourseDao()
         try {
+            await CourseIdValidation(req.params.courseId)
             const course = await courseDao.getCourseById(req.params.courseId)
             return res.status(200).json({ message: 'Course fetched successfuly', data: course, status: 'success' })
         } catch (error: any) {
@@ -46,6 +58,7 @@ export class CourseController {
     static getCoursesByInstructorId = async (req: Request, res: Response) => {
         const courseDao = new CourseDao()
         try {
+            await InstructorIdValidation(req.params.instructorId)
             const courses = await courseDao.getCoursesByInstructorId(req.params.instructorId)
             return res.status(200).json({ message: 'Courses fetched successfuly', data: courses, status: 'success' })
         } catch (error: any) {
@@ -56,6 +69,9 @@ export class CourseController {
     static getCoursesByCategoryId = async (req: Request, res: Response) => {
         const courseDao = new CourseDao()
         try {
+
+            await CategoryIdValidation(req.params.categoryId)
+
             const courses = await courseDao.getCoursesByCategoryId(req.params.categoryId)
             return res.status(200).json({ message: 'Courses fetched successfuly', data: courses, status: 'success' })
         } catch (error: any) {
@@ -66,6 +82,9 @@ export class CourseController {
     static getCoursesBySubCategoryId = async (req: Request, res: Response) => {
         const courseDao = new CourseDao()
         try {
+
+            await SubCategoryIdValidation(req.params.subCategoryId)
+
             const courses = await courseDao.getCoursesBySubCategoryId(req.params.subCategoryId)
             return res.status(200).json({ message: 'Courses fetched successfuly', data: courses, status: 'success' })
         } catch (error: any) {
@@ -76,6 +95,9 @@ export class CourseController {
     static getCoursesByTopicId = async (req: Request, res: Response) => {
         const courseDao = new CourseDao()
         try {
+
+            await TopicIdValidation(req.params.topicId)
+
             const courses = await courseDao.getCoursesByTopicId(req.params.topicId)
             return res.status(200).json({ message: 'Courses fetched successfuly', data: courses, status: 'success' })
         } catch (error: any) {
@@ -100,6 +122,17 @@ export class CourseController {
         courseDto.id = req.params.courseId
 
         try {
+
+            if (courseDto.instructorId) await InstructorIdValidation(courseDto.instructorId)
+            if (courseDto.categoryId) await CategoryIdValidation(courseDto.categoryId)
+            if (courseDto.subCategoryId) await SubCategoryIdValidation(courseDto.subCategoryId)
+            if (courseDto.topicIds) {
+                courseDto.topicIds.forEach(async (topicId) => {
+                    await TopicIdValidation(topicId)
+                })
+            }
+            // await AdminIdValidation(courseDto.adminId)
+
             const { error } = await CourseValidation.updateCourse(courseDto as CourseUpdateI)
 
             if (error) throw new Error(error.details[0].message)
@@ -117,6 +150,9 @@ export class CourseController {
     static deleteCourse = async (req: Request, res: Response) => {
         const courseDao = new CourseDao()
         try {
+
+            await CourseIdValidation(req.params.courseId)
+
             const deletedCourse = await courseDao.deleteCourse(req.params.courseId)
             return res
                 .status(200)

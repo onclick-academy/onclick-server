@@ -6,6 +6,10 @@ import { AuthController } from './auth.controller'
 import { hashPassword } from '@utilities/hash'
 import { RegisterValidation } from '@middlewares/validation/auth/register.auth.validation'
 
+import { registerValidation } from '@middlewares/validation/auth/register.auth.validation'
+import { UserIdValidation } from '@utilities/IdValidation/users.id'
+
+
 export class UserController {
     static getAllUsers = async (req: UserRequest, res: Response) => {
         const userDao = new UserDao()
@@ -50,9 +54,12 @@ export class UserController {
         const userDto = new UserDto(req.body)
         userDto.id = req.params.userId
 
+
         try {
             const user = await userDao.getUserById(userDto.id)
             if (!user) return res.status(404).json({ error: 'User not found' })
+
+            await UserIdValidation(userDto.id)
 
             const { error } = await RegisterValidation.updateUser(userDto)
             if (error) return res.status(400).json({ error: error.details[0].message })
@@ -75,9 +82,13 @@ export class UserController {
         const userDao = new UserDao()
         const userId = req.params.userId
 
-        console.log(userId)
-        try {
-            const deletedUser = await userDao.softDeleteUser(userId)
+    console.log(userId)
+    try {
+
+      await UserIdValidation(userId)
+
+      const deletedUser = await userDao.softDeleteUser(userId)
+
 
             if (!deletedUser) return res.status(404).json({ error: 'User not found' })
 
@@ -91,8 +102,12 @@ export class UserController {
         const userDao = new UserDao()
         const userId = req.params.userId
 
-        try {
-            const deletedUser = await userDao.hardDeleteUser(userId)
+
+    try {
+
+      await UserIdValidation(userId)
+
+      const deletedUser = await userDao.hardDeleteUser(userId)
 
             if (!deletedUser) return res.status(404).json({ error: 'User not found' })
 
@@ -106,8 +121,12 @@ export class UserController {
         const userDao = new UserDao()
         const userId = req.params.userId
 
-        try {
-            const deactivatedUser = await userDao.deactivateUser(userId)
+
+    try {
+
+      await UserIdValidation(userId)
+
+      const deactivatedUser = await userDao.deactivateUser(userId)
 
             if (!deactivatedUser) return res.status(404).json({ error: 'User not found' })
 
