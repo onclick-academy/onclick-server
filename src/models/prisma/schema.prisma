@@ -100,12 +100,11 @@ model RefreshToken {
 
   token     String   @unique
   userId    String?  @unique
-  adminId   String?  @unique
   expiresAt DateTime
 
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, adminId], name: "idx_refresh_token_user")
+  @@index([userId], name: "idx_refresh_token_user")
 }
 
 model ConfirmToken {
@@ -114,12 +113,11 @@ model ConfirmToken {
 
   token     String   @unique
   userId    String?  @unique
-  adminId   String?  @unique
   expiresAt DateTime
 
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, adminId], name: "idx_confirm_token_user")
+  @@index([userId], name: "idx_confirm_token_user")
 }
 
 model Instructor {

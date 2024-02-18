@@ -3,16 +3,12 @@ import { UserController } from '../controllers/user.controller'
 import { AuthMiddleware } from '../middlewares/auth.middleware'
 import { AdminController } from '../controllers/admin.controller'
 import { InstructorController } from '../controllers/instructor.controller'
+import { verifyAdminRole } from '@middlewares/admin.middleware'
 
 const router = express.Router()
 
 // user routes
-router
-    .route('/users')
-    .get(
-        AuthMiddleware.verifyToken as unknown as RequestHandler,
-        UserController.getAllUsers as unknown as RequestHandler
-    )
+router.route('/users').get(UserController.getAllUsers as unknown as RequestHandler) // TODO Is that necessary??
 
 // admin routes
 router
@@ -32,8 +28,6 @@ router
 
 // ========================================
 // instructor routes
-router.route('/instructor/getAll').get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
-
 router.route('/instructor/approve').post(InstructorController.approveAndCreateInstructor as unknown as RequestHandler)
 
 router.route('/instructor/decline').post(InstructorController.declineInstructor as unknown as RequestHandler)
