@@ -1,5 +1,6 @@
 import { TopicDao } from '@models/dao/topic.dao'
 import { TopicDto } from '@models/dto/topic.dto'
+import { SubCategoryIdValidation, TopicIdValidation } from '@utilities/IdValidation/coursePackage.id'
 import { TopicValidation } from '@validation/course/topic.validation'
 
 import { Request, Response } from 'express'
@@ -55,6 +56,9 @@ export class TopicController {
         const topicId = req.params.topicId
 
         try {
+
+            await SubCategoryIdValidation(subCategoryId)
+
             const topics = await topicDao.getTopicsBySubCategoryId(topicId ,subCategoryId)
 
             return res.status(200).json({ data: topics, status: 'success' })
@@ -71,6 +75,9 @@ export class TopicController {
         topicDto.id = req.params.topicId
 
         try {
+
+            await TopicIdValidation(topicDto.id)
+
             const { error } = await TopicValidation.updateTopic(topicDto)
             if (error) throw new Error(error.details[0].message)
 
@@ -88,6 +95,9 @@ export class TopicController {
         const topicId = req.params.topicId
 
         try {
+
+            await TopicIdValidation(topicId)
+
             const deletedTopic = await topicDao.deleteTopic(topicId)
 
             return res.status(200).json({ message: 'Topic deleted successfuly', data: deletedTopic, status: 'success' })

@@ -24,7 +24,6 @@ export class AuthController {
         }
 
         const userDao = new UserDao()
-        const studentDao = new StudentDao()
 
         try {
 
@@ -41,7 +40,6 @@ export class AuthController {
             }
 
             const newUser = await userDao.createUser(userDto)
-            const newStudent = await studentDao.createStudent({ userId: newUser.id })
 
             const accessToken = createToken(newUser, process.env.JWT_SECRET_KEY, {
                 expiresIn: expiredPeriod.accessToken
@@ -60,7 +58,6 @@ export class AuthController {
 
             return res.status(200).json({
                 data: newUser,
-                dataStudent: newStudent,
                 accessToken: accessToken,
                 refreshToken: userDto.isRememberMe ? refreshToken : null,
                 status: 'success'

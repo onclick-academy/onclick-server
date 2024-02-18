@@ -2,6 +2,7 @@ import { LectureDto } from "@models/dto/lecture.dto";
 import { LectureDao } from "@models/dao/lecture.dao";
 import { lectureValidation } from "@middlewares/validation/course/lecture.validation";
 import { Request, Response } from "express";
+import { CourseIdValidation, LectureIdValidation } from "@utilities/IdValidation/coursePackage.id";
 
 export class LectureController {
 
@@ -10,6 +11,9 @@ export class LectureController {
         const lectureDao = new LectureDao();
 
         try {
+
+            await CourseIdValidation(lectureDto.courseId);
+
             const { error } = await lectureValidation.createLecture(lectureDto);
             if (error) return res.status(400).json({ message: error.message });
 
@@ -41,6 +45,9 @@ export class LectureController {
         const lectureDao = new LectureDao();
 
         try {
+
+            await CourseIdValidation(courseId);
+
             const lectures = await lectureDao.getLecturesByCourseId(courseId);
 
             return res.status(200).json({ data: lectures, state: 'success' });
@@ -55,6 +62,11 @@ export class LectureController {
         const lectureDao = new LectureDao();
 
         try {
+            let lectureId = req.body.id;
+
+            await LectureIdValidation(lectureId);
+            await CourseIdValidation(lectureDto.courseId);
+
             const { error } = await lectureValidation.updateLecture(lectureDto);
             if (error) return res.status(400).json({ message: error.message });
 
@@ -72,6 +84,9 @@ export class LectureController {
         const lectureDao = new LectureDao();
 
         try {
+
+            await LectureIdValidation(lectureId);
+
             const deletedLecture = await lectureDao.softDeleteLecture(lectureId);
 
             return res.status(200).json({ message: 'Lecture deleted (softly) successfully', data: deletedLecture, state: 'success' });
@@ -86,6 +101,9 @@ export class LectureController {
         const lectureDao = new LectureDao();
 
         try {
+
+            await LectureIdValidation(lectureId);
+
             const deletedLecture = await lectureDao.hardDeleteLecture(lectureId);
 
             return res.status(200).json({ message: 'Lecture deleted successfully', data: deletedLecture, state: 'success' });

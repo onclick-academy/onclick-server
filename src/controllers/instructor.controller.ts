@@ -6,6 +6,7 @@ import { Request, Response } from 'express'
 import { UserDao } from '../models/dao/user.dao'
 import jwt from 'jsonwebtoken'
 import { UserDto } from '../models/dto/user.dto'
+import { InstructorIdValidation, UserIdValidation } from '@utilities/IdValidation/users.id'
 
 export class InstructorController {
     static ApplyInstructor = async (req: any, res: Response) => {
@@ -16,6 +17,9 @@ export class InstructorController {
         instructorDto.userId = id
 
         try {
+
+            await UserIdValidation(instructorDto.userId)
+
             const { error } = await InstructorValidation.createInstructor(instructorDto)
             if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -41,6 +45,9 @@ export class InstructorController {
         console.log(instructorId)
 
         try {
+
+            await InstructorIdValidation(instructorId)
+
             const instructor = await instructorDao.approveInstructor(instructorId)
 
             const updatedUser = await userDao.updateUser({ id: instructor.userId, role: 'INSTRUCTOR' })
@@ -62,6 +69,9 @@ export class InstructorController {
         const { instructorId } = req.body // TODO - discuss with team
 
         try {
+
+            await InstructorIdValidation(instructorId)
+
             const instructor = await instructorDao.declineInstructor(instructorId)
 
             res.status(201).json({ message: 'Instructor declined successfully', data: instructor, state: 'success' })
@@ -138,6 +148,13 @@ export class InstructorController {
         const userDto = new UserDto(req.body)
 
         try {
+
+            await InstructorIdValidation(instructorDto.id)
+
+            const { error } = await InstructorValidation.updateInstructor(instructorDto)
+
+            if (error) return res.status(400).json({ error: error.details[0].message })
+
             const instructor = await instructorDao.updateInstructor(instructorDto, userDto)
 
             res.status(201).json({ message: 'Instructor updated successfully', data: instructor, state: 'success' })
@@ -151,6 +168,9 @@ export class InstructorController {
         const instructorDao = new InstructorDao()
 
         try {
+
+            await InstructorIdValidation(instructorId)
+
             const instructor = await instructorDao.softDeleteInstructor(instructorId)
 
             res.status(201).json({
@@ -168,6 +188,9 @@ export class InstructorController {
         const instructorDao = new InstructorDao()
 
         try {
+
+            await InstructorIdValidation(instructorId)
+
             const instructor = await instructorDao.hardDeleteInstructor(instructorId)
 
             res.status(201).json({

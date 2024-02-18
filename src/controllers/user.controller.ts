@@ -3,8 +3,8 @@ import { UserDao } from '../models/dao/user.dao'
 import { UserDto } from '../models/dto/user.dto'
 import { Request, Response } from 'express'
 import { AuthController } from './auth.controller'
-import { hashPassword } from '@utilities/hash'
 import { registerValidation } from '@middlewares/validation/auth/register.auth.validation'
+import { UserIdValidation } from '@utilities/IdValidation/users.id'
 
 export class UserController {
   static getAllUsers = async (req: UserRequest, res: Response) => {
@@ -51,8 +51,7 @@ export class UserController {
     userDto.id = req.params.userId
 
     try {
-      const user = await userDao.getUserById(userDto.id)
-      if (!user) return res.status(404).json({ error: 'User not found' })
+      await UserIdValidation(userDto.id)
 
       const {error} = await registerValidation.updateUser(userDto)
       if (error) return res.status(400).json({ error: error.details[0].message })
@@ -77,6 +76,9 @@ export class UserController {
 
     console.log(userId)
     try {
+
+      await UserIdValidation(userId)
+
       const deletedUser = await userDao.softDeleteUser(userId)
 
       if (!deletedUser) return res.status(404).json({ error: 'User not found' })
@@ -92,6 +94,9 @@ export class UserController {
     const userId = req.params.userId
 
     try {
+
+      await UserIdValidation(userId)
+
       const deletedUser = await userDao.hardDeleteUser(userId)
 
       if (!deletedUser) return res.status(404).json({ error: 'User not found' })
@@ -107,6 +112,9 @@ export class UserController {
     const userId = req.params.userId
 
     try {
+
+      await UserIdValidation(userId)
+
       const deactivatedUser = await userDao.deactivateUser(userId)
 
       if (!deactivatedUser) return res.status(404).json({ error: 'User not found' })

@@ -20,9 +20,9 @@ export class InstructorValidation {
     return joi.object(this.baseSchema).validateAsync(instructorDto)
   }
 
-  static updateInstructor() {
+  static updateInstructor(instructorDto: InstructorDtoI) {
     return joi
       .object({ ...this.baseSchema, userId: joi.string().required() })
-      .fork(['nationalID', 'cvLink', 'averageRate'], schema => schema.optional())
+      .fork(['nationalID', 'cvLink', 'averageRate'], schema => schema.optional()).validateAsync(instructorDto)
   }
 }
