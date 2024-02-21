@@ -1,7 +1,7 @@
 import prisma from '../prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
 import { UserTokenI } from '../../types/user.interface'
-import { GENDER, ROLE, EDUCATION_LEVEL, Admin } from '@prisma/client'
+import { GENDER, ROLE, EDUCATION_LEVEL} from '@prisma/client'
 
 interface loginDtoI {
     email?: string
