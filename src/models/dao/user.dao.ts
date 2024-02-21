@@ -54,6 +54,16 @@ export class UserDao {
         return users
     }
 
+    getAllAdmins = async () => {
+        const admins = await prisma.user.findMany({
+            where: {
+                role: 'ADMIN',
+                isDeleted: false
+            }
+        })
+        return admins
+    }
+
     getUserById = async (id: string) => {
         const user = await prisma.user.findUnique({
             where: {

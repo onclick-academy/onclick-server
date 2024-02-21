@@ -5,8 +5,6 @@ import { Request, Response } from 'express'
 import { AuthController } from './auth.controller'
 import { hashPassword } from '@utilities/hash'
 import { RegisterValidation } from '@middlewares/validation/auth/register.auth.validation'
-
-import { registerValidation } from '@middlewares/validation/auth/register.auth.validation'
 import { UserIdValidation } from '@utilities/IdValidation/users.id'
 
 
