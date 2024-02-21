@@ -17,7 +17,9 @@ export class AdminDao {
 
     // TODO update User table role: ADMIN or WHAT WE SHOULD DO??
     createAdmin = async (adminDto: UserDtoI) => {
-        await this.isExist(adminDto.email, 'email')
+        // await this.isExist(adminDto.email, 'email')
+
+        console.log(adminDto)
 
         const user = await prisma.user.findUnique({
             where: {
@@ -26,11 +28,15 @@ export class AdminDao {
         })
         if (!user) throw Error()
 
-        const newAdmin = await prisma.user.create({
-            data: adminDto
-        })
-
-        return newAdmin
+       const newAdmin = await prisma.user.create({
+        data: {
+            ...adminDto,
+            role: roles.ADMIN
+        }
+    })
+        
+    console.log(newAdmin)
+        return newAdmin 
     }
 
     getAllAdmins = async () => {

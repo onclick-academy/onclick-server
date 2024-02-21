@@ -8,6 +8,7 @@ import dotenv from 'dotenv'
 import { ROLE } from '@prisma/client'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
 
+
 dotenv.config()
 
 export const expiredPeriod = {
@@ -35,7 +36,7 @@ app.use(morgan('dev'))
 
 app.use('/api', require('@routes/home.route').default)
 
-app.use('/api/v1/admin', verifyAdminRole, require('@routes/admin.route').default)
+app.use('/api/v1/admin',AuthMiddleware.verifyToken ,verifyAdminRole, require('@routes/admin.route').default)
 
 app.use('/api/v1/auth', require('@routes/auth.route').default)
 
