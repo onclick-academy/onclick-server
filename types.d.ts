@@ -88,8 +88,8 @@ declare global {
         deletedAt?: Date
     }
 
-    interface LectureContentI {
-        id: string
+    interface LectureContentDtoI {
+        id?: string | undefined
         lectureId: string
         order: number
         content: string
@@ -133,8 +133,8 @@ declare global {
     }
 
     interface BlockStateI {
-        id: string
-        UserDtoId: string
+        id?: string | undefined
+        userId: string
         adminId: string
         state: boolean
         reason: string
