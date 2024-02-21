@@ -118,6 +118,7 @@ declare global {
         state: boolean
         reason: string
         period: Date
+        user: UserI; // this is a relation
     }
 
     interface CourseDtoI {
@@ -141,6 +142,7 @@ declare global {
         isAvailable: boolean
         isDeleted: boolean
         isApproved?: boolean
+        createdBy: string
     }
 
     interface CourseUpdateI {
