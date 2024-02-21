@@ -1,9 +1,6 @@
 import { CronJob } from 'cron';
 import { UserDao } from '@models/dao/user.dao';
 
-export const test = new CronJob('* * * * * *', async () => {
-    console.log('Hello World');
-})
 
 export const hardDeleteUserAfter30Days = new CronJob('0 0 0 * * *', async () => {
 
