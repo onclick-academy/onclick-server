@@ -8,6 +8,13 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+
+import { hardDeleteUserAfter30Days } from './src/scripts/cron.op'
+
+hardDeleteUserAfter30Days.start()
+
+
+
 export const expiredPeriod = {
     accessToken: '3d',
     refreshToken: '5d'
@@ -85,7 +92,7 @@ app.use(
 app.use(
     '/api/v1/lectures',
     AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/lecture.route').default
+    require('./src/routes/lecture.route').default)
 
 // wishlist routes
 app.use(
