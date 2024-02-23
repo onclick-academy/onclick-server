@@ -1,5 +1,6 @@
 import prisma from '../prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
+import { roles } from '../../..'
 
 export class UserDao {
     isExist = async (ele: string, type: string) => {
@@ -57,7 +58,7 @@ export class UserDao {
     getAllAdmins = async () => {
         const admins = await prisma.user.findMany({
             where: {
-                role: 'ADMIN',
+                role: roles.ADMIN || roles.SUPER_ADMIN,
                 isDeleted: false
             }
         })

@@ -5,6 +5,35 @@ import { UserRequest, UserTokenI } from 'types/user.interface'
 import prisma from '@models/prisma/prisma-client'
 import { createToken } from '@utilities/token'
 
+/**
+ * Description: This function is used to get user and decoded user
+ * cuz we not always we get the rol from request specially when login
+ * @param Token
+ * @returns
+ */
+const getUserAndDecodedUser = async (flag: 'access' | 'refresh', token: string) => {
+    const decodedUser = jwt.verify(
+        token,
+        (flag === 'access' ? process.env.JWT_SECRET_KEY : process.env.REFRESH_TOKEN_SECRET) as string
+    ) as unknown as UserTokenI
+    const userExist = await prisma.user.findFirst({
+        where: {
+            OR: [
+                {
+                    id: decodedUser.id
+                },
+                {
+                    username: decodedUser.username
+                },
+                {
+                    email: decodedUser.email
+                }
+            ]
+        }
+    })
+    if (!userExist) throw new Error('User not found')
+    return { decodedUser, userExist }
+}
 export class AuthMiddleware {
     static verifyToken = (async (req: UserRequest, res: Response, next: NextFunction) => {
         // @ts-ignore-next
@@ -15,8 +44,12 @@ export class AuthMiddleware {
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
 
         try {
-            const user = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
-            req.user = user
+            const userExist = await getUserAndDecodedUser('access', accessToken)
+            req.user = {
+                ...userExist.decodedUser,
+                accessToken,
+                role: userExist.userExist.role
+            }
             next()
         } catch (error: any) {
             if (error.name === 'TokenExpiredError') {
@@ -28,43 +61,39 @@ export class AuthMiddleware {
                             .status(401)
                             .json({ error: 'User has not a refresh token', redirectUrl: '/api/v1/auth/login' })
 
-                    const decodedRefreshToken = jwt.verify(
-                        refreshToken,
-                        process.env.REFRESH_TOKEN_SECRET as string
-                    ) as unknown as UserTokenI
+                    const decodedRefreshToken = await getUserAndDecodedUser('refresh', refreshToken)
                     const newPayload = {
-                        id: decodedRefreshToken.id,
-                        username: decodedRefreshToken.username,
-                        email: decodedRefreshToken.email,
-                        role: decodedRefreshToken.role
+                        ...decodedRefreshToken.decodedUser,
+                        role: decodedRefreshToken.userExist.role
                     }
 
                     const newAccessToken = createToken(newPayload, process.env.JWT_SECRET_KEY, {
                         expiresIn: expiredPeriod.accessToken
                     })
-
                     const newRefreshToken = createToken(newPayload, process.env.REFRESH_TOKEN_SECRET, {
                         expiresIn: expiredPeriod.refreshToken
                     })
 
                     req.user = {
-                        ...decodedRefreshToken,
+                        ...newPayload,
                         accessToken: newAccessToken,
                         refreshToken: newRefreshToken
                     }
                     next()
                 } catch (err) {
+                    console.log(err)
                     return res
                         .status(401)
                         .json({ error: 'Invalid refresh token \n' + err, redirectUrl: '/api/v1/auth/login' })
                 }
             } else {
+                console.log(error)
                 return res.status(401).json({ error: 'Invalid token', redirectUrl: '/api/v1/auth/login' })
             }
         }
     }) as unknown as RequestHandler
 
-    static studentAuthorization = ((req: any, res: Response, next: NextFunction) => {
+    static studentAuthorization = (async (req: any, res: Response, next: NextFunction) => {
         const authHeader = req.headers['authorization']
         const accessToken = authHeader?.split(' ')[1]
 
@@ -72,28 +101,30 @@ export class AuthMiddleware {
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
 
         try {
-            const requester = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
-            req.user = requester
-            if (
-                requester.role === roles.ADMIN ||
-                requester.role === roles.SUPER_ADMIN ||
-                requester.role === roles.STUDENT
-            ) {
-                if (req.body.role) {
-                    if (requester.role === roles.SUPER_ADMIN) {
-                        next()
-                    } else {
-                        return res.status(401).json({ error: 'Unauthorized' })
-                    }
-                }
+            const decoded = await getUserAndDecodedUser('access', accessToken)
+            req.user = {
+                ...decoded.decodedUser,
+                accessToken,
+                role: decoded.userExist.role
+            }
+            console.log('from student auth', req.user)
+
+            const isSuperAdmin = req.user.role === roles.SUPER_ADMIN
+            const isAdminOrStudent = [roles.ADMIN, roles.STUDENT].includes(req.user.role)
+            const changingRole = Boolean(req.body.role)
+
+            if (isSuperAdmin || (isAdminOrStudent && !changingRole)) {
                 next()
             } else {
-                return res.status(401).json({ error: 'Unauthorized' })
+                res.status(401).json({ error: 'Unauthorized' })
             }
-        } catch (error: any) {}
+        } catch (error) {
+            console.log(error)
+            res.status(401).json({ error: 'Invalid token', redirectUrl: '/api/v1/auth/login' })
+        }
     }) as unknown as RequestHandler
 
-    static instructorAuthorization = ((req: any, res: Response, next: NextFunction) => {
+    static instructorAuthorization = (async (req: any, res: Response, next: NextFunction) => {
         const authHeader = req.headers['authorization']
         const accessToken = authHeader?.split(' ')[1]
 
@@ -101,25 +132,27 @@ export class AuthMiddleware {
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
 
         try {
-            const requester = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
-            req.user = requester
-            if (
-                requester.role === roles.ADMIN ||
-                requester.role === roles.SUPER_ADMIN ||
-                requester.role === roles.INSTRUCTOR
-            ) {
-                if (req.body.role) {
-                    if (requester.role === roles.SUPER_ADMIN) {
-                        next()
-                    } else {
-                        return res.status(401).json({ error: 'Unauthorized' })
-                    }
-                }
+            const decoded = await getUserAndDecodedUser('access', accessToken)
+            req.user = {
+                ...decoded.decodedUser,
+                accessToken,
+                role: decoded.userExist.role
+            }
+            console.log('from student auth', req.user)
+
+            const isSuperAdmin = req.user.role === roles.SUPER_ADMIN
+            const isAdminOrInstructor = [roles.ADMIN, roles.INSTRUCTOR].includes(req.user.role)
+            const changingRole = Boolean(req.body.role)
+
+            if (isSuperAdmin || (isAdminOrInstructor && !changingRole)) {
                 next()
             } else {
-                return res.status(401).json({ error: 'Unauthorized' })
+                res.status(401).json({ error: 'Unauthorized' })
             }
-        } catch (error: any) {}
+        } catch (error) {
+            console.log(error)
+            res.status(401).json({ error: 'Invalid token', redirectUrl: '/api/v1/auth/login' })
+        }
     }) as unknown as RequestHandler
 
     static checkUserIsDeleted = async (req: UserRequest, res: Response, next: NextFunction) => {
