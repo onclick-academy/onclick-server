@@ -1,17 +1,6 @@
-import { NOTIFICATION_TYPE } from '@prisma/client'
+import { GENDER, NOTIFICATION_TYPE, ROLE } from '@prisma/client'
 
 declare global {
-    interface GlobalUserI {
-        id: string
-        fullName: string
-        username: string
-        email: string
-        bio: string
-        phoneNum: string
-        profilePic: string
-        birthDate: Date
-        role: string
-    }
     interface UserDtoI {
         id: string
         fullName: string
@@ -22,8 +11,8 @@ declare global {
         phoneNum: string
         profilePic?: string
         birthDate: Date
-        gender: string
-        role: string
+        gender?: GENDER
+        role?: ROLE
         isEmailConfirm: boolean
         isDeleted?: boolean
         isRememberMe?: boolean
@@ -55,17 +44,6 @@ declare global {
         isRememberMe?: boolean
     }
 
-    interface AdminI {
-        id: string
-        firstName: string
-        lastName: string
-        email: string
-        password: string
-        profilePic: string
-        isDeleted: boolean
-        deletedAt: Date
-    }
-
     interface LectureDtoI {
         id?: string | undefined
         courseId: string
@@ -77,8 +55,8 @@ declare global {
         deletedAt: Date
     }
 
-    interface LectureUpdateI {
-        id?: string | undefined
+    interface LectureUpdateDtoI {
+        id?: string
         courseId?: string
         title?: string
         description?: string
@@ -89,7 +67,7 @@ declare global {
     }
 
     interface LectureContentDtoI {
-        id?: string | undefined
+        id?: string
         lectureId: string
         order: number
         content: string
@@ -112,6 +90,7 @@ declare global {
         description: string
         isDeleted: boolean
         deletedAt: Date
+        lectureContentId: string
     }
 
     interface SuspendStateDtoI {
@@ -139,6 +118,7 @@ declare global {
         state: boolean
         reason: string
         period: Date
+        user: UserI; // this is a relation
     }
 
     interface CourseDtoI {
@@ -162,6 +142,7 @@ declare global {
         isAvailable: boolean
         isDeleted: boolean
         isApproved?: boolean
+        createdBy: string
     }
 
     interface CourseUpdateI {
@@ -197,16 +178,6 @@ declare global {
         title?: string
         isDeleted?: boolean
         deletedAt?: Date
-    }
-
-    interface GlobalTopicI {
-        id: string
-        createdAt: Date
-        updatedAt: Date
-
-        title: string
-        isDeleted: boolean
-        deletedAt: Date | null
     }
 
     interface ContactUsInterface {
@@ -301,13 +272,6 @@ declare global {
         nationalId: string
         avgRate: number
         CvLink: string
-    }
-    interface GlobalStudentI {
-        id: string
-        createdAt: Date
-        updatedAt: Date
-
-        userId: string
     }
 
     interface NotificationDtoI {

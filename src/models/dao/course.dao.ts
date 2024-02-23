@@ -48,7 +48,7 @@ export class CourseDao {
     getCoursesByInstructorId = async (instructorId: string) => {
         const courses = await prisma.course.findMany({
             where: {
-                instructorId: instructorId,
+                createdBy: instructorId,
                 isDeleted: false
             }
         })

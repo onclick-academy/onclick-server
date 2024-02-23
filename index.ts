@@ -1,10 +1,12 @@
 import 'module-alias/register'
 
-import { AuthMiddleware } from '@middlewares/auth.middleware'
-import express, { NextFunction, Request, Response, RequestHandler } from 'express'
+import { AuthMiddleware } from 'middlewares/auth.middleware'
+import express, { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 import morgan from 'morgan'
 import dotenv from 'dotenv'
+import { ROLE } from '@prisma/client'
+import { verifyAdminRole } from '@middlewares/admin.middleware'
 
 dotenv.config()
 
@@ -20,6 +22,19 @@ export const expiredPeriod = {
     refreshToken: '5d'
 }
 
+type Roles = {
+    ADMIN: ROLE
+    INSTRUCTOR: ROLE
+    STUDENT: ROLE
+    SUPER_ADMIN: ROLE
+}
+export const roles: Roles = {
+    SUPER_ADMIN: 'SUPER_ADMIN',
+    ADMIN: 'ADMIN',
+    INSTRUCTOR: 'INSTRUCTOR',
+    STUDENT: 'STUDENT'
+}
+
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -27,97 +42,12 @@ app.use(morgan('dev'))
 
 app.use('/api', require('@routes/home.route').default)
 
-app.use('/api/v1/admin', require('@routes/admin.route').default)
+app.use('/api/v1/admin', AuthMiddleware.verifyToken, verifyAdminRole, require('@routes/admin.route').default)
 
 app.use('/api/v1/auth', require('@routes/auth.route').default)
 
-app.use('/api/v1/users', AuthMiddleware.verifyToken as unknown as RequestHandler, require('@routes/user.route').default)
 
-// category routes
-app.use(
-    '/api/v1/categories',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/category.route').default
-)
-
-// sub-category routes
-app.use(
-    '/api/v1/subcategories',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/subCategory.routes').default
-)
-
-// course routes
-app.use(
-    '/api/v1/courses',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/course.route').default
-)
-
-// instructor routes
-app.use(
-    '/api/v1/instructors',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/instructor.routes').default
-)
-
-// topic routes
-app.use(
-    '/api/v1/topics',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/topic.routes').default
-)
-
-// Notifications route
-app.use(
-    '/api/v1/notifications',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('@routes/notification.route.ts').default
-)
-
-app.use(
-    '/api/v1/users',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/user.route').default
-)
-
-// lecture content routes
-app.use(
-    '/api/v1/lecturescontent',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/lectureContent.route').default
-)
-
-// lecture routes
-app.use(
-    '/api/v1/lectures',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/lecture.route').default)
-
-// wishlist routes
-app.use(
-    '/api/v1/wishlist',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/wishlist.route').default
-)
-
-// event routes
-app.use(
-    '/api/v1/events',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/event.route').default
-)
-
-// appSettings routes
-app.use(
-    '/api/v1/settings',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/appSettings.route').default
-)
-
-app.use((req, res, next) => {
-    next(createError.NotFound())
-})
+app.use('/api/v1', require('@routes/__tokenized').default)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500)
@@ -127,12 +57,9 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-// susspendState routes
-app.use(
-    '/api/v1/susspendState',
-    AuthMiddleware.verifyToken as unknown as RequestHandler,
-    require('./src/routes/suspendState.route').default
-)
+app.use((req, res, next) => {
+    next(createError.NotFound())
+})
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`))

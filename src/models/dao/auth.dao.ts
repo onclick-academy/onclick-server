@@ -1,29 +1,7 @@
 import prisma from '../prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
 import { UserTokenI } from '../../types/user.interface'
-import { GENDER, ROLE, EDUCATION_LEVEL, Admin } from '@prisma/client'
-
-interface GlobalUserI {
-    id: string
-    createdAt: Date
-    updatedAt: Date
-
-    fullName: string
-    username: string
-    email: string
-    password: string
-    bio: string
-    phoneNum: string
-    profilePic: string
-    birthDate: Date
-    gender: GENDER
-    role: ROLE
-    educationLevel: EDUCATION_LEVEL
-    isEmailConfirm: boolean
-    isDeleted: boolean
-    deletedAt: Date
-    isAvailable: boolean
-}
+import { GENDER, ROLE, EDUCATION_LEVEL} from '@prisma/client'
 
 interface loginDtoI {
     email?: string
@@ -40,20 +18,12 @@ export class AuthDao {
         let user: UserTokenI | any
 
         if (userDto.email) {
-            user = (await prisma.user.findUnique({
+            user = await prisma.user.findUnique({
                 where: {
                     email: userDto.email,
                     isDeleted: false
                 }
-            })) as GlobalUserI
-            if (!user) {
-                user = (await prisma.admin.findUnique({
-                    where: {
-                        email: userDto.email,
-                        isDeleted: false
-                    }
-                }))
-            }
+            })
             if (!user) throw new Error('Email is not found please register')
             if (!user.isAvailable) {
                 user.isAvailable = true
@@ -61,12 +31,12 @@ export class AuthDao {
         }
 
         if (userDto.username) {
-            user = (await prisma.user.findUnique({
+            user = await prisma.user.findUnique({
                 where: {
                     username: userDto.username,
                     isDeleted: false
                 }
-            })) as GlobalUserI
+            })
 
             if (!user) throw new Error('Username is not correct')
             if (!user.isAvailable) {
@@ -80,12 +50,12 @@ export class AuthDao {
     }
 
     getUserByEmail = async (userDto: { email: string }) => {
-        const user = (await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 email: userDto.email,
                 isDeleted: false
             }
-        })) as GlobalUserI
+        })
         if (!user) return false
 
         return user

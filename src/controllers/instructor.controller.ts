@@ -6,6 +6,7 @@ import { Request, Response } from 'express'
 import { UserDao } from '../models/dao/user.dao'
 import jwt from 'jsonwebtoken'
 import { UserDto } from '../models/dto/user.dto'
+import { roles } from '../..'
 import { InstructorIdValidation, UserIdValidation } from '@utilities/IdValidation/users.id'
 
 export class InstructorController {
@@ -50,7 +51,7 @@ export class InstructorController {
 
             const instructor = await instructorDao.approveInstructor(instructorId)
 
-            const updatedUser = await userDao.updateUser({ id: instructor.userId, role: 'INSTRUCTOR' })
+            const updatedUser = await userDao.updateUser({ id: instructor.userId, role: roles.INSTRUCTOR })
 
             res.status(201).json({
                 message: 'Instructor created successfully',
@@ -59,7 +60,8 @@ export class InstructorController {
                 state: 'success'
             })
         } catch (error: any) {
-            res.status(500).json({ error: error.message })
+            console.log(error)
+            res.status(500).json({ error: error.message, status: 'failed' })
         }
     }
 

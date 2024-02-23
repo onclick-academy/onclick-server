@@ -6,7 +6,8 @@
         "start": "tsc && node dist/index.js",
         "dev": "yarn build && nodemon --exec ts-node -r tsconfig-paths/register dist/index.js",
         "format": "npx prisma format",
-        "build": "tsc"
+        "build": "tsc",
+        "studio": "cd src/models && npx prisma studio"
     },
     "main": "dist/index.js",
     "_moduleAliases": {

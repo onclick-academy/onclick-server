@@ -1,13 +1,12 @@
-import prisma from "@models/prisma/prisma-client";
+import prisma from '@models/prisma/prisma-client'
 
 export class LectureDao {
-
     createLecture = async (lectureDto: LectureDtoI) => {
         // TODO course Id validation
         const lecture = await prisma.lecture.create({
             data: lectureDto
-        });
-        return lecture;
+        })
+        return lecture
     }
 
     getLectureById = async (id: string) => {
@@ -15,10 +14,10 @@ export class LectureDao {
             where: {
                 id
             }
-        });
-        if (!lecture) throw new Error('Lecture not found');
+        })
+        if (!lecture) throw new Error('Lecture not found')
 
-        return lecture;
+        return lecture
     }
 
     getLecturesByCourseId = async (courseId: string) => {
@@ -27,18 +26,18 @@ export class LectureDao {
             where: {
                 courseId
             }
-        });
-        return lectures;
+        })
+        return lectures
     }
 
-    updateLecture = async (lectureDto: LectureUpdateI) => {
+    updateLecture = async (lectureDto: LectureUpdateDtoI) => {
         const updatedLecture = await prisma.lecture.update({
             where: {
                 id: lectureDto.id
             },
             data: lectureDto
-        });
-        return updatedLecture;
+        })
+        return updatedLecture
     }
 
     // in editing if declined or to not be shown
@@ -51,8 +50,8 @@ export class LectureDao {
                 isDeleted: true,
                 deletedAt: new Date()
             }
-        });
-        return deletedLecture;
+        })
+        return deletedLecture
     }
 
     hardDeleteLecture = async (id: string) => {
@@ -60,7 +59,7 @@ export class LectureDao {
             where: {
                 id
             }
-        });
-        return deletedLecture;
+        })
+        return deletedLecture
     }
 }
