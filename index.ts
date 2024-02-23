@@ -10,6 +10,13 @@ import { verifyAdminRole } from '@middlewares/admin.middleware'
 
 dotenv.config()
 
+
+import { hardDeleteUserAfter30Days } from './src/scripts/cron.op'
+
+hardDeleteUserAfter30Days.start()
+
+
+
 export const expiredPeriod = {
     accessToken: '3d',
     refreshToken: '5d'
@@ -38,6 +45,7 @@ app.use('/api', require('@routes/home.route').default)
 app.use('/api/v1/admin', AuthMiddleware.verifyToken, verifyAdminRole, require('@routes/admin.route').default)
 
 app.use('/api/v1/auth', require('@routes/auth.route').default)
+
 
 app.use('/api/v1', require('@routes/__tokenized').default)
 
