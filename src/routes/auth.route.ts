@@ -15,6 +15,5 @@ router.route('/password/changepassword/:userId').post(PasswordController.changeP
 
 router.route('/password/resetpassword/:userId/:token').post(PasswordController.resetPassword)
 router.route('/email/user/:userId/:token').get(AuthController.emailUserConfirmation)
-router.route('/email/admin/:adminId/:token').get(AuthController.emailAdminConfirmation)
 
 export default router

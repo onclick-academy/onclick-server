@@ -16,7 +16,7 @@ export class lectureValidation {
         return joi.object(this.baseSchema).validateAsync(lectureDto)
     }
 
-    static updateLecture(lectureDto: LectureUpdateI) {
+    static updateLecture(lectureDto: LectureUpdateDtoI) {
         return joi
             .object(this.baseSchema)
             .fork(['title', 'description', 'videoUrl', 'duration', 'isDeleted', 'deletedAt'], schema =>

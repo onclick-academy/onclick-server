@@ -17,13 +17,12 @@ async function generateTokenAndURL(user: User, action: 'RESET' | 'CONFIRM') {
     const expiresIn = action === 'RESET' ? '15m' : '24h'
     const expiresAt = new Date(Date.now() + (action === 'RESET' ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000))
     const token = createToken({ email: user.email, id: user.id }, secret, { expiresIn })
-    const isAdmin = !user.username
     try {
         if (action === 'RESET') {
             const resetTokenData = {
                 token,
                 expiresAt,
-                ...(isAdmin ? { adminId: user.id } : { userId: user.id })
+                userId: user.id
             }
             await prisma.resetToken.upsert({
                 where: { userId: user.id },
@@ -34,7 +33,7 @@ async function generateTokenAndURL(user: User, action: 'RESET' | 'CONFIRM') {
             const confirmTokenData = {
                 token,
                 expiresAt,
-                ...(isAdmin ? { adminId: user.id } : { userId: user.id })
+                userId: user.id 
             }
             await prisma.confirmToken.upsert({
                 where: { userId: user.id },
@@ -47,7 +46,7 @@ async function generateTokenAndURL(user: User, action: 'RESET' | 'CONFIRM') {
         throw new Error(`Failed to handle ${action.toLowerCase()} token.`)
     }
 
-    const urlPath = action === 'RESET' ? 'password/resetpassword' : `email/${isAdmin ? 'admin' : 'user'}`
+    const urlPath = action === 'RESET' ? 'password/resetpassword' : '/email/user'
     const url = `http://localhost:3000/api/v1/auth/${urlPath}/${user.id}/${token}`
 
     return url

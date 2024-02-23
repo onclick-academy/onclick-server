@@ -1,7 +1,7 @@
-import { AppSettingsDao } from "@models/dao/appSettings.dao";
-import { AppSettingsDto } from "@models/dto/appSettings.dto";
-import { AppSettingsValidation } from "@middlewares/validation/content/appSettings.validation";
-import { Request, Response } from "express";
+import { AppSettingsDao } from '@models/dao/appSettings.dao'
+import { AppSettingsDto } from '@models/dto/appSettings.dto'
+import { AppSettingsValidation } from '@middlewares/validation/content/appSettings.validation'
+import { Request, Response } from 'express'
 
 export class AppSettingsController {
     static async createAppSettings(req: any, res: Response) {
@@ -17,13 +17,15 @@ export class AppSettingsController {
         }
 
         try {
-            const {error} = await AppSettingsValidation.createAppSettings(appSettingsDto)
+            const { error } = await AppSettingsValidation.createAppSettings(appSettingsDto)
             if (error) res.status(400).json({ message: error.message })
 
             const appSettings = await appSettingsDao.createAppSettings(appSettingsDto)
-            return res.status(201).json({ message: 'App settings created successfully', data: appSettings, status: 'success' })
+            return res
+                .status(201)
+                .json({ message: 'App settings created successfully', data: appSettings, status: 'success' })
         } catch (error) {
-            console.log(error);
+            console.log(error)
             res.status(400).json({ message: error }) // error.message
         }
     }
@@ -34,9 +36,11 @@ export class AppSettingsController {
 
         try {
             const appSettings = await appSettingsDao.getAppSettings(settingId)
-            return res.status(200).json({message: 'App settings retrieved successfully', data: appSettings, status: 'success'})
+            return res
+                .status(200)
+                .json({ message: 'App settings retrieved successfully', data: appSettings, status: 'success' })
         } catch (error) {
-            console.log(error);
+            console.log(error)
             res.status(400).json({ message: error }) // error.message
         }
     }
@@ -54,15 +58,16 @@ export class AppSettingsController {
         }
 
         try {
-            const {error} = await AppSettingsValidation.updateAppSettings(appSettingsDto)
+            const { error } = await AppSettingsValidation.updateAppSettings(appSettingsDto)
             if (error) res.status(400).json({ message: error.message })
 
             const appSettings = await appSettingsDao.updateAppSettings(appSettingsDto)
-            return res.status(200).json({ message: 'App settings updated successfully', data: appSettings, status: 'success' })
+            return res
+                .status(200)
+                .json({ message: 'App settings updated successfully', data: appSettings, status: 'success' })
         } catch (error) {
-            console.log(error);
+            console.log(error)
             res.status(400).json({ message: error }) // error.message
         }
     }
-
 }

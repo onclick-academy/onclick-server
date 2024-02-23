@@ -19,6 +19,8 @@ export class CourseDto {
     public introVideo?: string
     public isApproved?: boolean
     public topicIds: string[]
+    public createdBy: string;
+    
 
     constructor(bodyReq: CourseDtoI) {
         this.id = bodyReq['id']
@@ -41,5 +43,7 @@ export class CourseDto {
         this.introVideo = bodyReq['introVideo']
         this.isApproved = bodyReq['isApproved']
         this.topicIds = bodyReq['topicIds']
+        this.createdBy = bodyReq['createdBy']
+    
     }
 }

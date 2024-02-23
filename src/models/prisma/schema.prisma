@@ -8,6 +8,8 @@ datasource db {
 }
 
 enum ROLE {
+  SUPER_ADMIN
+  ADMIN
   INSTRUCTOR
   STUDENT
 }
@@ -62,16 +64,21 @@ model User {
   deletedAt      DateTime?
   isAvailable    Boolean         @default(true)
   instructor     Instructor?
-  student        Student?
 
-  resetToken    ResetToken?
-  refreshTokens RefreshToken?
-  confirmToken  ConfirmToken?
-  suspendStates SuspendState[]
-  blockStates   BlockState[]
-  WishList      WishList[]
-  notifications Notification[]
-  ratings       Rating[]
+  resetToken        ResetToken?
+  refreshTokens     RefreshToken?
+  confirmToken      ConfirmToken?
+  suspendStates     SuspendState[]
+  blockStates       BlockState[]
+  WishList          WishList[]
+  notifications     Notification[]
+  ratings           Rating[]
+  courseEnrollments CourseEnrollment[]
+  approvedCourses   Course[] // Courses that the admin has approved
+  appSettings       AppSettings[]
+  news              News[]
+  events            Event[]
+  courseOwners      CourseOwners[]
 }
 
 model ResetToken {
@@ -83,8 +90,7 @@ model ResetToken {
   adminId   String?  @unique
   expiresAt DateTime
 
-  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, adminId], name: "idx_reset_token_user")
 }
@@ -95,13 +101,11 @@ model RefreshToken {
 
   token     String   @unique
   userId    String?  @unique
-  adminId   String?  @unique
   expiresAt DateTime
 
-  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, adminId], name: "idx_refresh_token_user")
+  @@index([userId], name: "idx_refresh_token_user")
 }
 
 model ConfirmToken {
@@ -110,39 +114,11 @@ model ConfirmToken {
 
   token     String   @unique
   userId    String?  @unique
-  adminId   String?  @unique
   expiresAt DateTime
 
-  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, adminId], name: "idx_confirm_token_user")
-}
-
-model Admin {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  appSettingsId  String?   @unique
-  firstName      String
-  lastName       String
-  email          String    @unique
-  password       String
-  profilePic     String?
-  isDeleted      Boolean   @default(false)
-  deletedAt      DateTime?
-  isEmailConfirm Boolean   @default(false)
-
-  resetToken      ResetToken?
-  refreshTokens   RefreshToken?
-  confirmToken    ConfirmToken?
-  coursesApproved Course[]
-  suspendStates   SuspendState[]
-  blockStates     BlockState[]
-  News            News[]
-  events          Event[]
-  appSettings     AppSettings?   @relation(fields: [appSettingsId], references: [id], onDelete: Cascade)
+  @@index([userId], name: "idx_confirm_token_user")
 }
 
 model Instructor {
@@ -158,17 +134,6 @@ model Instructor {
 
   courses Course[]
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Student {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String @unique
-
-  enrollments CourseEnrollment[]
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -193,14 +158,28 @@ model CourseEnrollment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  courseId  String
-  studentId String
-  progress  Json?
+  courseId String
+  userId   String
+  progress Json?
 
-  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, studentId])
+  @@unique([courseId, userId])
+}
+
+model CourseOwners {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courseId String
+  userId   String
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
 }
 
 model Course {
@@ -208,7 +187,7 @@ model Course {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  instructorId  String
+  createdBy     String
   adminId       String?
   categoryId    String
   subCategoryId String
@@ -227,14 +206,15 @@ model Course {
   introVideo    String?
   isApproved    Boolean   @default(false)
 
-  topics      CourseTopic[]
-  lectures    Lecture[]
-  enrollments CourseEnrollment[]
-  WishList    WishList[]
-  createdBy   Admin?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  subCategory SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  instructor  Instructor         @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  ratings     Rating[]
+  topics       CourseTopic[]
+  lectures     Lecture[]
+  enrollments  CourseEnrollment[]
+  WishList     WishList[]
+  approvedBy   User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  subCategory  SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  publisher    Instructor         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  ratings      Rating[]
+  CourseOwners CourseOwners[]
 }
 
 model CourseTopic {
@@ -298,7 +278,7 @@ model LecturesMaterials {
   isDeleted        Boolean   @default(false)
   deletedAt        DateTime?
 
-  lecturecontents LecturesContent @relation(fields: [lectureContentId], references: [id], onDelete: Cascade)
+  lectureContents LecturesContent @relation(fields: [lectureContentId], references: [id], onDelete: Cascade)
 }
 
 model Topic {
@@ -391,8 +371,7 @@ model SuspendState {
   reason  String?
   period  DateTime
 
-  byAdmin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model BlockState {
@@ -406,8 +385,7 @@ model BlockState {
   reason  String?
   period  DateTime
 
-  byAdmin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AppSettings {
@@ -427,7 +405,8 @@ model AppSettings {
   coverSlides  Json
   socialLinks  Json
 
-  createdBy Admin?
+  createdBy User?   @relation(fields: [userId], references: [id])
+  userId    String?
 }
 
 model News {
@@ -445,7 +424,7 @@ model News {
   isAvailable Boolean   @default(false)
   cover       String
 
-  createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  createdBy User? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
 
 model Event {
@@ -465,7 +444,7 @@ model Event {
   isAvailable Boolean   @default(true)
   cover       String
 
-  createdBy Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  createdBy User? @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
 
 model ContactUs {
