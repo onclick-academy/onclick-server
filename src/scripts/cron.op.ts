@@ -1,7 +1,7 @@
 import { CronJob } from 'cron';
 import { UserDao } from '@models/dao/user.dao';
 
-
+// TODO We should send an anounce email before hard deleting...
 export const hardDeleteUserAfter30Days = new CronJob('0 0 0 * * *', async () => {
 
     const userDao = new UserDao();
