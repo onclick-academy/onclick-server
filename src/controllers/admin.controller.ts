@@ -5,13 +5,11 @@ import { RegisterValidation } from '@middlewares/validation/auth/register.auth.v
 
 export class AdminController {
     // TODO send email to admin to confirm his email
-    static createAdmin = async (req: Request, res: Response) => {
+    static createAdmin = async (req: any, res: Response) => {
         const adminDto = new UserDto(req.body)
         const userDao = new UserDao()
 
         try {
-            if (adminDto.role !== 'ADMIN') return res.status(400).json({ error: 'Invalid role to be updated' })
-
             const { error } = await RegisterValidation.updateUser(adminDto)
             if (error) return res.status(400).json({ error: error.details[0].message })
 
