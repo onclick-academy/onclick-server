@@ -27,10 +27,12 @@ export const roles: Roles = {
     INSTRUCTOR: 'INSTRUCTOR',
     STUDENT: 'STUDENT'
 }
-
+const cookieParser = require('cookie-parser')
 const app = express()
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }))
+
 app.use(morgan('dev'))
 
 app.use('/api', require('@routes/home.route').default)
