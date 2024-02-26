@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import { UserRequest } from '../types/user.interface'
 import { UserDao } from '../models/dao/user.dao'
 import { UserDto } from '../models/dto/user.dto'
@@ -19,6 +20,28 @@ export class UserController {
             status: 'success',
             user: req.user
         })
+    }
+
+    static getUserInfo = async (req: UserRequest, res: Response) => {
+        // @ts-ignore-next
+        console.log(req.cookies)
+        try {
+            const token = req.cookies.accessToken
+            const user = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as UserDto
+
+            return res.status(200).json({
+                message: 'User retrieved successfuly',
+                data: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                },
+                status: 'success'
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     static searchUser = async (req: Request, res: Response) => {

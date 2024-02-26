@@ -44,6 +44,18 @@ export class AuthController {
                 expiresIn: expiredPeriod.refreshToken
             })
 
+            const cookiesRules = {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production'
+            }
+            res.cookie('accessToken', accessToken, {
+                ...cookiesRules,
+                maxAge: 3 * 24 * 60 * 60 * 1000
+            })
+            res.cookie('refreshToken', refreshToken, {
+                ...cookiesRules,
+                maxAge: 5 * 24 * 60 * 60 * 1000
+            })
             res.status(200).json({
                 data: newUser,
                 accessToken: accessToken,
@@ -140,14 +152,27 @@ export class AuthController {
             const accessToken = createToken(loginDto, process.env.JWT_SECRET_KEY, {
                 expiresIn: expiredPeriod.accessToken
             })
-            const refreshtoken = createToken(loginDto, process.env.REFRESH_TOKEN_SECRET, {
+            const refreshToken = createToken(loginDto, process.env.REFRESH_TOKEN_SECRET, {
                 expiresIn: expiredPeriod.refreshToken
+            })
+
+            const cookiesRules = {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production'
+            }
+            res.cookie('accessToken', accessToken, {
+                ...cookiesRules,
+                maxAge: 3 * 24 * 60 * 60 * 1000
+            })
+            res.cookie('refreshToken', refreshToken, {
+                ...cookiesRules,
+                maxAge: 5 * 24 * 60 * 60 * 1000
             })
 
             return res.status(200).json({
                 data: user,
                 accessToken,
-                refreshToken: loginDto.isRememberMe ? refreshtoken : null,
+                refreshToken: loginDto.isRememberMe ? refreshToken : null,
                 status: 'success'
             })
         } catch (error: any) {
