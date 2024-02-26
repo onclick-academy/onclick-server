@@ -4,7 +4,7 @@ import prisma from '../prisma/prisma-client'
 export class BlockStateDao {
         createBlockState = async (blockStateDto: BlockStateI) => {
         const blockState = await prisma.blockState.create({
-        data: blockStateDto
+                data: blockStateDto
         })
         return blockState
         }

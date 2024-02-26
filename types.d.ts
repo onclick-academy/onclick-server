@@ -112,8 +112,8 @@ declare global {
     }
 
     interface BlockStateI {
-        id: string
-        UserDtoId: string
+        id?: string | undefined
+        userId: string
         adminId: string
         state: boolean
         reason: string
