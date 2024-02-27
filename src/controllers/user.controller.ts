@@ -23,22 +23,14 @@ export class UserController {
     }
 
     static getUserInfo = async (req: UserRequest, res: Response) => {
-        // @ts-ignore-next
-        console.log(req.cookies)
         try {
-            const token = req.cookies.accessToken
-            const user = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as UserDto
+            const userDao = new UserDao()
 
-            return res.status(200).json({
-                message: 'User retrieved successfuly',
-                data: {
-                    id: user.id,
-                    username: user.username,
-                    email: user.email,
-                    role: user.role
-                },
-                status: 'success'
-            })
+            const token = req.cookies.accessToken
+            const info = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as UserDto
+
+            const user = await userDao.getUserById(info.id)
+            return res.status(200).json({ message: 'User retrieved successfuly', data: user, status: 'success' })
         } catch (error) {
             console.log(error)
         }
