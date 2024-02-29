@@ -1,39 +1,38 @@
 import prisma from '../prisma/prisma-client'
 
-
 export class BlockStateDao {
-        createBlockState = async (blockStateDto: BlockStateI) => {
+    createBlockState = async (blockStateDto: any) => {
         const blockState = await prisma.blockState.create({
-                data: blockStateDto
+            data: blockStateDto
         })
         return blockState
-        }
-        
-        getBlockState = async (id: string) => {
+    }
+
+    getBlockState = async (id: string) => {
         const blockState = await prisma.blockState.findFirst({
-        where: {
+            where: {
                 id: id
-        }
+            }
         })
         return blockState
-        }
-        
-        updateBlockState = async (blockStateDto: BlockStateI) => {
+    }
+
+    updateBlockState = async (blockStateDto: any) => {
         const blockState = await prisma.blockState.update({
-        where: {
+            where: {
                 id: blockStateDto.id
-        },
-        data: blockStateDto
+            },
+            data: blockStateDto
         })
         return blockState
-        }
-        
-        deleteBlockState = async (id: string) => {
+    }
+
+    deleteBlockState = async (id: string) => {
         const blockState = await prisma.blockState.delete({
-        where: {
+            where: {
                 id: id
-        }
+            }
         })
         return blockState
-        }
+    }
 }

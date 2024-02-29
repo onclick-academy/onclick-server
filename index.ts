@@ -1,21 +1,18 @@
 import 'module-alias/register'
 
-import { AuthMiddleware } from 'middlewares/auth.middleware'
-import express, { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
-import morgan from 'morgan'
+import cors from 'cors'
 import dotenv from 'dotenv'
+import morgan from 'morgan'
+import createError from 'http-errors'
+import express, { NextFunction, Request, Response } from 'express'
+
 import { ROLE } from '@prisma/client'
+import { AuthMiddleware } from 'middlewares/auth.middleware'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
-
-dotenv.config()
-
-
 import { hardDeleteUserAfter30Days } from './src/scripts/cron.op'
 
 hardDeleteUserAfter30Days.start()
-
-
+dotenv.config()
 
 export const expiredPeriod = {
     accessToken: '3d',
@@ -34,12 +31,14 @@ export const roles: Roles = {
     INSTRUCTOR: 'INSTRUCTOR',
     STUDENT: 'STUDENT'
 }
-const cookieParser = require('cookie-parser')
+
 const app = express()
+const cookieParser = require('cookie-parser')
+
+app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }))
-
 app.use(morgan('dev'))
 
 app.use('/api', require('@routes/home.route').default)
@@ -47,7 +46,6 @@ app.use('/api', require('@routes/home.route').default)
 app.use('/api/v1/admin', AuthMiddleware.verifyToken, verifyAdminRole, require('@routes/admin.route').default)
 
 app.use('/api/v1/auth', require('@routes/auth.route').default)
-
 
 app.use('/api/v1', require('@routes/__tokenized').default)
 
