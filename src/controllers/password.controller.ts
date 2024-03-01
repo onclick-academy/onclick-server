@@ -1,5 +1,6 @@
 import joi from 'joi'
-import nodemailer from 'nodemailer'
+import fs from 'fs'
+import handlebars from 'handlebars'
 import prisma from '@models/prisma/prisma-client'
 
 import { hashPassword } from '@utilities/hash'
@@ -7,6 +8,7 @@ import { UserDao } from '@models/dao/user.dao'
 import { Request, Response } from 'express'
 import { AuthDao } from '@models/dao/auth.dao'
 import redis from '@models/redis'
+import { sendEmail } from '@utilities/email'
 
 export class PasswordController {
     static forgetPassword = async (req: Request, res: Response) => {
@@ -26,30 +28,16 @@ export class PasswordController {
             // geenerate 6 digits
             const resetCode = Math.floor(100000 + Math.random() * 900000)
 
-            const transporter = nodemailer.createTransport({
-                auth: {
-                    user: process.env.APP_EMAIL,
-                    pass: process.env.APP_PASSWORD
-                },
-                service: 'gmail'
-            })
-
             const user = await authDao.getUserByEmail({ email: userEmail })
             if (!user) {
-                return res.status(200).json({ error: 'Email sent', status: 'success' })
+                return res.status(400).json({ error: 'Email sent', status: 'success' })
             }
 
-            const mailOptions = {
-                from: process.env.APP_EMAIL,
-                to: user.email,
-                subject: 'no-reply OnClick Academy',
-                html: `
-                <h1>Reset Password</h1>
-                <p>Type the code bellow</p>
-                <h2>${resetCode}</h2>
-                `
-            }
-            await transporter.sendMail(mailOptions)
+            const htmlContent = fs.readFileSync('src/views/reset-password.html', 'utf8')
+            const template = handlebars.compile(htmlContent)
+            const html = template({ resetCode, username: user.username })
+            await sendEmail(html, userEmail)
+
             const token = await redis.set(`reset ${user.id}`, resetCode.toString(), 'EX', 60 * 5)
             console.log(token)
             return res.status(200).json({
@@ -57,7 +45,8 @@ export class PasswordController {
                 status: 'success'
             })
         } catch (error: any) {
-            return res.status(200).json({ error: 'Email sent', status: 'success' })
+            console.log(error.message)
+            return res.status(200).json({ error: 'Email sent', status: 'fail' })
         }
     }
 

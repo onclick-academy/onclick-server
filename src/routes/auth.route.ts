@@ -5,7 +5,7 @@ import { PasswordController } from '@controllers/password.controller'
 
 const router = express.Router()
 
-router.route('/register').post(upload.single('profilePic'), AuthController.register)
+router.route('/register').post(upload.single('profilePic'), AuthController.sendConfirmationEmail)
 
 router.route('/login').post(AuthController.login as unknown as RequestHandler)
 
@@ -14,6 +14,6 @@ router.route('/password/verifycode').post(PasswordController.verifyResetCode)
 router.route('/password/changepassword/:userId').post(PasswordController.changePassword)
 router.route('/password/resetpassword').post(PasswordController.resetPassword)
 
-router.route('/email/user/:userId/:token').get(AuthController.emailUserConfirmation)
+router.route('/email/user/:uuid').get(AuthController.emailUserConfirmation)
 
 export default router

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Email</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .button {
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: #15b1b1;
+            color: #ffffff;
+            padding: 15px 25px;
+            text-align: center;
+            display: inline-block;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transform: 0.2s ease-in-out;
+        }
+
+        .button:hover {
+            transform: 0.2s ease-in-out;
+            background-color: #15b1b197;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            text-align: center;
+            color: #888;
+        }
+
+        .social-icons {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .social-icons li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        .social-icons a {
+            text-decoration: none;
+            color: #f9f9f9;
+        }
+
+        .social-icons img {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s;
+        }
+
+        .social-icons img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Confirm Your Email</h1>
+        <h2>Dear {{username}},</h2>
+        <p>Welcome to OnClick Academy! We're thrilled to have you join our community. To get started, please confirm
+            your email address by clicking the button below. This ensures we can send you important updates, alerts, and
+            newsletters.</p>
+        <a href="{{url}}" class="button">Confirm Email</a>
+        <p>If you did not create an account using this email address, no action is required on your part. Feel free to
+            ignore this email or contact our support team for assistance.</p>
+        <div class="footer">
+            <p>Connect with us on social media for more updates:</p>
+            <ul class="social-icons">
+                <li>
+                    <a href="https://www.linkedin.com/in/omar-salah-689497253/">
+                        <img src="./icons/linkedin.png" alt="LinkedIn" />
+                    </a>
+                </li>
+                <li> 
+                    <a href="https://github.com/0marSalah">
+                        <img src="./icons/x.png" alt="Twitter" />
+                    </a>
+                </li>
+            </ul>
+            <p>Thank you for joining OnClick Academy. Let's make something great together!</p>
+        </div>
+    </div>
+</body>
+
+</html>
