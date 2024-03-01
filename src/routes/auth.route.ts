@@ -5,7 +5,7 @@ import { PasswordController } from '@controllers/password.controller'
 
 const router = express.Router()
 
-router.route('/register').post(upload.single('profilePic'), AuthController.sendConfirmationEmail)
+router.route('/register').post(upload.single('profilePic'), AuthController.register)
 
 router.route('/login').post(AuthController.login as unknown as RequestHandler)
 

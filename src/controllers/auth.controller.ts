@@ -75,9 +75,7 @@ export class AuthController {
                 refreshToken: refreshToken
             }
 
-            console.log('Sending confirmation email')
-            await this.sendConfirmationEmail(req, res) // make it last step for its Time complexity
-            console.log('Confirmation email sent')
+            await this.sendConfirmationEmail(req, res)
             return res.status(200).json({ data: newUser, status: 'success' })
         } catch (error: any) {
             console.log(error.message)
@@ -104,7 +102,6 @@ export class AuthController {
 
             const newUuid = randomUUID()
             await redis.set(`confirm ${newUuid}`, user.id, 'ex', 60 * 10)
-            // TODO - change the url to the frontend url home page
             const url = `${process.env.SERVER_URL}/auth/email/${newUuid}`
 
             const htmlContent = fs.readFileSync('src/views/confirm-email.html', 'utf8')
