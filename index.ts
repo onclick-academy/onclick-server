@@ -1,11 +1,13 @@
 import 'module-alias/register'
 
-import { AuthMiddleware } from 'middlewares/auth.middleware'
-import express, { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
-import morgan from 'morgan'
+import cors from 'cors'
 import dotenv from 'dotenv'
+import morgan from 'morgan'
+import createError from 'http-errors'
+import express, { NextFunction, Request, Response } from 'express'
+
 import { ROLE } from '@prisma/client'
+import { AuthMiddleware } from 'middlewares/auth.middleware'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
 
 import cors from 'cors'
@@ -35,6 +37,7 @@ export const roles: Roles = {
 
 const cookieParser = require('cookie-parser')
 const app = express()
+
 app.use(cors())
 app.use(express.json())
 app.use(cookieParser())

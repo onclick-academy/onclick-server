@@ -10,10 +10,10 @@ router.route('/register').post(upload.single('profilePic'), AuthController.regis
 router.route('/login').post(AuthController.login as unknown as RequestHandler)
 
 router.route('/password/forgetpassword').post(PasswordController.forgetPassword)
-
+router.route('/password/verifycode').post(PasswordController.verifyResetCode)
 router.route('/password/changepassword/:userId').post(PasswordController.changePassword)
+router.route('/password/resetpassword').post(PasswordController.resetPassword)
 
-router.route('/password/resetpassword/:userId/:token').post(PasswordController.resetPassword)
 router.route('/email/user/:userId/:token').get(AuthController.emailUserConfirmation)
 
 export default router

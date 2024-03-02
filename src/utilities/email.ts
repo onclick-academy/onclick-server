@@ -4,6 +4,7 @@ import { createToken } from './token'
 import fs from 'fs'
 import handlebars from 'handlebars'
 import path from 'path'
+import redis from '@models/redis'
 
 interface User {
     id: string
@@ -29,20 +30,22 @@ async function generateTokenAndURL(user: User, action: 'RESET' | 'CONFIRM') {
                 update: resetTokenData,
                 create: resetTokenData
             })
+            await redis.set(`reset ${user.id}`, token)
         } else {
             const confirmTokenData = {
                 token,
                 expiresAt,
-                userId: user.id 
+                userId: user.id
             }
             await prisma.confirmToken.upsert({
                 where: { userId: user.id },
                 update: confirmTokenData,
                 create: confirmTokenData
             })
+            await redis.set(`confirm ${user.id}`, token)
         }
     } catch (error) {
-        console.error(`Failed to upsert token:`, error)
+        console.log(`Failed to upsert token:`, error)
         throw new Error(`Failed to handle ${action.toLowerCase()} token.`)
     }
 
@@ -52,6 +55,7 @@ async function generateTokenAndURL(user: User, action: 'RESET' | 'CONFIRM') {
     return url
 }
 
+// TODO this is only for both reset and confirm, make it dynamic this is not GOODDD ://
 export default async function sendEmail(user: User, action: 'RESET' | 'CONFIRM') {
     try {
         const url = await generateTokenAndURL(user, action)
@@ -71,7 +75,6 @@ export default async function sendEmail(user: User, action: 'RESET' | 'CONFIRM')
         const template = handlebars.compile(source)
         const htmlToSend = template({ url, username: user.username || user.fullName })
 
-        console.log('htmlToSend', htmlToSend)
         const mailOptions = {
             from: process.env.APP_EMAIL,
             to: user.email,
@@ -80,7 +83,6 @@ export default async function sendEmail(user: User, action: 'RESET' | 'CONFIRM')
         }
 
         await transporter.sendMail(mailOptions)
-        console.log('Email sent')
     } catch (error) {
         console.error('Failed to send email:', error)
     }
