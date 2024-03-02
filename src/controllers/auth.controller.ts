@@ -102,7 +102,7 @@ export class AuthController {
 
             const newUuid = randomUUID()
             await redis.set(`confirm ${newUuid}`, user.id, 'ex', 60 * 10)
-            const url = `${process.env.SERVER_URL}/auth/email/${newUuid}`
+            const url = `${process.env.SERVER_URL}/auth/email/user/${newUuid}`
 
             const htmlContent = fs.readFileSync('src/views/confirm-email.html', 'utf8')
             const template = handlebars.compile(htmlContent)
