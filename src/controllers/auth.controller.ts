@@ -1,6 +1,8 @@
 import { expiredPeriod } from '../..' // refer to index.ts on the root directory
 import { Request, Response } from 'express'
 import joi from 'joi'
+import fs from 'fs'
+import handlebars from 'handlebars'
 
 import { AuthDao } from '@dao/auth.dao'
 import { UserDao } from '@dao/user.dao'
@@ -9,9 +11,11 @@ import { RegisterValidation } from '@validation/auth/register.auth.validation'
 import { LoginDto } from '@dto/login.dto'
 import prisma from '@models/prisma/prisma-client'
 import { createToken } from '@utilities/token'
-import sendEmail from '@utilities/email'
 import { UserRequest } from '../types/user.interface'
 import { UserDto } from '@models/dto/user.dto'
+import redis from '@models/redis'
+import { randomUUID } from 'crypto'
+import { sendEmail } from '@utilities/email'
 
 export class AuthController {
     static register = async (req: UserRequest | any, res: Response) => {
@@ -71,15 +75,9 @@ export class AuthController {
                 refreshToken: refreshToken
             }
 
-            await this.sendConfirmationEmail(req, res) // make it last step for its Time complexity
-            return
+            await this.sendConfirmationEmail(req, res)
+            return res.status(200).json({ data: newUser, status: 'success' })
         } catch (error: any) {
-            if (
-                error.message.includes('Email is already in use') ||
-                error.message.includes('Username is not available')
-            )
-                return res.status(400).json({ error: error.message, status: 'failed' })
-
             console.log(error.message)
             return res.status(500).json({ error: error.message, status: 'failed' })
         }
@@ -102,36 +100,39 @@ export class AuthController {
             let user = await authDao.getUserByEmail({ email: userEmail })
             if (!user) throw new Error('User not found')
 
-            await sendEmail(user as any, 'CONFIRM')
+            const newUuid = randomUUID()
+            await redis.set(`confirm ${newUuid}`, user.id, 'ex', 60 * 10)
+            const url = `${process.env.SERVER_URL}/auth/email/user/${newUuid}`
+
+            const htmlContent = fs.readFileSync('src/views/confirm-email.html', 'utf8')
+            const template = handlebars.compile(htmlContent)
+            const html = template({ url, username: user.username })
+            await sendEmail(html, userEmail)
+            return res.status(200).json({ message: 'Email sent', status: 'success' })
         } catch (error: any) {
-            if (error.message.includes('Email') || error.message.includes('User')) {
-                return res.status(400).json({ error: error.message })
-            }
-            return res.status(500).json({ error: error.message })
+            return res.status(500).json({ error: error.message, status: 'failed' })
         }
     }
 
     static emailUserConfirmation = async (req: Request, res: Response) => {
-        const { userId, token } = req.params
+        const { uuid } = req.params
         try {
+            const userId = await redis.get(`confirm ${uuid}`)
             const user = await prisma.user.findUnique({
                 where: {
                     id: userId
-                },
-                include: {
-                    confirmToken: true
                 }
             })
-            if (!user) throw new Error('User not found')
-            if (!user.confirmToken) throw new Error('Token not found')
-            if (user.confirmToken.expiresAt < new Date()) throw new Error('Token has expired')
-            if (user.confirmToken.token !== token) throw new Error('Token is not valid')
+            if (!user) throw new Error('Invalid user')
+            if (user.isEmailConfirm) throw new Error('Email is already confirmed')
 
             const userDao = new UserDao()
-            const updatedUser = await userDao.updateUser({ id: user.id, isEmailConfirm: true })
-
-            res.redirect('http://localhost:3000/login')
-            return res.status(200).json({ data: updatedUser, status: 'success' })
+            await userDao.updateUser({ id: user.id, isEmailConfirm: true })
+            return res.send(`
+                <script>
+                    window.location.href = 'http://localhost:3001/';
+                </script>
+            `)
         } catch (error: any) {
             console.log(error.message)
             return res.status(500).json({ error: error.message, status: 'error' })
