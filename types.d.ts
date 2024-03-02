@@ -180,7 +180,7 @@ declare global {
         deletedAt?: Date
     }
 
-    interface ContactUsInterface {
+    interface ContactUsDtoI {
         id: string
         name: string
         email: string
@@ -188,6 +188,7 @@ declare global {
         phone?: string | null
         isRead: boolean
     }
+    
     interface EventDtoI {
         id: string | undefined
         adminId: string
