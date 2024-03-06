@@ -23,6 +23,9 @@ router.use('/instructors', require('./instructor.routes').default)
 // topic routes
 router.use('/topics', require('./topic.routes').default)
 
+// deviceTokens routes
+router.use('/devicetokens', require('./deviceTokens.route').default)
+
 // Notifications route
 router.use('/notifications', require('./notification.route.ts').default)
 
