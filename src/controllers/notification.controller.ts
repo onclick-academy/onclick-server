@@ -3,6 +3,7 @@ import { NotificationDto } from '@dto/notification.dto'
 import { Request, Response } from 'express'
 import { sendNotificationToUser } from '@utilities/notification'
 import PubSub from 'pubsub-js'
+import { UserDao } from '@models/dao/user.dao'
 
 export class NotificationController {
     static async createNotification(req: Request, res: Response) {
@@ -107,8 +108,17 @@ export class NotificationController {
     static async createRealTimeNotification(req: Request, res: Response) {
         try {
             const { recipientId } = req.body
+            if (!recipientId) {
+                return res.status(400).json({ message: 'Recipient ID is required', status: 'failed' })
+            }
+
+            const userDao = new UserDao()
+            const user = await userDao.getUserById(recipientId)
+            if (!user) {
+                return res.status(400).json({ message: 'Recipient not found', status: 'failed' })
+            }
+
             res.setHeader('Content-Type', 'text/event-stream')
-            res.setHeader('Cache-Control', 'no-cache')
             res.setHeader('Connection', 'keep-alive')
 
             const mySubscriber = async function (_: string, data: NotificationDtoI) {
