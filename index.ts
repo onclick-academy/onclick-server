@@ -10,7 +10,6 @@ import { ROLE } from '@prisma/client'
 import { AuthMiddleware } from 'middlewares/auth.middleware'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
 
-import cors from 'cors'
 dotenv.config()
 
 import { hardDeleteUserAfter30Days } from './src/scripts/cron.op'
@@ -58,7 +57,6 @@ app.use('/api/v1/admin', AuthMiddleware.verifyToken, verifyAdminRole, require('@
 app.use('/api/v1/auth', require('@routes/auth.route').default)
 
 app.use('/api/v1', require('@routes/__tokenized').default)
-
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500)
