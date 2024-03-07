@@ -1,4 +1,4 @@
-class EventsDto {
+export class EventDto {
   public id: string | undefined
   public adminId: string
   public title: string

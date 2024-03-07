@@ -5,6 +5,7 @@ export class SubCategoryValidation {
   private static baseSchema = {
     id: joi.string().allow(null),
     categoryId: joi.string().required(),
+    courseId: joi.string(),
     name: joi.string().required().min(6).max(255),
     description: joi.string().required().min(6),
     topicIds: joi.array().items(joi.string()).default([]),

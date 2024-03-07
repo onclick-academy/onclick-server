@@ -21,6 +21,7 @@ export class AuthController {
     static register = async (req: UserRequest | any, res: Response) => {
         const userDto = new UserDto(req.body)
         const userDao = new UserDao()
+        console.log(userDto)
 
         if (req.file) {
             userDto.profilePic = req.file.path
@@ -76,9 +77,8 @@ export class AuthController {
             }
 
             await this.sendConfirmationEmail(req, res)
-            return res.status(200).json({ data: newUser, status: 'success' })
         } catch (error: any) {
-            console.log(error.message)
+            console.log(error)
             return res.status(500).json({ error: error.message, status: 'failed' })
         }
     }
@@ -108,7 +108,6 @@ export class AuthController {
             const template = handlebars.compile(htmlContent)
             const html = template({ url, username: user.username })
             await sendEmail(html, userEmail)
-            return res.status(200).json({ message: 'Email sent', status: 'success' })
         } catch (error: any) {
             return res.status(500).json({ error: error.message, status: 'failed' })
         }
@@ -141,13 +140,23 @@ export class AuthController {
 
     static login = async (req: any, res: Response) => {
         const loginDto = new LoginDto(req.body as unknown as LoginDto)
-        const authDao = new AuthDao()
-        try {
-            const { error } = await LoginValidation.validateLoginInput(loginDto)
 
-            if (error) {
-                return res.status(400).json({ message: 'Error when validating the login', error })
-            }
+        if (req.body.email.includes('@')) {
+            loginDto.email = req.body.email
+            loginDto.username = ''
+        } else if (!req.body.email.includes('@')) {
+            loginDto.username = req.body.email
+            loginDto.email = ''
+        }
+        const authDao = new AuthDao()
+
+        console.log('object :>> ', loginDto)
+        try {
+            // const { error } = await LoginValidation.validateLoginInput(loginDto)
+
+            // if (error) {
+            //     return res.status(400).json({ message: 'Error when validating the login', error })
+            // }
 
             const user: loginDtoI | undefined = await authDao.login(loginDto)
             const accessToken = createToken(loginDto, process.env.JWT_SECRET_KEY, {
@@ -172,7 +181,7 @@ export class AuthController {
 
             return res.status(200).json({
                 data: user,
-                accessToken,
+                accessToken: accessToken,
                 refreshToken: loginDto.isRememberMe ? refreshToken : null,
                 status: 'success'
             })

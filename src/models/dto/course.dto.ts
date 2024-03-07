@@ -1,6 +1,6 @@
 export class CourseDto {
     public id: string | undefined
-    public instructorId: string
+    public createdBy: string
     public adminId: string
     public categoryId: string
     public subCategoryId: string
@@ -19,12 +19,10 @@ export class CourseDto {
     public introVideo?: string
     public isApproved?: boolean
     public topicIds: string[]
-    public createdBy: string;
-    
 
     constructor(bodyReq: CourseDtoI) {
         this.id = bodyReq['id']
-        this.instructorId = bodyReq['instructorId']
+        this.createdBy = bodyReq['createdBy']
         this.adminId = bodyReq['adminId']
         this.categoryId = bodyReq['categoryId']
         this.subCategoryId = bodyReq['subCategoryId']
@@ -43,7 +41,6 @@ export class CourseDto {
         this.introVideo = bodyReq['introVideo']
         this.isApproved = bodyReq['isApproved']
         this.topicIds = bodyReq['topicIds']
-        this.createdBy = bodyReq['createdBy']
     
     }
 }

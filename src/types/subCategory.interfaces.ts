@@ -1,6 +1,7 @@
 export interface SubCategoryDtoI {
     id?: string
     categoryId: string
+    courseId?: string
     name: string
     description: string
     isDeleted: boolean
@@ -10,6 +11,7 @@ export interface SubCategoryDtoI {
 export interface SubCategoryUpdateI {
     id?: string
     categoryId: string
+    courseId?: string
     name?: string
     description?: string
     isDeleted?: boolean
