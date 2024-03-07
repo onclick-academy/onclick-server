@@ -10,7 +10,6 @@ import { ROLE } from '@prisma/client'
 import { AuthMiddleware } from 'middlewares/auth.middleware'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
 
-import cors from 'cors'
 dotenv.config()
 
 import { hardDeleteUserAfter30Days } from './src/scripts/cron.op'

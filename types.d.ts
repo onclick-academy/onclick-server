@@ -125,7 +125,7 @@ declare global {
         id?: string | undefined
         deletedAt?: Date
         topicIds: string[]
-        instructorId: string
+        createdBy: string
         adminId: string
         categoryId: string
         subCategoryId: string
@@ -147,7 +147,7 @@ declare global {
 
     interface CourseUpdateI {
         id: string
-        instructorId?: string
+        createdBy?: string
         adminId?: string
         categoryId?: string
         subCategoryId?: string
@@ -164,6 +164,7 @@ declare global {
         deletedAt?: Date
         certificate?: string
         introVideo?: string
+        isApproved?: boolean
     }
 
     interface TopicDtoI {

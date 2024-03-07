@@ -3,7 +3,7 @@ import joi from 'joi'
 export class CourseValidation {
     private static baseSchema = {
         id: joi.string().allow(null),
-        instructorId: joi.string().required(),
+        createdBy: joi.string().required(),
         adminId: joi.string(),
         categoryId: joi.string().required(),
         subCategoryId: joi.string().required(),

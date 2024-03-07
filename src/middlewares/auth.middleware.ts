@@ -46,7 +46,8 @@ export class AuthMiddleware {
             req.user = {
                 ...userExist.decodedUser,
                 accessToken,
-                role: userExist.userExist.role
+                role: userExist.userExist.role,
+                id: userExist.userExist.id,
             }
             next()
         } catch (error: any) {

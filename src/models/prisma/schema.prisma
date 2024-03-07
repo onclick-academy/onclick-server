@@ -211,7 +211,7 @@ model Course {
   enrollments  CourseEnrollment[]
   WishList     WishList[]
   approvedBy   User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  subCategory  SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  subCategory  SubCategory[]
   publisher    Instructor         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   ratings      Rating[]
   CourseOwners CourseOwners[]
@@ -349,6 +349,7 @@ model SubCategory {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  courseId    String?
   categoryId  String
   name        String    @unique
   description String

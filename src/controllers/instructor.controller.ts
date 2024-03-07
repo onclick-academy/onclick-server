@@ -13,7 +13,7 @@ export class InstructorController {
     static ApplyInstructor = async (req: any, res: Response) => {
         const instructorDto = new InstructorDto(req.body)
         const { id } = req.user
-        console.log('id', id)
+        console.log('id', req.user)
 
         instructorDto.userId = id
 

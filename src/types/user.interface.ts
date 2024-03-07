@@ -1,4 +1,5 @@
 import { GENDER, ROLE, EDUCATION_LEVEL } from '@prisma/client'
+import { Request } from 'express'
 
 export interface UserTokenI {
     id: string
@@ -70,7 +71,6 @@ export interface loginDtoI {
 
 export interface UserRequest extends Request {
     user: UserTokenI
-    cookies?: any
     file?: any
 }
 

@@ -5,6 +5,7 @@ import { CourseValidation } from '../middlewares/validation/course/course.valida
 import { Request, Response } from 'express'
 import { InstructorIdValidation } from '@utilities/IdValidation/users.id'
 import { CategoryIdValidation, CourseIdValidation, SubCategoryIdValidation, TopicIdValidation } from '@utilities/IdValidation/coursePackage.id'
+import { UserRequest } from '../types/user.interface'
 
 export class CourseController {
     static applyCourse = async (req: Request, res: Response) => {
@@ -14,10 +15,12 @@ export class CourseController {
         console.log('course dto', courseDto)
 
         try {
-            await InstructorIdValidation(courseDto.instructorId)
+            await InstructorIdValidation(courseDto.createdBy)
             // await AdminIdValidation(courseDto.adminId)
             await CategoryIdValidation(courseDto.categoryId)
             await SubCategoryIdValidation(courseDto.subCategoryId)
+
+            // TODO => topic validation in course creation
 
             courseDto.topicIds.forEach(async (topicId) => {
                 await TopicIdValidation(topicId)
@@ -29,6 +32,23 @@ export class CourseController {
             const newCourse = await courseDao.applyCourse(courseDto as CourseDtoI)
 
             return res.status(201).json({ message: 'Course created successfuly', data: newCourse, status: 'success' })
+        } catch (error: any) {
+            return res.status(400).json({ error: error.message, status: 'failed' })
+        }
+    }
+
+    static approvecourse = async (req: UserRequest, res: Response) => {
+        // admin id
+        const adminId = req.user.id
+        const courseId = req.params.courseId
+
+        const courseDao = new CourseDao()
+
+        try {
+            await CourseIdValidation(courseId)
+            const approvedCourse = await courseDao.updateCourse({ id: courseId, adminId, isApproved: true })
+
+            return res.status(201).json({ message: 'Course approved successfuly', data: approvedCourse, status: 'success' })
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })
         }
@@ -123,7 +143,7 @@ export class CourseController {
 
         try {
 
-            if (courseDto.instructorId) await InstructorIdValidation(courseDto.instructorId)
+            if (courseDto.createdBy) await InstructorIdValidation(courseDto.createdBy)
             if (courseDto.categoryId) await CategoryIdValidation(courseDto.categoryId)
             if (courseDto.subCategoryId) await SubCategoryIdValidation(courseDto.subCategoryId)
             if (courseDto.topicIds) {
