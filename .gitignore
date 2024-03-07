@@ -7,3 +7,4 @@ src/test.validation.ts
 yarn.lock
 *.log
 uploads/*
+admin*.json

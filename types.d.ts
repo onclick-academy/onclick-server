@@ -118,7 +118,7 @@ declare global {
         state: boolean
         reason: string
         period: Date
-        user: UserI; // this is a relation
+        user: UserI // this is a relation
     }
 
     interface CourseDtoI {

@@ -1,6 +1,13 @@
 {
-    "watch": ["src"],
-    "ext": "ts",
-    "ignore": ["src/**/.spec.ts"],
-    "exec": "ts-node -r module-alias/register dist/index.js"
+  "type": "service_account",
+  "project_id": "onclick-7f191",
+  "private_key_id": "b7e948f8cb7986b64f3e6b9dd60cc2b4524ef1df",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCuUUS1xFlIRWXD\nZTEMpoo4LdjnpB0Su4U+SWEjHrdN4i4YevRkue+DgK+FLoGq9c+XJ0lNXyHDF2v2\nkEOQ2VYKhIZaMj3J/rCnwMlRxiSCnfsudzrStwhGUTiPmJQjP7NQJlmnu4FCRNWK\nQnRcmNJSjhRUg2oNCjMsORMBsgL5Sbx8dsHB4b6hMkVMjgBEtW4mg0rB6OEY7kLy\nfNqsbqJud6D3/BYm8VghKlIlM4ohknd84GnzE2C7cfFDZRNHqAUOD2CXTr8FDud3\nRduK9Gs7txBS+pZ04W8dSC8lv4t+GxtFIoQpQLtQGUMOeLe28GMokE+iiorOuzaD\nHnJrLj1/AgMBAAECggEAKlo+endJRgDud6n3X956yKmDAMzj73A2MGr9ud21paul\njXcaN/rhEa9Lde1VvebZWB1Idw79Efx308E7WU8k04tdZT69un0yCKATidW9eyrN\nI33+gcHMteD4ABOPMn1AoOGgeNtazXIR+/SndvP+beZtVBdVxfNLeZwoXQoWJOD4\nzc5JBP5sZeVGyByCMbx6l6k2LK1otGaTRVrfPt2/5mhb8PfP2zUT6ZILStEYB07D\nP0mCC5uqNu9pKoV4ywZX6AL2dnjlAPrt6k12UtH8QMuFWue3bZgFvXpXlCE/pVIj\nhofHhFhhQajo5MxiL0oDNB39cmM50cFtGhaPlUTK2QKBgQDy7/lY/abS48XznaTW\nvrq9rZejm6VtU3O9v0vInqx6cfUjK5ZtKsvOV7cABUqDrS4b+xwimFAg3g2feM9D\nwAzLbCnbVrYRsLl0nidxNr7gkSCl7RgtKO3LdtZSuufWXEQyrVJrm3aEv3hvL/d2\ngCzY961EDbvKjAFxzR3Zze9JMwKBgQC3sL4wEr6zZlI28LoVLnmx/1i5dp/4q4Z0\newoGZuAYlOtHMcTXSZenS2eSCNEjAGnIXbFqJORfKGYaOqJcrlnCWULXj71TaSOU\nC05pjXzkUTuwR4uWkMmsBLid2ksx5ka6qlAipgELG3AGHZqoQlH+VPIBE6GWGyfB\niRJNeKnyhQKBgBRp69b5gYIpF6Iv9gEBh+mWY66gzpbQM2KXZ4PVKYMkfkfVSs+j\nj/qnzj3XM/q6m6xIPoX9rIYGgriKy0fTJIAXd7DxqVz1L7BH9eKCiimOqGKo+KYa\n0ViOhNXw1LhjimuDuvBF4QCoojMdobq4bIxSy6FzUftkJl7ssHxz3I6XAoGBAICl\nLW1pk1j9DhMgIJJ5DA2W8UJiS8LSDcZB7VFydvuAQA6KUnscNTOa4ZwqxJ0oyuzi\ngT//OllSZ79y1QbnrEEqVl+1cTibZ6llCbNuvcsBATaBxMbb/AGXBNy4ZvU5est8\nP8ckT5LB0oDV9txkJhxizWHnp8ECn6MxJjpPiWYpAoGBAOxlkF3ZitzY4UtFGJyF\nVXJP324L0yxvLNRV2fQg5JB/keyJgeseDpq7i4q1I4EUxSYyn65WAWaKa6KG4HcS\njmYkiNi81MDKsh+ahehb7DmYF4XD59YcnZgsz1Pa2SZ8hKeLEC3/LZ1tNu+H0Ur1\nfv9DQqZOVWQFvgQVffvnX72y\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fneqf@onclick-7f191.iam.gserviceaccount.com",
+  "client_id": "100283525120505110193",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fneqf%40onclick-7f191.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
 }
