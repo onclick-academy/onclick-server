@@ -24,16 +24,3 @@ export async function InstructorIdValidation(instructorId: string) {
         throw new Error('Instructor not found')
     }
 }
-
-// export async function AdminIdValidation(userId: string) {
-//   const student = await prisma.admin.findUnique({
-//     where: {
-//       id: userId,
-//       role: "ADMIN", // TODO
-//     },
-//   });
-
-//   if (!student) {
-//     throw new Error("Admin not found");
-//   }
-// }

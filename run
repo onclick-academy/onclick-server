@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
-# This script is used to delete node_modules and dist then run yarn install and yarn build and npx prisma generate
-sudo rm -rf node_modules dist
-yarn install
+
+# Attempt to create the PostgreSQL database 'onclick'
+# This command tries to create the database and suppresses the error if it already exists.
+DB_NAME=onclick
+DB_USER=postgres
+
+# Check if the database exists
+if psql -lqt | cut -d \| -f 1 | grep -qw $DB_NAME; then
+    echo "Database $DB_NAME already exists."
+else
+    sudo -u $DB_USER psql -c "CREATE DATABASE $DB_NAME;"
+fi
+
+cd src/models 
+
 npx prisma generate
-yarn build
-yarn dev
+
+npx prisma migrate dev --name init
