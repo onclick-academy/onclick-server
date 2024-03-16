@@ -22,19 +22,20 @@ export class UserController {
         })
     }
 
-    static getUserInfo = async (req: any, res: Response) => {
+    static getUserInfo = async (req: Request, res: Response) => {
         try {
             const userDao = new UserDao()
 
             const token = req.cookies.accessToken
-            console.log("token", req.cookies)
+            console.log('token', req.cookies)
             const info = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as UserDto
-            console.log("info", info)
+            console.log('info', info)
             const user = await userDao.getUserById(info.id)
             if (!user) throw new Error('User not found `get userInfo')
-            return res.status(200).json({ message: 'User retrieved successfuly', data: user, status: 'success' })
+            return res.status(200).json({ data: user, status: 'success' })
         } catch (error) {
-            console.log(error)
+            console.error(error)
+            return res.status(500).json({ error: 'Internal server error', status: 'error' })
         }
     }
 

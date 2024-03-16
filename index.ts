@@ -7,7 +7,7 @@ import createError from 'http-errors'
 import express, { NextFunction, Request, Response } from 'express'
 
 import { ROLE } from '@prisma/client'
-import { AuthMiddleware } from 'middlewares/auth.middleware'
+import { AuthMiddleware } from '@middlewares/auth.middleware'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
 
 dotenv.config()
@@ -37,16 +37,24 @@ export const roles: Roles = {
 const cookieParser = require('cookie-parser')
 const app = express()
 
-app.use(cors())
-app.use(express.json())
 app.use(cookieParser())
-app.use(express.urlencoded({ extended: false }))
 
-app.use(
-    cors({
-        origin: ['http://localhost:3000']
-    })
-)
+const allowedOrigins = ['http://localhost:3001']
+const corsOptions = {
+    origin: function (origin: any, callback: any) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true // Needed because your request includes credentials
+}
+
+app.use(cors(corsOptions))
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 app.use(morgan('dev'))
 app.use('/api/v1/contactus', require('@routes/contactus.route').default)
