@@ -162,6 +162,7 @@ model Notification {
   isRead         Boolean           @default(false)
   additionalInfo Json?
   icon           String?
+  link           String
 
   recipient User @relation(fields: [recipientId], references: [id], onDelete: Cascade)
 
