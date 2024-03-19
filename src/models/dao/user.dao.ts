@@ -1,4 +1,5 @@
 import { hashPassword } from '../../utilities/hash'
+import compare
 import prisma from '../prisma/prisma-client'
 
 export class UserDao {
@@ -68,5 +69,19 @@ export class UserDao {
     return deletedUser
   }
 
+
+  login = async (email: string, password: string) => {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email
+      }
+    })
+    if (!user) throw new Error('Email is not found')
+
+    const isPasswordCorrect = await comparePassword(password, user.password)
+    if (!isPasswordCorrect) throw new Error('Password is not correct')
+
+    return user
+  }
 
 }

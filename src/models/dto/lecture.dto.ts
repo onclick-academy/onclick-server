@@ -8,7 +8,7 @@ export class LectureDto {
   readonly isDeleted: boolean
   readonly deletedAt: Date
 
-  constructor(body: LectureInterface) {
+  constructor(body: LectureI) {
     this.id = body.id
     this.courseId = body.courseId
     this.title = body.title

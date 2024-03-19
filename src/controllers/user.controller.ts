@@ -3,6 +3,7 @@ import { UserDto } from '../models/dto/user.dto'
 import { registerValidation } from '../middlewares/validation/auth/register.auth.validation'
 import { createToken } from '../utilities/token'
 import { Request, Response } from 'express'
+import { LoginValidation } from '../middlewares/validation/auth/login.auth.validation'
 
 export class UserController {
   static register = async (req: Request, res: Response) => {
@@ -36,5 +37,33 @@ export class UserController {
       }
       return res.status(500).json({ error: error.message, status: 'failed' })
     }
+  }
+
+  static login = async (req: Request, res: Response) => {
+    const userDto = new UserDto(req.body)
+
+    const LoginValidationResult = await LoginValidation.validateLoginInput(userDto)
+    if (LoginValidationResult.error) {
+      if (LoginValidationResult.error.details && LoginValidationResult.error.details.length > 0) {
+        console.error(LoginValidationResult.error.details[0].message)
+        return res.status(400).json({ error: LoginValidationResult.error.details[0].message })
+      }
+      return res.status(400).json({ error: 'Error when validating the login' })
+    }
+
+   const LoginDao = new UserDao()
+    try {
+      const login = await LoginDao.login(userDto.email, userDto.password)
+      const newToken = createToken(login)
+      return res.status(200).json({
+        data: login,
+        token: newToken,
+        status: 'success'
+      })
+    } catch (error) {
+      return res.status(500).json({ error: error.message, status: 'failed to login' })
+    }
+   
+    
   }
 }

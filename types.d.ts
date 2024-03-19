@@ -1,6 +1,6 @@
 declare global {
   interface UserDtoI {
-    id: string
+    // id: string
     fullName: string
     username: string
     email: string
@@ -13,6 +13,7 @@ declare global {
     role: string
     isEmailConfirm: boolean
   }
+  
 
   interface AdminI {
     id: string
