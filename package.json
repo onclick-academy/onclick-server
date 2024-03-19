@@ -11,15 +11,15 @@
     },
     "main": "dist/index.js",
     "_moduleAliases": {
-        "@controllers/*": "dist/controllers",
-        "@middlewares/*": "dist/middlewares",
-        "@validations/*": "dist/middlewares/validations",
-        "@models/*": "dist/models",
-        "@dao/*": "dist/models/dao",
-        "@dto/*": "dist/models/dto",
-        "@routes/*": "dist/routes",
-        "@utilities/*": "dist/utilities",
-        "@types/*": "dist/types"
+        "@controllers": "dist/src/controllers",
+        "@middlewares": "dist/src/middlewares",
+        "@validation": "dist/src/middlewares/validation",
+        "@models": "dist/src/models",
+        "@dao": "dist/src/models/dao",
+        "@dto": "dist/src/models/dto",
+        "@routes": "dist/src/routes",
+        "@utilities": "dist/src/utilities",
+        "@types": "dist/src/types"
     },
     "dependencies": {
         "@prisma/client": "5.8.1",
