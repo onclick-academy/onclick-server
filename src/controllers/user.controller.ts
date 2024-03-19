@@ -27,14 +27,14 @@ export class UserController {
             const userDao = new UserDao()
 
             const token = req.cookies.accessToken
-            console.log('token', req.cookies)
+            console.log('token from getUserInfo', req.cookies)
             const info = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as UserDto
-            console.log('info', info)
+            console.log('info from getUserInfo', info)
             const user = await userDao.getUserById(info.id)
             if (!user) throw new Error('User not found `get userInfo')
             return res.status(200).json({ data: user, status: 'success' })
         } catch (error) {
-            console.error(error)
+            console.error( "error from getUserInfo ",error)
             return res.status(500).json({ error: 'Internal server error', status: 'error' })
         }
     }
