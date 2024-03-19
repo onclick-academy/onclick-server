@@ -284,6 +284,7 @@ declare global {
         isRead: boolean
         type: NOTIFICATION_TYPE
         additionalInfo?: any
+        link: string
     }
 
     interface NewsDtoI {

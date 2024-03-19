@@ -14,6 +14,7 @@ const sendNotificationToAll = async (notificationDto: {
     message?: string
     type: NOTIFICATION_TYPE
     additionalInfo?: any
+    link: string
 }) => {
     try {
         const userDao = new UserDao()
@@ -26,7 +27,8 @@ const sendNotificationToAll = async (notificationDto: {
                 message: notificationDto.message,
                 isRead: false,
                 type: notificationDto.type,
-                additionalInfo: notificationDto.additionalInfo
+                additionalInfo: notificationDto.additionalInfo,
+                link: notificationDto.link
             }
         })
 

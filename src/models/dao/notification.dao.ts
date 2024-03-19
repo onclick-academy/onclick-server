@@ -1,5 +1,6 @@
 import prisma from '@models/prisma/prisma-client'
 import { NOTIFICATION_TYPE } from '@prisma/client'
+import { link } from 'joi'
 
 export class NotificationDao {
     static async createNotification(notificationDto: NotificationDtoI) {
@@ -17,7 +18,8 @@ export class NotificationDao {
                 message: notificationDto.message,
                 isRead: notificationDto.isRead,
                 type: notificationDto.type.toUpperCase() as NOTIFICATION_TYPE,
-                additionalInfo: notificationDto.additionalInfo
+                additionalInfo: notificationDto.additionalInfo,
+                link : notificationDto.link
             }
         })
 
