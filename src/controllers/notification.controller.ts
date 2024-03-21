@@ -4,6 +4,7 @@ import { Request, Response } from 'express'
 import { sendNotificationToUser } from '@utilities/notification'
 import PubSub from 'pubsub-js'
 import { UserDao } from '@models/dao/user.dao'
+import { UserRequest } from '../types/user.interface'
 
 export class NotificationController {
     static async createNotification(req: Request, res: Response) {
@@ -37,9 +38,10 @@ export class NotificationController {
         }
     }
 
-    static async getAllNotifications(req: Request, res: Response) {
+    static async getAllNotifications(req: UserRequest, res: Response) {
         try {
-            const { recipientId } = req.params
+            const recipientId  = req.user.id
+
             const notifications = await NotificationDao.getAllNotifications(recipientId)
 
             res.status(200).json({
@@ -47,10 +49,11 @@ export class NotificationController {
                 data: notifications
             })
         } catch (error: any) {
+            console.log(error)
             if (error.message.includes('Recipient')) {
                 return res.status(400).json({ message: error.message, status: 'failed' })
             }
-            res.status(500).json({ message: error.message, status: 'failed' })
+            res.status(500).json({ message: error, status: 'failed' })
         }
     }
 
