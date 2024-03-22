@@ -23,8 +23,9 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          yarn
-          yarn build
+          npm install
+          npm run build --if-present
+          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -56,9 +57,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C63F2B36A6374852BD5ACDE205C73B82 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_76D98DB65E4649C5B8EFD10E2C798652 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_64C8EBADFF844FF39EC4094E2A22E9D7 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5B076A8F4D7149BCB22B19F23D20A18B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B962BE7F051540D89EFB627A3C410A4F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8B412D7D5CB34FE4833E8B1E46333C0B }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -67,3 +68,4 @@ jobs:
           app-name: 'onclick-server'
           slot-name: 'Production'
           package: .
+          
