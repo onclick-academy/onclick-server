@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "start": "tsc && node dist/index.js",
+        "start": "node dist/index.js",
         "dev": "yarn build && nodemon --exec ts-node -r tsconfig-paths/register dist/index.js",
         "format": "npx prisma format",
         "build": "tsc",
