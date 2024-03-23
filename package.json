@@ -8,7 +8,8 @@
         "format": "npx prisma format",
         "build": "tsc",
         "studio": "cd src/models && npx prisma studio",
-        "postinstall":"cd ./src/models && npx prisma generate && cd ../../"
+        "prisma:generate": "prisma generate --schema=./src/models/prisma/schema.prisma",
+        "postinstall":"yarn prisma:generate"
     },
     "main": "dist/index.js",
     "_moduleAliases": {
