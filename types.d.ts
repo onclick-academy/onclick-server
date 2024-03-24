@@ -44,9 +44,28 @@ declare global {
         isRememberMe?: boolean
     }
 
-    interface LectureDtoI {
+    interface SectionDtoI {
         id?: string | undefined
         courseId: string
+        content: string
+        isDeleted: boolean
+        deletedAt: Date
+        fullduration: string
+    }
+
+    interface SectionUpdateDtoI {
+        id?: string
+        courseId?: string
+        content?: string
+        isDeleted?: boolean
+        deletedAt?: Date
+        fullduration?: string
+    }
+
+    interface LectureDtoI {
+        id?: string
+        sectionId: string
+        order: number
         title: string
         description: string
         videoUrl: string
@@ -55,31 +74,14 @@ declare global {
         deletedAt: Date
     }
 
-    interface LectureUpdateDtoI {
-        id?: string
-        courseId?: string
+    interface LectureUpdateI {
+        id?: string | undefined
+        sectionId?: string
+        order?: number
         title?: string
         description?: string
         videoUrl?: string
         duration?: string
-        isDeleted?: boolean
-        deletedAt?: Date
-    }
-
-    interface LectureContentDtoI {
-        id?: string
-        lectureId: string
-        order: number
-        content: string
-        isDeleted: boolean
-        deletedAt: Date
-    }
-
-    interface LectureContentUpdateI {
-        id?: string | undefined
-        lectureId?: string
-        order?: number
-        content?: string
         isDeleted?: boolean
         deletedAt?: Date
     }

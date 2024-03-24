@@ -224,7 +224,7 @@ model Course {
   isApproved    Boolean   @default(false)
 
   topics       CourseTopic[]
-  lectures     Lecture[]
+  sections     Section[]
   enrollments  CourseEnrollment[]
   WishList     WishList[]
   approvedBy   User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
@@ -255,33 +255,36 @@ model Lecture {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  courseId    String
+  sectionId String
+  order     Int       @unique @default(autoincrement())
   title       String
   description String
   // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
   // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
   videoUrl    String
+  thumbnail  String
   duration    String
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?
 
-  content LecturesContent[]
-  course  Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  section  Section             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  material LecturesMaterials[]
 }
 
-model LecturesContent {
+model Section {
   id        String   @id @default(uuid())
+  courseId    String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order     Int       @unique @default(autoincrement())
-  lectureId String
   content   String
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
+  fullduration String
 
-  material LecturesMaterials[]
-  lecture  Lecture             @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  lectures Lecture[]
+  course  Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model LecturesMaterials {
@@ -295,7 +298,7 @@ model LecturesMaterials {
   isDeleted        Boolean   @default(false)
   deletedAt        DateTime?
 
-  lectureContents LecturesContent @relation(fields: [lectureContentId], references: [id], onDelete: Cascade)
+  lectures Lecture @relation(fields: [lectureContentId], references: [id], onDelete: Cascade)
 }
 
 model Topic {

@@ -30,10 +30,10 @@ router.use('/devicetokens', require('./deviceTokens.route').default)
 router.use('/notifications', require('./notification.route').default)
 
 // lecture content routes
-router.use('/lecturescontent', require('./lectureContent.route').default)
+router.use('/lectures', require('./lecture.route').default)
 
 // lecture routes
-router.use('/lectures', require('./lecture.route').default)
+router.use('/sections', require('./section.route').default)
 
 // wishlist routes
 router.use('/wishlist', require('./wishlist.route').default)
