@@ -5,6 +5,7 @@ import { sendNotificationToUser } from '@utilities/notification'
 import PubSub from 'pubsub-js'
 import { UserDao } from '@models/dao/user.dao'
 import { notificationValidation } from '@middlewares/validation/content/notification.validation'
+import { UserRequest } from '../types/user.interface'
 
 export class NotificationController {
     static async createNotification(req: Request, res: Response) {
@@ -54,7 +55,7 @@ export class NotificationController {
         }
     }
 
-    static async getAllNotifications(req: Request, res: Response) {
+    static async getAllNotifications(req: UserRequest, res: Response) {
         try {
             const { recipientId } = req.params
             const notifications = await NotificationDao.getAllNotifications(
@@ -63,15 +64,17 @@ export class NotificationController {
                 req.body.offset
             )
 
+
             res.status(200).json({
                 status: 'success',
                 data: notifications
             })
         } catch (error: any) {
+            console.log(error)
             if (error.message.includes('Recipient')) {
                 return res.status(400).json({ message: error.message, status: 'failed' })
             }
-            res.status(500).json({ message: error.message, status: 'failed' })
+            res.status(500).json({ message: error, status: 'failed' })
         }
     }
 
