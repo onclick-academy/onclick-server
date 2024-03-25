@@ -21,7 +21,11 @@ export class DeviceTokenController {
         const { userId } = req.params
 
         try {
-            const userTokens = await this.fetchUserTokens(userId)
+            const userTokens = await prisma.devicesTokens.findMany({
+                where: {
+                    userId: userId
+                }
+            })
             return res.status(200).json({ status: 'success', data: userTokens })
         } catch (error: any) {
             console.error('error on getting device tokens\nwith error message: ' + error.message)
@@ -31,13 +35,23 @@ export class DeviceTokenController {
 
     static async create(req: Request, res: Response) {
         const { token, userId } = req.body
-        const userDao = new UserDao()
-        const isExist = await userDao.getUserById(userId)
-        if (!isExist) {
-            return res.status(400).json({ message: 'User not found', status: 'failed' })
-        }
 
         try {
+            const userDao = new UserDao()
+            const isExist = await userDao.getUserById(userId)
+            if (!isExist) {
+                return res.status(400).json({ message: 'User not found', status: 'failed' })
+            }
+
+            const devices = await prisma.devicesTokens.findMany({
+                where: {
+                    userId: userId
+                }
+            })
+            const isDeviceExist = devices.find(device => device.token === token)
+            if (isDeviceExist) {
+                return res.status(400).json({ message: 'Device token already exist', status: 'failed' })
+            }
             const deviceToken = await prisma.devicesTokens.create({
                 data: {
                     token: token,
