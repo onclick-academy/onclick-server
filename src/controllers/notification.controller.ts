@@ -4,14 +4,31 @@ import { Request, Response } from 'express'
 import { sendNotificationToUser } from '@utilities/notification'
 import PubSub from 'pubsub-js'
 import { UserDao } from '@models/dao/user.dao'
+import { notificationValidation } from '@middlewares/validation/content/notification.validation'
 import { UserRequest } from '../types/user.interface'
 
 export class NotificationController {
     static async createNotification(req: Request, res: Response) {
         try {
             const notificationDto = new NotificationDto(req.body)
+            if (!notificationDto.recipientId) {
+                return res.status(400).json({ message: 'Recipient ID is required', status: 'failed' })
+            }
+
+            const { error } = await notificationValidation.createNotification(notificationDto)
+            if (error) {
+                return res.status(400).json({ message: error.details[0].message, status: 'failed' })
+            }
+
             const newNotification = await NotificationDao.createNotification(notificationDto)
-            await sendNotificationToUser(notificationDto)
+
+            try {
+                await sendNotificationToUser(notificationDto)
+            } catch (sendError) {
+                console.error('Error sending notification:', sendError.message)
+                // Decide how to handle send errors, e.g., log them, but don't fail the entire request
+            }
+
             PubSub.publish(notificationDto.recipientId, newNotification)
 
             res.status(200).json({
@@ -19,7 +36,7 @@ export class NotificationController {
                 data: newNotification
             })
         } catch (error: any) {
-            console.log(error.message)
+            console.error('Error creating notification:', error.message)
             return res.status(500).json({ message: error.message, status: 'failed' })
         }
     }
@@ -40,9 +57,13 @@ export class NotificationController {
 
     static async getAllNotifications(req: UserRequest, res: Response) {
         try {
-            const recipientId  = req.user.id
+            const { recipientId } = req.params
+            const notifications = await NotificationDao.getAllNotifications(
+                recipientId,
+                req.body.limit,
+                req.body.offset
+            )
 
-            const notifications = await NotificationDao.getAllNotifications(recipientId)
 
             res.status(200).json({
                 status: 'success',
@@ -110,7 +131,7 @@ export class NotificationController {
 
     static async createRealTimeNotification(req: Request, res: Response) {
         try {
-            const { recipientId } = req.body
+            const { recipientId } = req.params
             if (!recipientId) {
                 return res.status(400).json({ message: 'Recipient ID is required', status: 'failed' })
             }

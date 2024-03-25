@@ -5,7 +5,6 @@ import { verifyAdminRole } from '@middlewares/admin.middleware'
 
 const router = express.Router()
 
-
 router.route('/userinfo').get(UserController.getUserInfo)
 
 router.route('/search').get(UserController.searchUser)
