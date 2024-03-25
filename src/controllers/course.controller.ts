@@ -69,7 +69,28 @@ export class CourseController {
         try {
             await CourseIdValidation(req.params.courseId)
             const course = await courseDao.getCourseById(req.params.courseId)
-            return res.status(200).json({ message: 'Course fetched successfuly', data: course, status: 'success' })
+
+            const avrageRating = course.ratings.reduce((acc, rating) => acc + rating.rate, 0) / course.ratings.length
+            // console.log("Average Rating: ",avrageRating)
+            // console.log("Course Name: ",course.title)
+            // const instructorName = course.publisher.user.fullName
+            // console.log("Instructor Name: ",instructorName)
+            // console.log("Course Topics: ")
+            // course.topics.map(topic => console.log(topic.topic.title))
+            // console.log("Course Sections Full Duration: ")
+            // course.sections.map(section => console.log(section.fullduration))
+            // console.log("Course Sections Content: ")
+            // course.sections.map(section => console.log(section.content))
+            // console.log("Course Sections Lectures: ")
+            // course.sections.map(section => section.lectures.map(lecture => console.log(lecture.title)))
+            // console.log("Course Sections Lectures Content: ")
+            // course.sections.map(section => section.lectures.map(lecture => console.log(lecture.title)))
+            // console.log("Course Sections Lectures Duration: ")
+            // course.sections.map(section => section.lectures.map(lecture => console.log(lecture.duration)))
+            // console.log("Course Sections Lectures Video: ")
+            // course.sections.map(section => section.lectures.map(lecture => console.log(lecture.videoUrl)))
+
+            return res.status(200).json({ message: 'Course fetched successfuly', data: course, avrageRating ,status: 'success' })
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })
         }

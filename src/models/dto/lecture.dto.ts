@@ -6,6 +6,7 @@ export class LectureDto {
     public description: string
     public videoUrl: string
     public duration: string
+    public thumbnail: string
     public isDeleted: boolean
     public deletedAt: Date
 
@@ -17,6 +18,7 @@ export class LectureDto {
         this.description = body.description
         this.videoUrl = body.videoUrl
         this.duration = body.duration
+        this.thumbnail = body.thumbnail
         this.isDeleted = body.isDeleted
         this.deletedAt = body.deletedAt
     }

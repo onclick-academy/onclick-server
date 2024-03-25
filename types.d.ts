@@ -71,7 +71,6 @@ declare global {
         videoUrl: string
         duration: string
         isDeleted: boolean
-        deletedAt: Date
     }
 
     interface LectureUpdateI {
@@ -191,7 +190,7 @@ declare global {
         phone?: string | null
         isRead: boolean
     }
-    
+
     interface EventDtoI {
         id: string | undefined
         adminId: string
@@ -261,13 +260,26 @@ declare global {
         }
     }
 
-    interface RatingInterface {
+    interface RatingDtoI {
+        id?: string
         targetType: 'COURSE' | 'INSTRUCTOR'
+        targetId: string
+        userId: string
+        rate: number
+        comment?: string
+        courseId?: string
+        instructorId?: string
+    }
+
+    interface RatingUpdateDtoI {
+        id: string
+        targetType?: 'COURSE' | 'INSTRUCTOR'
         targetId: string
         rate: number
         comment?: string
-        userId: string
         courseId?: string
+        instructorId?: string
+        isDeleted?: boolean
     }
 
     interface InstructorDtoI {

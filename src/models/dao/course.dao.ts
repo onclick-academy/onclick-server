@@ -40,6 +40,27 @@ export class CourseDao {
             where: {
                 id: id,
                 isDeleted: false
+            },
+            include: {
+                topics:{
+                    include: {
+                        topic: true
+                    }
+                },
+                sections: {
+                    include: {
+                        lectures: true
+                    }
+                },
+                enrollments: true,
+                subCategory: true,
+                publisher: {
+                    include: {
+                        user: true
+                    }
+                },
+                ratings: true,
+                CourseOwners: true
             }
         })
         return course

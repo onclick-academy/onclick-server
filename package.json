@@ -9,7 +9,7 @@
         "build": "tsc",
         "studio": "cd src/models && npx prisma studio",
         "prisma:generate": "prisma generate --schema=./src/models/prisma/schema.prisma",
-        "postinstall":"yarn prisma:generate"
+        "postinstall": "yarn prisma:generate"
     },
     "main": "dist/index.js",
     "_moduleAliases": {
@@ -24,7 +24,7 @@
         "@types": "dist/src/types"
     },
     "dependencies": {
-        "@prisma/client": "5.8.1",
+        "@prisma/client": "5.11.0",
         "@types/cookie-parser": "^1.4.6",
         "@types/cors": "^2.8.17",
         "@types/module-alias": "^2.0.4",
@@ -62,7 +62,7 @@
         "@types/node": "^20.11.6",
         "jsonwebtoken": "^9.0.2",
         "nodemon": "^3.0.3",
-        "prisma": "^5.8.1",
+        "prisma": "5.11.0",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
         "typescript": "^5.3.3"

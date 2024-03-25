@@ -1,8 +1,7 @@
 import prisma from '@models/prisma/prisma-client'
 
 export class LectureDao {
-    createLecture = async (lectureDto: LectureDtoI) => {
-        // validate lectureId
+    createLecture = async (lectureDto: any) => {
         const lecture = await prisma.lecture.create({
             data: lectureDto
         })
@@ -10,7 +9,6 @@ export class LectureDao {
     }
 
     getLectureBySectionId = async (sectionId: string) => {
-        // validate lectureId
         const lecture = await prisma.lecture.findMany({
             where: {
                 sectionId

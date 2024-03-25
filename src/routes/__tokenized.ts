@@ -47,4 +47,6 @@ router.use('/events', require('./event.route').default)
 // susspendState routes
 router.use('/susspendState', require('./suspendState.route').default)
 
+// rating routes
+router.use('/ratings', require('./rating.route').default)
 export default router
