@@ -24,7 +24,7 @@ export class AuthDao {
                     isDeleted: false
                 }
             })
-            if (!user) throw new Error('Email is not found please register')
+            if (!user) throw new Error('Email or password is incorrect')
             if (!user.isAvailable) {
                 user.isAvailable = true
             }
@@ -44,7 +44,7 @@ export class AuthDao {
             }
         }
         const isPasswordCorrect = await comparePassword(userDto.password, user?.password)
-        if (!isPasswordCorrect) throw new Error('Email or password is not correct **')
+        if (!isPasswordCorrect) throw new Error('Email or password is incorrect')
 
         return user
     }

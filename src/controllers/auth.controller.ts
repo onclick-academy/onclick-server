@@ -57,10 +57,12 @@ export class AuthController {
                 ...cookiesRules,
                 maxAge: 3 * 24 * 60 * 60 * 1000
             })
-            res.cookie('refreshToken', refreshToken, {
-                ...cookiesRules,
-                maxAge: 5 * 24 * 60 * 60 * 1000
-            })
+            if (userDto.isRememberMe) {
+                res.cookie('refreshToken', refreshToken, {
+                    ...cookiesRules,
+                    maxAge: 5 * 24 * 60 * 60 * 1000
+                })
+            }
             res.status(200).json({
                 data: newUser,
                 accessToken: accessToken,
@@ -174,10 +176,12 @@ export class AuthController {
                 ...cookiesRules,
                 maxAge: 3 * 24 * 60 * 60 * 1000
             })
-            res.cookie('refreshToken', refreshToken, {
-                ...cookiesRules,
-                maxAge: 5 * 24 * 60 * 60 * 1000
-            })
+            if (loginDto.isRememberMe) {
+                res.cookie('refreshToken', refreshToken, {
+                    ...cookiesRules,
+                    maxAge: 5 * 24 * 60 * 60 * 1000
+                })
+            }
 
             return res.status(200).json({
                 data: user,
