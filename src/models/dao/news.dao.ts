@@ -26,6 +26,11 @@ export class NewsDao {
     return news
   }
 
+  getAllNews = async () => {
+    const news = await prisma.news.findMany()
+    return news
+  }
+
   updateNews = async (newsDto: NewsDtoI) => {
     const news = await prisma.news.update({
       where: {

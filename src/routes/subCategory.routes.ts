@@ -6,6 +6,7 @@ const router = express.Router()
 
 router.route('/').get(SubCategoryController.linkTopicsToSubCategory)
 
+router.route('/all').get(SubCategoryController.getAllSubCategories)
 router
   .route('/sub/:categoryId')
   .post(SubCategoryController.createSubCategory)

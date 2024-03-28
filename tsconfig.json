@@ -1,5 +1,4 @@
-{
-  "include": ["src/**/*", "index.ts"],
+{"include": ["src/**/*", "index.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"],
   "compilerOptions": {
     "target": "es2016",
