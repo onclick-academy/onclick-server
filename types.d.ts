@@ -329,6 +329,13 @@ declare global {
         isDeleted?: boolean
         deletedAt?: Date
     }
+
+    interface CourseEnrollmentDtoI {
+        id?: string
+        userId: string
+        courseId: string
+        progress?: JSON | null
+    }
 }
 
 export {}

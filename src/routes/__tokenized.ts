@@ -49,4 +49,8 @@ router.use('/susspendState', require('./suspendState.route').default)
 
 // rating routes
 router.use('/ratings', require('./rating.route').default)
+
+// course enreollment routes
+router.use('/courseEnrolls', require('./courseEnrollment.route').default)
+
 export default router
