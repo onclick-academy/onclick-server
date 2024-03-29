@@ -6,7 +6,12 @@ const router = express.Router();
 router
     .route("/")
     .post(WishlistController.createWishList)
-    .get(WishlistController.getWishListByUserId);
+    .get(WishlistController.getWishListByUserId)
+
+
+router
+    .route("/:courseId")
+    .post(WishlistController.isWishListed)
 
 router
     .route("/:wishListId")

@@ -45,7 +45,6 @@ export class UserController {
                     ]
                 }
             })
-
             if (!user) throw new Error('User not found `get userInfo')
             return res.status(200).json({ data: user, status: 'success' })
         } catch (error) {
@@ -88,6 +87,8 @@ export class UserController {
         const userDto = new UserDto(req.body)
         userDto.id = req.params.userId
 
+        if (!userDto.email) delete userDto.email
+        if (!userDto.password) delete userDto.password
         try {
             const user = await userDao.getUserById(userDto.id)
             if (!user) return res.status(404).json({ error: 'User not found' })
@@ -107,6 +108,7 @@ export class UserController {
 
             return res.status(200).json({ message: 'User updated successfuly', data: updatedUser, status: 'success' })
         } catch (error: any) {
+            console.log(error)
             return res.status(400).json({ error: error.message })
         }
     }

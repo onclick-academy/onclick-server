@@ -3,10 +3,20 @@ import prisma from '@models/prisma/prisma-client'
 export class WishListDao {
     createWishList = async (wishListDto: WishlistDtoI) => {
         const wishList = prisma.wishList.create({
-            // TODO valid Ids
             data: wishListDto
         })
         return wishList
+    }
+
+    isWishListed = async (wishListDto: WishlistDtoI) => {
+        const wishList = prisma.wishList.findFirst({
+            where: {
+                userId: wishListDto.userId,
+                courseId: wishListDto.courseId
+            }
+        })
+        if (!wishList) return false
+        return true
     }
 
     getWishListById = async (wishListId: string) => {

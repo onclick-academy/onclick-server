@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -138,6 +138,7 @@ model Instructor {
   isVerified  Boolean @default(false)
 
   courses Course[]
+  ratings Rating[]
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -210,7 +211,6 @@ model Course {
   createdBy     String
   adminId       String?
   categoryId    String
-  subCategoryId String
   title         String
   description   String
   price         Float
@@ -218,16 +218,16 @@ model Course {
   discount      Float?
   isAvailable   Boolean   @default(false)
   skillsGained  String[]
-  duration      String
+  duration      String?
   photo         String
   isDeleted     Boolean   @default(false)
   deletedAt     DateTime?
-  certificate   String
+  certificate   String?
   introVideo    String?
   isApproved    Boolean   @default(false)
 
   topics       CourseTopic[]
-  lectures     Lecture[]
+  sections     Section[]
   enrollments  CourseEnrollment[]
   WishList     WishList[]
   approvedBy   User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
@@ -258,33 +258,35 @@ model Lecture {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  courseId    String
+  sectionId   String
+  order       Int       @unique @default(autoincrement())
   title       String
   description String
   // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
   // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
   videoUrl    String
+  thumbnail   String
   duration    String
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?
 
-  content LecturesContent[]
-  course  Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  section  Section             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  material LecturesMaterials[]
 }
 
-model LecturesContent {
-  id        String   @id @default(uuid())
+model Section {
+  id       String @id @default(uuid())
+
+  courseId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order     Int       @unique @default(autoincrement())
-  lectureId String
-  content   String
-  isDeleted Boolean   @default(false)
-  deletedAt DateTime?
+  title      String
+  isDeleted    Boolean   @default(false)
+  deletedAt    DateTime?
 
-  material LecturesMaterials[]
-  lecture  Lecture             @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  lectures Lecture[]
+  course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model LecturesMaterials {
@@ -298,7 +300,7 @@ model LecturesMaterials {
   isDeleted        Boolean   @default(false)
   deletedAt        DateTime?
 
-  lectureContents LecturesContent @relation(fields: [lectureContentId], references: [id], onDelete: Cascade)
+  lectures Lecture @relation(fields: [lectureContentId], references: [id], onDelete: Cascade)
 }
 
 model Topic {
@@ -335,17 +337,19 @@ model Rating {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  targetType TARGET_RATE
-  targetId   String // CourseId or InstructorId
-  rate       Float
-  comment    String?
-  isDeleted  Boolean     @default(false)
-  deletedAt  DateTime?
-  courseId   String
-  userId     String
+  userId       String
+  targetId     String // CourseId or InstructorId
+  targetType   TARGET_RATE
+  rate         Float
+  comment      String?
+  isDeleted    Boolean     @default(false)
+  deletedAt    DateTime?
+  courseId     String?
+  instructorId String?
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course?     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructor Instructor? @relation(fields: [instructorId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, userId, targetType])
 }

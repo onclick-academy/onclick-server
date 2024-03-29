@@ -5,7 +5,7 @@ export class WishlistValidation {
     id: Joi.string().allow(null),
     courseId: Joi.string().required(),
     userId: Joi.string().required(),
-    isDeleted: Joi.boolean().required().default(false),
+    isDeleted: Joi.boolean().default(false),
     deletedAt: Joi.date().allow(null)
   }
 
