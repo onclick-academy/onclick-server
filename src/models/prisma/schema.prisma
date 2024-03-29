@@ -208,7 +208,6 @@ model Course {
   createdBy     String
   adminId       String?
   categoryId    String
-  subCategoryId String
   title         String
   description   String
   price         Float
@@ -279,10 +278,9 @@ model Section {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  content      String
+  title      String
   isDeleted    Boolean   @default(false)
   deletedAt    DateTime?
-  fullduration String
 
   lectures Lecture[]
   course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)

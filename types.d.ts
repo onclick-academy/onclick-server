@@ -47,10 +47,9 @@ declare global {
     interface SectionDtoI {
         id?: string | undefined
         courseId: string
-        content: string
+        title: string
         isDeleted: boolean
         deletedAt: Date
-        fullduration: string
     }
 
     interface SectionUpdateDtoI {

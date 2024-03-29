@@ -9,7 +9,9 @@
         "build": "tsc",
         "studio": "cd src/models && npx prisma studio",
         "prisma:generate": "prisma generate --schema=./src/models/prisma/schema.prisma",
-        "postinstall": "yarn prisma:generate"
+        "prisma:migrate": "cd src/models && prisma migrate dev --name init",
+        "postinstall": "yarn prisma:generate",
+        "prisma:seed": "ts-node src/models/prisma/seed.ts"
     },
     "main": "dist/index.js",
     "_moduleAliases": {

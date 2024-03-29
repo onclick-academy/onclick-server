@@ -3,7 +3,10 @@ import prisma from '@models/prisma/prisma-client'
 export class SectionDao {
     createSection = async (sectionDto: SectionDtoI) => {
         const lecture = await prisma.section.create({
-            data: sectionDto
+            data: {
+                ...sectionDto,
+                courseId: sectionDto.courseId // Add the courseId property explicitly
+            }
         })
         return lecture
     }
