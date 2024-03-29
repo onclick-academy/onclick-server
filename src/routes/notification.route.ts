@@ -6,10 +6,11 @@ const router = express.Router()
 router.post('/', NotificationController.createNotification)
 
 // real-time events
-router.post('/real-time', NotificationController.createRealTimeNotification)
-
 router
-    .get('/', NotificationController.getAllNotifications)
+    .get('/realtime/:recipientId', NotificationController.createRealTimeNotification)
+    .get('/:recipientId', NotificationController.getAllNotifications)
+router
+    .get('/:recipientId', NotificationController.getAllNotifications)
     .get('/unread/:recipientId', NotificationController.getUnreadNotifications)
     .get('/:notificationId', NotificationController.getNotificationById)
 

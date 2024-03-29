@@ -19,7 +19,7 @@ export class NotificationDao {
                 isRead: notificationDto.isRead,
                 type: notificationDto.type.toUpperCase() as NOTIFICATION_TYPE,
                 additionalInfo: notificationDto.additionalInfo,
-                link : notificationDto.link
+                link: notificationDto.link
             }
         })
 
@@ -47,7 +47,12 @@ export class NotificationDao {
     }
 
     static async getUnreadNotifications(recipientId: string) {
-        if (!recipientId) throw new Error('Recipient not found')
+        const isExist = await prisma.user.findUnique({
+            where: {
+                id: recipientId
+            }
+        })
+        if (!isExist) throw new Error('Recipient not found')
 
         const user = await prisma.user.findFirst({
             where: {
@@ -57,6 +62,9 @@ export class NotificationDao {
                 notifications: {
                     where: {
                         isRead: false
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
                     }
                 }
             }
@@ -66,13 +74,18 @@ export class NotificationDao {
         return user.notifications
     }
 
-    static async getAllNotifications(recipientId: string) {
+    static async getAllNotifications(recipientId: string, offset?: number, limit?: number) {
         if (!recipientId) throw new Error('Recipient not found')
 
         const notifications = await prisma.notification.findMany({
             where: {
                 recipientId
-            }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            skip: offset || 5,
+            take: limit || 10
         })
         if (!notifications) throw new Error('notifications not found')
 

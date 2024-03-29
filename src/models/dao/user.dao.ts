@@ -66,10 +66,10 @@ export class UserDao {
     }
 
     getUserById = async (id: string) => {
+        if (!id) throw Error('Invalid ID')
         const user = await prisma.user.findUnique({
             where: {
-                id: id,
-                isDeleted: false
+                id: id
             }
         })
         return user

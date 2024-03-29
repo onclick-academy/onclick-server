@@ -25,18 +25,24 @@ export class UserController {
 
     static getUserInfo = async (req: Request, res: Response) => {
         try {
-            const userDao = new UserDao()
-
             const token = req.cookies.accessToken
-            console.log('token from getUserInfo', req.cookies)
+            if (!token) throw new Error('Token not found')
+            console.log('🚀 ~ UserController ~ getUserInfo= ~ token:', token)
             const info = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as UserDto
-            console.log('info from getUserInfo', info)
-            const user = await prisma.user.findUnique({
+            console.log('🚀 ~ UserController ~ getUserInfo= ~ info:', info)
+            const user = await prisma.user.findFirst({
                 where: {
-                    email: info.email
-                },
-                include: {
-                    instructor: true,
+                    OR: [
+                        {
+                            id: info.id
+                        },
+                        {
+                            username: info.username
+                        },
+                        {
+                            email: info.email
+                        }
+                    ]
                 }
             })
             if (!user) throw new Error('User not found `get userInfo')
@@ -63,12 +69,17 @@ export class UserController {
     }
 
     static getUserById = async (req: Request, res: Response) => {
-        const userDao = new UserDao()
-        const user = await userDao.getUserById(req.params.userId)
+        try {
+            const { userId } = req.params
+            const userDao = new UserDao()
 
-        if (!user) return res.status(404).json({ error: 'User not found' })
+            const user = await userDao.getUserById(userId)
+            if (!user) return res.status(404).json({ error: 'User not found' })
 
-        return res.status(200).json({ message: 'User retrieved successfuly', data: user, status: 'success' })
+            return res.status(200).json({ message: 'User retrieved successfuly', data: user, status: 'success' })
+        } catch (error: any) {
+            return res.status(400).json({ error: error.message })
+        }
     }
 
     static updateUser = async (req: Request, res: Response) => {
