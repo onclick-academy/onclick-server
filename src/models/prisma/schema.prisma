@@ -215,11 +215,11 @@ model Course {
   discount      Float?
   isAvailable   Boolean   @default(false)
   skillsGained  String[]
-  duration      String
+  duration      String?
   photo         String
   isDeleted     Boolean   @default(false)
   deletedAt     DateTime?
-  certificate   String
+  certificate   String?
   introVideo    String?
   isApproved    Boolean   @default(false)
 
@@ -273,8 +273,8 @@ model Lecture {
 
 model Section {
   id       String @id @default(uuid())
-  courseId String
 
+  courseId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
