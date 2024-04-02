@@ -193,4 +193,10 @@ export class AuthController {
             return res.status(500).json({ error: error.message, status: 'failed to login' })
         }
     }
+
+    static logout = async (req: Request, res: Response) => {
+        res.clearCookie('accessToken')
+        res.clearCookie('refreshToken')
+        return res.status(200).json({ message: 'Logout successfully', status: 'success' })
+    }
 }
