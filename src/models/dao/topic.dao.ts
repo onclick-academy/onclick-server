@@ -27,19 +27,15 @@ export class TopicDao {
         return topic
     }
 
-    getTopicsBySubCategoryId = async (topicId: string, subCategoryId: string) => {
-        const topics = await prisma.topic.findMany({
-            where: {
-                id: topicId
-            },
-            include: {
-                subCategory: {
-                    include: {
-                        subCategory: true
-                    }
-                }
-            }
-        })
+    getTopicsBySubCategoryId = async (subCategoryId: string) => {
+        const topics = await prisma.$queryRaw`
+                SELECT t.id, t.title
+                FROM "Topic" AS t
+                INNER JOIN "SubCategoryTopic" AS sct ON t.id = sct."topicId"
+                INNER JOIN "SubCategory" AS sc ON sct."subCategoryId" = sc.id
+                WHERE sc.id = ${subCategoryId}
+                
+            `
         return topics
     }
 

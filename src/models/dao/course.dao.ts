@@ -2,27 +2,33 @@ import prisma from '../prisma/prisma-client'
 
 export class CourseDao {
     applyCourse = async (courseDto: CourseDtoI) => {
-        const { topicIds, ...courseData } = courseDto
+        const { topics, subCategories, ...courseData } = courseDto
         const newCourse = await prisma.course.create({
-            data: courseData
+            data: {
+                ...courseData,
+                subCategories: {
+                    connect: subCategories.map(subCategoryId => {
+                        return {
+                            id: subCategoryId
+                        }
+                    })
+                }
+            }
+        })
+        const courseTopics = topics.map(topicId => {
+            return {
+                topicId,
+                courseId: newCourse.id
+            }
         })
 
-        // TODO validate topicIds
-
-        let newCourseTopics = []
-        for (let id of courseDto.topicIds) {
-            const newCourseTopic = await prisma.courseTopic.create({
-                data: {
-                    courseId: newCourse.id,
-                    topicId: id
-                }
-            })
-            newCourseTopics.push(newCourseTopic)
-        }
+        const topicsNN = await prisma.courseTopic.createMany({
+            data: courseTopics
+        })
 
         return {
             newCourse,
-            newCourseTopics
+            topicsNN
         }
     }
 
@@ -53,7 +59,7 @@ export class CourseDao {
                     }
                 },
                 enrollments: true,
-                subCategory: true,
+                subCategories: true,
                 publisher: {
                     include: {
                         user: true

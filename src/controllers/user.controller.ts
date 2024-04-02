@@ -43,12 +43,15 @@ export class UserController {
                             email: info.email
                         }
                     ]
+                },
+                include: {
+                    instructor: true
                 }
             })
             if (!user) throw new Error('User not found `get userInfo')
             return res.status(200).json({ data: user, status: 'success' })
         } catch (error) {
-            console.error( "error from getUserInfo ",error)
+            console.error('error from getUserInfo ', error)
             return res.status(500).json({ error: 'Internal server error', status: 'error' })
         }
     }

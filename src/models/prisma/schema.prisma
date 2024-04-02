@@ -231,7 +231,7 @@ model Course {
   enrollments  CourseEnrollment[]
   WishList     WishList[]
   approvedBy   User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  subCategory  SubCategory[]
+  subCategories  SubCategory[]
   publisher    Instructor         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   ratings      Rating[]
   CourseOwners CourseOwners[]

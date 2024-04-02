@@ -53,13 +53,11 @@ export class TopicController {
     static getTopicsBySubCategoryId = async (req: Request, res: Response) => {
         const topicDao = new TopicDao()
         const subCategoryId = req.params.subCategoryId //TODO discuss with team
-        const topicId = req.params.topicId
 
         try {
-
             await SubCategoryIdValidation(subCategoryId)
 
-            const topics = await topicDao.getTopicsBySubCategoryId(topicId ,subCategoryId)
+            const topics = await topicDao.getTopicsBySubCategoryId(subCategoryId)
 
             return res.status(200).json({ data: topics, status: 'success' })
         } catch (error: any) {
@@ -75,7 +73,6 @@ export class TopicController {
         topicDto.id = req.params.topicId
 
         try {
-
             await TopicIdValidation(topicDto.id)
 
             const { error } = await TopicValidation.updateTopic(topicDto)
@@ -95,7 +92,6 @@ export class TopicController {
         const topicId = req.params.topicId
 
         try {
-
             await TopicIdValidation(topicId)
 
             const deletedTopic = await topicDao.deleteTopic(topicId)

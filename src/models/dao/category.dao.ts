@@ -12,11 +12,7 @@ export class CategoryDao {
     getAllCategories = async () => {
         const categories = await prisma.category.findMany({
             include: {
-                subCategories: {
-                    include: {
-                        topics: true
-                    }
-                }
+                subCategories: true
             }
         })
         return categories
