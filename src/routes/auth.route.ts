@@ -9,6 +9,8 @@ router.route('/register').post(upload.single('profilePic'), AuthController.regis
 
 router.route('/login').post(AuthController.login as unknown as RequestHandler)
 
+router.route('/logout').get(AuthController.logout)
+
 router.route('/password/forgetpassword').post(PasswordController.forgetPassword)
 router.route('/password/verifycode').post(PasswordController.verifyResetCode)
 router.route('/password/changepassword/:userId').post(PasswordController.changePassword)

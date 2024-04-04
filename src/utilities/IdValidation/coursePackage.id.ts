@@ -13,10 +13,10 @@ export async function CourseIdValidation(courseId: string) {
     }
 }
 
-export async function LectureIdValidation(lectureId: string) {
-    const lecture = await prisma.lecture.findUnique({
+export async function SectionIdValidation(sectionId: string) {
+    const lecture = await prisma.section.findUnique({
         where: {
-            id: lectureId,
+            id: sectionId,
             isDeleted: false
         }
     })
@@ -26,10 +26,10 @@ export async function LectureIdValidation(lectureId: string) {
     }
 }
 
-export async function LectureContentIdValidation(lectureContentId: string) {
-    const lectureContent = await prisma.lecturesContent.findUnique({
+export async function LectureIdValidation(lectureId: string) {
+    const lectureContent = await prisma.lecture.findUnique({
         where: {
-            id: lectureContentId,
+            id: lectureId,
             isDeleted: false
         }
     })

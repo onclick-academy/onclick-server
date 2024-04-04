@@ -40,6 +40,27 @@ export class CourseDao {
             where: {
                 id: id,
                 isDeleted: false
+            },
+            include: {
+                topics: {
+                    include: {
+                        topic: true
+                    }
+                },
+                sections: {
+                    include: {
+                        lectures: true
+                    }
+                },
+                enrollments: true,
+                subCategory: true,
+                publisher: {
+                    include: {
+                        user: true
+                    }
+                },
+                ratings: true,
+                CourseOwners: true
             }
         })
         return course
@@ -67,10 +88,12 @@ export class CourseDao {
     }
 
     getCoursesBySubCategoryId = async (subCategoryId: string) => {
-        const courses = await prisma.course.findMany({
+        const courses = await prisma.subCategory.findUnique({
             where: {
-                subCategoryId: subCategoryId,
-                isDeleted: false
+                id: subCategoryId
+            },
+            include: {
+                courses: true
             }
         })
         return courses

@@ -39,7 +39,7 @@ const sendNotificationToAll = async (notificationDto: {
 }
 
 /**
- * sendNotificationToUser: Send notification to a specific user devces
+ * sendNotificationToUser: Send notification to a specific user devices
  * @param notificationDto
  * @returns void
  */
@@ -47,9 +47,14 @@ const sendNotificationToUser = async (notificationDto: NotificationDtoI) => {
     try {
         const userDeviceTokens = await DeviceTokenController.fetchUserTokens(notificationDto.recipientId)
         if (userDeviceTokens.length <= 0) {
-            throw new Error('User has no device tokens')
+            console.log('No device token found for user')
+            return 'No device token found for user'
         }
         const tokens = userDeviceTokens.filter(token => token.isEnabled).map(token => token.token)
+        if (tokens.length <= 0) {
+            console.log('No enabled device token found for user')
+            return 'No enabled device token found for user'
+        }
         console.log('List of tokens: ' + tokens)
 
         const message = {
@@ -61,12 +66,15 @@ const sendNotificationToUser = async (notificationDto: NotificationDtoI) => {
         }
 
         const response = await admin.messaging().sendEachForMulticast(message)
+        console.log('Successfully sent message:', response)
         const successfulTokens = []
         const failedTokens = []
         response.responses.forEach((resp, idx) => {
             if (resp.success) {
+                console.log('Successfully sent message to device token: ' + tokens[idx])
                 successfulTokens.push(tokens[idx])
             } else {
+                console.log('Failed to send message to device token: ' + tokens[idx])
                 failedTokens.push(tokens[idx])
             }
         })

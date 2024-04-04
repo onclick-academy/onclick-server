@@ -44,42 +44,42 @@ declare global {
         isRememberMe?: boolean
     }
 
-    interface LectureDtoI {
+    interface SectionDtoI {
         id?: string | undefined
         courseId: string
+        title: string
+        isDeleted: boolean
+        deletedAt: Date
+    }
+
+    interface SectionUpdateDtoI {
+        id?: string
+        courseId?: string
+        content?: string
+        isDeleted?: boolean
+        deletedAt?: Date
+        fullduration?: string
+    }
+
+    interface LectureDtoI {
+        id?: string
+        sectionId: string
+        order: number
         title: string
         description: string
         videoUrl: string
         duration: string
         isDeleted: boolean
-        deletedAt: Date
     }
 
-    interface LectureUpdateDtoI {
-        id?: string
-        courseId?: string
+    interface LectureUpdateI {
+        id?: string | undefined
+        sectionId?: string
+        order?: number
         title?: string
         description?: string
         videoUrl?: string
         duration?: string
-        isDeleted?: boolean
-        deletedAt?: Date
-    }
-
-    interface LectureContentDtoI {
-        id?: string
-        lectureId: string
-        order: number
-        content: string
-        isDeleted: boolean
-        deletedAt: Date
-    }
-
-    interface LectureContentUpdateI {
-        id?: string | undefined
-        lectureId?: string
-        order?: number
-        content?: string
         isDeleted?: boolean
         deletedAt?: Date
     }
@@ -189,7 +189,7 @@ declare global {
         phone?: string | null
         isRead: boolean
     }
-    
+
     interface EventDtoI {
         id: string | undefined
         adminId: string
@@ -259,13 +259,26 @@ declare global {
         }
     }
 
-    interface RatingInterface {
+    interface RatingDtoI {
+        id?: string
         targetType: 'COURSE' | 'INSTRUCTOR'
+        targetId: string
+        userId: string
+        rate: number
+        comment?: string
+        courseId?: string
+        instructorId?: string
+    }
+
+    interface RatingUpdateDtoI {
+        id: string
+        targetType?: 'COURSE' | 'INSTRUCTOR'
         targetId: string
         rate: number
         comment?: string
-        userId: string
         courseId?: string
+        instructorId?: string
+        isDeleted?: boolean
     }
 
     interface InstructorDtoI {
@@ -314,6 +327,13 @@ declare global {
         courseId?: string
         isDeleted?: boolean
         deletedAt?: Date
+    }
+
+    interface CourseEnrollmentDtoI {
+        id?: string
+        userId: string
+        courseId: string
+        progress?: JSON | null
     }
 }
 

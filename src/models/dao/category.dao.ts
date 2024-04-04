@@ -10,7 +10,15 @@ export class CategoryDao {
     }
 
     getAllCategories = async () => {
-        const categories = await prisma.category.findMany()
+        const categories = await prisma.category.findMany({
+            include: {
+                subCategories: {
+                    include: {
+                        topics: true
+                    }
+                }
+            }
+        })
         return categories
     }
 
@@ -23,19 +31,6 @@ export class CategoryDao {
         })
         return category
     }
-
-    // getSubCategoriesByCategoryId = async (categoryId: string) => {
-    //   const subCategories = await prisma.category.findMany({
-    //     where: {
-    //       id: categoryId,
-    //       isDeleted: false
-    //     },
-    //     include: {
-    //       subCategories: true
-    //     }
-    //   })
-    //   return subCategories
-    // }
 
     updateCategory = async (categoryDto: CategoryUpdateI) => {
         const updatedCategory = await prisma.category.update({

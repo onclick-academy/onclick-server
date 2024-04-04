@@ -41,6 +41,5 @@ export class CourseDto {
         this.introVideo = bodyReq['introVideo']
         this.isApproved = bodyReq['isApproved']
         this.topicIds = bodyReq['topicIds']
-    
     }
 }

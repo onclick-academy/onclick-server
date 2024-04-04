@@ -66,10 +66,10 @@ export class UserDao {
     }
 
     getUserById = async (id: string) => {
+        if (!id) throw Error('Invalid ID')
         const user = await prisma.user.findUnique({
             where: {
-                id: id,
-                isDeleted: false
+                id: id
             }
         })
         return user
@@ -117,11 +117,24 @@ export class UserDao {
     }
 
     updateUser = async (user: any) => {
-        await this.getUserById(user.id)
+        console.log( 'from dao user' ,user)
+        // await this.getUserById(user.id)
         user.updatedAt = new Date()
-
+        let updatedUser = {}
         if (user.birthDate) user.birthDate = new Date(user.birthDate)
         if (user.username) await this.isExist(user.username, 'username')
+        if (user.role) {
+            updatedUser = await prisma.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    role: user.role
+                }
+            })
+
+            return updatedUser
+        }
         if (user.email) {
             await this.isExist(user.email, 'email')
             const pUser = await prisma.user.findUnique({
@@ -133,7 +146,7 @@ export class UserDao {
         }
         if (user.phoneNum) await this.isExist(user.phoneNum, 'phoneNum')
 
-        const updatedUser = await prisma.user.update({
+        updatedUser = await prisma.user.update({
             where: {
                 id: user.id
             },

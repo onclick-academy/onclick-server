@@ -13,6 +13,7 @@ export class AdminController {
             const { error } = await RegisterValidation.updateUser(adminDto)
             if (error) return res.status(400).json({ error: error.details[0].message })
 
+            console.log("===========heeeeeeey=========")
             const admin = await userDao.updateUser(adminDto)
 
             return res.status(200).json({ message: 'Admin created successfully', admin, status: 'success' })
