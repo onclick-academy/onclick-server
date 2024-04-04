@@ -19,7 +19,9 @@ export class CourseValidation {
         deletedAt: joi.date().iso().allow(null),
         certificate: joi.string(),
         introVideo: joi.string().uri(),
-        isApproved: joi.boolean().default(false)
+        isApproved: joi.boolean().default(false),
+        topics: joi.array().items(joi.string().min(2)).required(),
+        subCategories: joi.array().items(joi.string().min(2)).required()
     }
 
     static createCourse(courseDto: CourseDtoI) {

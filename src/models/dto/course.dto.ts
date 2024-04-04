@@ -3,7 +3,6 @@ export class CourseDto {
     public createdBy: string
     public adminId: string
     public categoryId: string
-    public subCategoryId: string
     public title: string
     public description: string
     public price: number
@@ -18,14 +17,14 @@ export class CourseDto {
     public certificate: string
     public introVideo?: string
     public isApproved?: boolean
-    public topicIds: string[]
+    public topics: string[]
+    public subCategories: string[]
 
     constructor(bodyReq: CourseDtoI) {
         this.id = bodyReq['id']
         this.createdBy = bodyReq['createdBy']
         this.adminId = bodyReq['adminId']
         this.categoryId = bodyReq['categoryId']
-        this.subCategoryId = bodyReq['subCategoryId']
         this.title = bodyReq['title']
         this.description = bodyReq['description']
         this.price = bodyReq['price']
@@ -40,6 +39,7 @@ export class CourseDto {
         this.certificate = bodyReq['certificate']
         this.introVideo = bodyReq['introVideo']
         this.isApproved = bodyReq['isApproved']
-        this.topicIds = bodyReq['topicIds']
+        this.topics = bodyReq['topics']
+        this.subCategories = bodyReq['subCategories']
     }
 }

@@ -4,10 +4,7 @@ import { TopicController } from '../controllers/topic.controller'
 
 const router = express.Router()
 
-router
-    .route('/')
-    .post(TopicController.createTopic)
-    .get(TopicController.getAllTopics)
+router.route('/').post(TopicController.createTopic).get(TopicController.getAllTopics)
 
 router
     .route('/:topicId')
@@ -15,8 +12,6 @@ router
     .put(TopicController.updateTopic)
     .delete(TopicController.deleteTopic)
 
-router
-    .route('/:topicId/:subCategoryId')
-    .get(TopicController.getTopicsBySubCategoryId)
+router.route('/all/:subCategoryId').get(TopicController.getTopicsBySubCategoryId)
 
 export default router
