@@ -49,7 +49,7 @@ export class WishListDao {
                             }
                         },
                         enrollments: true,
-                        subCategory: true,
+                        subCategories: true,
                         publisher: {
                             include: {
                                 user: true

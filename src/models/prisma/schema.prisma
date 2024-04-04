@@ -235,6 +235,7 @@ model Course {
   publisher    Instructor         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   ratings      Rating[]
   CourseOwners CourseOwners[]
+  category     Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model CourseTopic {
@@ -366,6 +367,7 @@ model Category {
   deletedAt   DateTime?
 
   subCategories SubCategory[]
+  courses      Course[]
 }
 
 model SubCategory {

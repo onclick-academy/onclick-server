@@ -66,7 +66,8 @@ export class CourseDao {
                     }
                 },
                 ratings: true,
-                CourseOwners: true
+                CourseOwners: true,
+                category: true
             }
         })
         return course
