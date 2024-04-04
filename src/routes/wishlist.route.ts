@@ -10,8 +10,8 @@ router
 
 
 router
-    .route("/:courseId")
-    .post(WishlistController.isWishListed)
+    .route("/isWishListed/:courseId")
+    .get(WishlistController.isWishListed)
 
 router
     .route("/:wishListId")

@@ -34,8 +34,32 @@ export class WishListDao {
         const wishLists = prisma.wishList.findMany({
             where: {
                 userId: userId
-            }
-        })
+            },
+            include: {
+                course: {
+                    include: {
+                        topics: {
+                            include: {
+                                topic: true
+                            }
+                        },
+                        sections: {
+                            include: {
+                                lectures: true
+                            }
+                        },
+                        enrollments: true,
+                        subCategory: true,
+                        publisher: {
+                            include: {
+                                user: true
+                            }
+                        },
+                        ratings: true,
+                        CourseOwners: true,
+                    }
+                }}
+            })
         return wishLists
     }
 
