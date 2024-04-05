@@ -95,7 +95,7 @@ export class WishlistController {
         const wishListDao = new WishListDao()
         try {
             const wishList = await wishListDao.deleteWishList(wishListId)
-            return res.status(200).json({ message: 'Wishlist deleted successfully', data: wishList })
+            return res.status(200).json({ message: 'Wishlist deleted successfully', data: wishList, status: 'success'})
         } catch (error) {
             console.log(error)
             return res.status(500).json({ message: error }) // error.message
