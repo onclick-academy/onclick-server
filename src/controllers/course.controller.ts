@@ -11,6 +11,9 @@ import {
     TopicIdValidation
 } from '@utilities/IdValidation/coursePackage.id'
 import { UserRequest } from '../types/user.interface'
+import { sendEmail } from '@utilities/email'
+import handlebars from 'handlebars'
+import fs from 'fs'
 
 export class CourseController {
     static applyCourse = async (req: Request, res: Response) => {
@@ -42,7 +45,6 @@ export class CourseController {
     }
 
     static approvecourse = async (req: UserRequest, res: Response) => {
-        // admin id
         const adminId = req.user.id
         const courseId = req.params.courseId
 
@@ -52,9 +54,21 @@ export class CourseController {
             await CourseIdValidation(courseId)
             const approvedCourse = await courseDao.updateCourse({ id: courseId, adminId, isApproved: true })
 
-            return res
-                .status(201)
-                .json({ message: 'Course approved successfuly', data: approvedCourse, status: 'success' })
+            const course = await courseDao.getCourseById(courseId)
+            const publisher = course.publisher.user
+
+            const email = publisher.email
+            const htmlContent = fs.readFileSync('src/views/approved-course.html', 'utf8')
+            const template = handlebars.compile(htmlContent)
+            const html = template({
+                link: process.env.CLIENT_URL + '/courses/create?step=3',
+                username: publisher.username
+            })
+            console.log('html', html)
+
+            res.status(201).json({ message: 'Course approved successfuly', data: approvedCourse, status: 'success' })
+            await sendEmail(html, email)
+            return
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })
         }
