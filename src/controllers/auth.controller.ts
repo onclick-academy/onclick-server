@@ -17,6 +17,12 @@ import redis from '@models/redis'
 import { randomUUID } from 'crypto'
 import { sendEmail } from '@utilities/email'
 
+const cookiesRules = {
+    httpOnly: true,
+    sameSite: 'none' as 'none',
+    secure: process.env.NODE_ENV === 'production'
+}
+
 export class AuthController {
     static register = async (req: UserRequest | any, res: Response) => {
         const userDto = new UserDto(req.body)
@@ -49,10 +55,6 @@ export class AuthController {
                 expiresIn: expiredPeriod.refreshToken
             })
 
-            const cookiesRules = {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production'
-            }
             res.cookie('accessToken', accessToken, {
                 ...cookiesRules,
                 maxAge: 3 * 24 * 60 * 60 * 1000
@@ -168,10 +170,6 @@ export class AuthController {
                 expiresIn: expiredPeriod.refreshToken
             })
 
-            const cookiesRules = {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production'
-            }
             res.cookie('accessToken', accessToken, {
                 ...cookiesRules,
                 maxAge: 3 * 24 * 60 * 60 * 1000
