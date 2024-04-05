@@ -39,7 +39,7 @@ const app = express()
 
 app.use(cookieParser())
 
-const allowedOrigins = ['http://localhost:3001']
+const allowedOrigins = ['http://localhost:3001', 'https://onclick-ten.vercel.app']
 const corsOptions = {
     origin: function (origin: any, callback: any) {
         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
