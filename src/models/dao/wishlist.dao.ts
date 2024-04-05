@@ -2,26 +2,28 @@ import prisma from '@models/prisma/prisma-client'
 
 export class WishListDao {
     createWishList = async (wishListDto: WishlistDtoI) => {
-        const wishList = prisma.wishList.create({
+
+        const wishList = await prisma.wishList.create({
             data: wishListDto
         })
         return wishList
     }
 
     isWishListed = async (wishListDto: WishlistDtoI) => {
-        const wishList = prisma.wishList.findFirst({
+        const wishList = await prisma.wishList.findFirst({
             where: {
                 userId: wishListDto.userId,
                 courseId: wishListDto.courseId
             }
         })
+        console.log("from wishlist dao",wishList)
         if (!wishList) return false
-        return true
+        return wishList
     }
 
     getWishListById = async (wishListId: string) => {
         // TODO valid Ids
-        const wishList = prisma.wishList.findUnique({
+        const wishList = await prisma.wishList.findUnique({
             where: {
                 id: wishListId
             }
@@ -29,9 +31,9 @@ export class WishListDao {
         return wishList
     }
 
-    getWishListByUserId = (userId: string) => {
+    getWishListByUserId = async (userId: string) => {
         // TODO valid Ids
-        const wishLists = prisma.wishList.findMany({
+        const wishLists = await prisma.wishList.findMany({
             where: {
                 userId: userId
             },
@@ -57,6 +59,7 @@ export class WishListDao {
                         },
                         ratings: true,
                         CourseOwners: true,
+                        category: true
                     }
                 }}
             })
@@ -65,7 +68,7 @@ export class WishListDao {
 
     getWishListByCourseId = async (courseId: string) => {
         // TODO valid Ids
-        const wishLists = prisma.wishList.findMany({
+        const wishLists = await prisma.wishList.findMany({
             where: {
                 courseId: courseId
             }
@@ -73,9 +76,9 @@ export class WishListDao {
         return wishLists
     }
 
-    updateWishList = (wishListUpdate: WishlistUpdateI) => {
+    updateWishList = async (wishListUpdate: WishlistUpdateI) => {
         // TODO valid Ids
-        const wishList = prisma.wishList.update({
+        const wishList = await prisma.wishList.update({
             where: {
                 id: wishListUpdate.id
             },
@@ -84,9 +87,9 @@ export class WishListDao {
         return wishList
     }
 
-    deleteWishList = (wishListId: string) => {
+    deleteWishList = async (wishListId: string) => {
         // TODO valid Ids
-        const wishList = prisma.wishList.update({
+        const wishList = await prisma.wishList.update({
             where: {
                 id: wishListId
             },
