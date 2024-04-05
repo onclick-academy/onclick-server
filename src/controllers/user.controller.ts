@@ -25,7 +25,11 @@ export class UserController {
 
     static getUserInfo = async (req: Request, res: Response) => {
         try {
-            const token = req.cookies.accessToken
+            let token = null
+            const authHeader = req.headers.token;
+            if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+                token = authHeader.substring(7, authHeader.length); // Extract the token
+            }
             if (!token) throw new Error('Token not found')
             console.log('🚀 ~ UserController ~ getUserInfo= ~ token:', token)
             const info = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as UserDto

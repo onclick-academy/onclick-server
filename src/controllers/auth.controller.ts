@@ -17,12 +17,6 @@ import redis from '@models/redis'
 import { randomUUID } from 'crypto'
 import { sendEmail } from '@utilities/email'
 
-const cookiesRules = {
-    httpOnly: true,
-    sameSite: 'None' as 'none',
-    secure: process.env.NODE_ENV === 'production'
-}
-
 export class AuthController {
     static register = async (req: UserRequest | any, res: Response) => {
         const userDto = new UserDto(req.body)
@@ -55,14 +49,6 @@ export class AuthController {
                 expiresIn: expiredPeriod.refreshToken
             })
 
-            res.cookie('accessToken', accessToken, {
-                ...cookiesRules
-            })
-            if (userDto.isRememberMe) {
-                res.cookie('refreshToken', refreshToken, {
-                    ...cookiesRules
-                })
-            }
             res.status(200).json({
                 data: newUser,
                 accessToken: accessToken,
@@ -168,15 +154,6 @@ export class AuthController {
                 expiresIn: expiredPeriod.refreshToken
             })
 
-            res.cookie('accessToken', accessToken, {
-                ...cookiesRules
-            })
-            if (loginDto.isRememberMe) {
-                res.cookie('refreshToken', refreshToken, {
-                    ...cookiesRules
-                })
-            }
-
             return res.status(200).json({
                 data: user,
                 accessToken: accessToken,
@@ -189,8 +166,7 @@ export class AuthController {
     }
 
     static logout = async (req: Request, res: Response) => {
-        res.clearCookie('accessToken')
-        res.clearCookie('refreshToken')
+        //TODO: revoke the token
         return res.status(200).json({ message: 'Logout successfully', status: 'success' })
     }
 }
