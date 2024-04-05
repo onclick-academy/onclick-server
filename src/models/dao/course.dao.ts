@@ -36,6 +36,27 @@ export class CourseDao {
         const courses = await prisma.course.findMany({
             where: {
                 isDeleted: false
+            }, include: {
+                topics: {
+                    include: {
+                        topic: true
+                    }
+                },
+                sections: {
+                    include: {
+                        lectures: true
+                    }
+                },
+                enrollments: true,
+                subCategories: true,
+                publisher: {
+                    include: {
+                        user: true
+                    }
+                },
+                ratings: true,
+                CourseOwners: true,
+                category: true
             }
         })
         return courses
