@@ -54,7 +54,7 @@ export class CourseController {
             await CourseIdValidation(courseId)
             const approvedCourse = await courseDao.updateCourse({ id: courseId, adminId, isApproved: true })
 
-            await CourseIdValidation(courseId)
+            const course = await courseDao.getCourseById(courseId)
             const publisher = course.publisher.user
 
             const email = publisher.email
