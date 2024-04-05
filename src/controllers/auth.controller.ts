@@ -19,7 +19,7 @@ import { sendEmail } from '@utilities/email'
 
 const cookiesRules = {
     httpOnly: true,
-    sameSite: 'none' as 'none',
+    sameSite: 'None' as 'none',
     secure: process.env.NODE_ENV === 'production'
 }
 
@@ -56,13 +56,11 @@ export class AuthController {
             })
 
             res.cookie('accessToken', accessToken, {
-                ...cookiesRules,
-                maxAge: 3 * 24 * 60 * 60 * 1000
+                ...cookiesRules
             })
             if (userDto.isRememberMe) {
                 res.cookie('refreshToken', refreshToken, {
-                    ...cookiesRules,
-                    maxAge: 5 * 24 * 60 * 60 * 1000
+                    ...cookiesRules
                 })
             }
             res.status(200).json({
@@ -171,13 +169,11 @@ export class AuthController {
             })
 
             res.cookie('accessToken', accessToken, {
-                ...cookiesRules,
-                maxAge: 3 * 24 * 60 * 60 * 1000
+                ...cookiesRules
             })
             if (loginDto.isRememberMe) {
                 res.cookie('refreshToken', refreshToken, {
-                    ...cookiesRules,
-                    maxAge: 5 * 24 * 60 * 60 * 1000
+                    ...cookiesRules
                 })
             }
 
