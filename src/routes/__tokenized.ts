@@ -3,6 +3,10 @@ import express from 'express'
 
 const router = express.Router()
 
+
+// course routes
+router.use('/courses', require('./course.route').default)
+
 router.use(AuthMiddleware.verifyToken)
 
 // Users Routes
@@ -14,8 +18,6 @@ router.use('/categories', require('./category.route').default)
 // sub-category routes
 router.use('/subcategories', require('./subCategory.routes').default)
 
-// course routes
-router.use('/courses', require('./course.route').default)
 
 // instructor routes
 router.use('/instructors', require('./instructor.routes').default)
