@@ -23,11 +23,9 @@ router.route('/instructor/decline').post(InstructorController.declineInstructor 
 
 router.route('/instructor/pending').get(InstructorController.getPendingInstructors as unknown as RequestHandler)
 
-
-
 // ========================================
 // course routes
 
-router.route('/course/approve/:courseId').post(CourseController.approvecourse as unknown as RequestHandler)
+router.route('/course/approve/:courseId').put(CourseController.approvecourse as unknown as RequestHandler)
 
 export default router
