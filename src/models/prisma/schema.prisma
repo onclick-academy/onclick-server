@@ -15,6 +15,11 @@ enum ROLE {
   STUDENT
 }
 
+enum ROLE_OF_INSTRUCTOR {
+  PUBLISHER
+  CONTERIBUTOR
+}
+
 enum GENDER {
   MALE
   FEMALE
@@ -47,17 +52,19 @@ enum TARGET_RATE {
   INSTRUCTOR
 }
 
+//Todo: Google Auth
 model User {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fullName       String
+  firstName      String
+  lastName       String
   username       String          @unique
   email          String          @unique
+  phoneNum       String          @unique
   bio            String?
   password       String
-  phoneNum       String          @unique
   profilePic     String?
   birthDate      DateTime
   educationLevel EDUCATION_LEVEL @default(COLLEGE)
@@ -65,81 +72,21 @@ model User {
   role           ROLE            @default(STUDENT)
   isEmailConfirm Boolean         @default(false)
   isDeleted      Boolean         @default(false)
-  deletedAt      DateTime?
   isAvailable    Boolean         @default(true)
-  instructor     Instructor?
+  deletedAt      DateTime?
 
-  resetToken        ResetToken?
-  refreshTokens     RefreshToken?
-  confirmToken      ConfirmToken?
   suspendStates     SuspendState[]
   blockStates       BlockState[]
   WishList          WishList[]
   notifications     Notification[]
   ratings           Rating[]
   courseEnrollments CourseEnrollment[]
-  approvedCourses   Course[] // Courses that the admin has approved
+  approvedCourses   Course[]
   appSettings       AppSettings[]
   news              News[]
   events            Event[]
   courseOwners      CourseOwners[]
   devicesTokens     DevicesTokens[]
-}
-
-model ResetToken {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
-  token     String   @unique
-  userId    String?  @unique
-  adminId   String?  @unique
-  expiresAt DateTime
-
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, adminId], name: "idx_reset_token_user")
-}
-
-model RefreshToken {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
-  token     String   @unique
-  userId    String?  @unique
-  expiresAt DateTime
-
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId], name: "idx_refresh_token_user")
-}
-
-model ConfirmToken {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
-  token     String   @unique
-  userId    String?  @unique
-  expiresAt DateTime
-
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId], name: "idx_confirm_token_user")
-}
-
-model Instructor {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId      String  @unique
-  nationalID  String
-  cvLink      String
-  averageRate Float?
-  isVerified  Boolean @default(false)
-
-  courses Course[]
-  ratings Rating[]
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model DevicesTokens {
@@ -149,7 +96,7 @@ model DevicesTokens {
 
   token                   String   @unique
   lastSuccessfullDelivery DateTime @default(now())
-  userId                  String   
+  userId                  String
   isEnabled               Boolean  @default(true)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -160,18 +107,17 @@ model Notification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  recipientId    String
-  type           NOTIFICATION_TYPE
-  title          String
-  message        String?
-  isRead         Boolean           @default(false)
-  additionalInfo Json?
-  icon           String?
-  link           String
+  recipientId String
+  type        NOTIFICATION_TYPE
+  title       String
+  message     String?
+  isRead      Boolean           @default(false)
+  icon        String?
+  link        String
 
   recipient User @relation(fields: [recipientId], references: [id], onDelete: Cascade)
 
-  @@index([recipientId, isRead]) // Index to optimize queries for unread notifications per user
+  @@index([recipientId, isRead])
 }
 
 model CourseEnrollment {
@@ -196,6 +142,7 @@ model CourseOwners {
 
   courseId String
   userId   String
+  role     ROLE_OF_INSTRUCTOR @default(PUBLISHER)
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -208,50 +155,30 @@ model Course {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  createdBy     String
-  adminId       String?
-  categoryId    String
-  title         String
-  description   String
-  price         Float
-  rate          Float?
-  discount      Float?
-  isAvailable   Boolean   @default(false)
-  skillsGained  String[]
-  duration      String?
-  photo         String
-  isDeleted     Boolean   @default(false)
-  deletedAt     DateTime?
-  certificate   String?
-  introVideo    String?
-  isApproved    Boolean   @default(false)
+  adminId     String?
+  categoryId  String
+  title       String
+  description String
+  price       Float
+  rate        Float?
+  discount    Float?
+  isAvailable Boolean   @default(false)
+  photo       String
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  certificate String?
+  introVideo  String?
+  isApproved  Boolean   @default(false)
 
-  topics       CourseTopic[]
-  sections     Section[]
-  enrollments  CourseEnrollment[]
-  WishList     WishList[]
-  approvedBy   User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  subCategories  SubCategory[]
-  publisher    Instructor         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  ratings      Rating[]
-  CourseOwners CourseOwners[]
-  category     Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-}
-
-model CourseTopic {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  courseId  String
-  topicId   String
-  isDeleted Boolean   @default(false)
-  deletedAt DateTime?
-
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  topic  Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
-
-  @@unique([courseId, topicId])
+  topics        Topic[]
+  sections      Section[]
+  enrollments   CourseEnrollment[]
+  WishList      WishList[]
+  approvedBy    User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  subCategories SubCategory[]
+  ratings       Rating[]
+  CourseOwners  CourseOwners[]
+  category      Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model Lecture {
@@ -276,15 +203,15 @@ model Lecture {
 }
 
 model Section {
-  id       String @id @default(uuid())
+  id String @id @default(uuid())
 
-  courseId String
+  courseId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title      String
-  isDeleted    Boolean   @default(false)
-  deletedAt    DateTime?
+  title     String
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
 
   lectures Lecture[]
   course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -313,24 +240,8 @@ model Topic {
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
 
-  courses     CourseTopic[]
-  subCategory SubCategoryTopic[]
-}
-
-model SubCategoryTopic {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  subCategoryId String
-  topicId       String
-  isDeleted     Boolean   @default(false)
-  deletedAt     DateTime?
-
-  subCategory SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  topic       Topic       @relation(fields: [topicId], references: [id], onDelete: Cascade)
-
-  @@unique([subCategoryId, topicId])
+  courses     Course[]
+  subCategory SubCategory[]
 }
 
 model Rating {
@@ -339,7 +250,7 @@ model Rating {
   updatedAt DateTime @updatedAt
 
   userId       String
-  targetId     String // CourseId or InstructorId
+  targetId     String
   targetType   TARGET_RATE
   rate         Float
   comment      String?
@@ -348,9 +259,8 @@ model Rating {
   courseId     String?
   instructorId String?
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course     Course?     @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  instructor Instructor? @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, userId, targetType])
 }
@@ -367,7 +277,7 @@ model Category {
   deletedAt   DateTime?
 
   subCategories SubCategory[]
-  courses      Course[]
+  courses       Course[]
 }
 
 model SubCategory {
@@ -382,9 +292,9 @@ model SubCategory {
   isDeleted   Boolean   @default(false)
   deletedAt   DateTime?
 
-  topics   SubCategoryTopic[]
+  topics   Topic[]
   courses  Course[]
-  category Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model SuspendState {
