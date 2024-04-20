@@ -86,7 +86,13 @@ export class UserDao {
                         }
                     },
                     {
-                        fullName: {
+                        firstName: {
+                            contains: search,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        lastName: {
                             contains: search,
                             mode: 'insensitive'
                         }
