@@ -55,7 +55,7 @@ export class CourseController {
             const approvedCourse = await courseDao.updateCourse({ id: courseId, adminId, isApproved: true })
 
             const course = await courseDao.getCourseById(courseId)
-            const publisher = course.publisher.user
+            const publisher = course.CourseOwners[0].user
 
             const email = publisher.email
             const htmlContent = fs.readFileSync('src/views/approved-course.html', 'utf8')

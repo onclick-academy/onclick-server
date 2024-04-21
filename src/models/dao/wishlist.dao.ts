@@ -40,11 +40,7 @@ export class WishListDao {
             include: {
                 course: {
                     include: {
-                        topics: {
-                            include: {
-                                topic: true
-                            }
-                        },
+                        topics: true,
                         sections: {
                             include: {
                                 lectures: true
@@ -52,11 +48,6 @@ export class WishListDao {
                         },
                         enrollments: true,
                         subCategories: true,
-                        publisher: {
-                            include: {
-                                user: true
-                            }
-                        },
                         ratings: true,
                         CourseOwners: true,
                         category: true
