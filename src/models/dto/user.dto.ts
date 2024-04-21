@@ -2,7 +2,8 @@ import { GENDER, ROLE } from '@prisma/client'
 
 export class UserDto {
     public id: string
-    public fullName: string
+    public firstName: string
+    public lastName: string
     public username: string
     public email: string
     public bio: string
@@ -18,7 +19,8 @@ export class UserDto {
 
     constructor(bodyReq: UserDtoI) {
         this.id = bodyReq['id']
-        this.fullName = bodyReq['fullName']
+        this.firstName = bodyReq['firstName']
+        this.lastName = bodyReq['lastName']
         this.username = bodyReq['username']
         this.email = bodyReq['email']
         this.bio = bodyReq['bio']

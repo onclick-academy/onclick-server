@@ -4,7 +4,8 @@ import joi from 'joi'
 export class RegisterValidation {
     private static baseSchema = {
         id: joi.string(),
-        fullName: joi.string().required().min(6).max(255),
+        firstName: joi.string().required().min(6).max(255),
+        lastName: joi.string().required().min(6).max(255),
         username: joi.string().required().min(6).max(255),
         email: joi.string().required().email(),
         bio: joi.string().min(6).max(255).optional(),
