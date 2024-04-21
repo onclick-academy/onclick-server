@@ -17,7 +17,7 @@ router
     .delete(AdminController.deleteAdmin as unknown as RequestHandler)
 // ========================================
 // instructor routes
-router.route('/instructor/approve').post(InstructorController.approveAndCreateInstructor as unknown as RequestHandler)
+router.route('/instructor/approve').post(InstructorController.approveInstructor as unknown as RequestHandler)
 
 router.route('/instructor/decline').post(InstructorController.declineInstructor as unknown as RequestHandler)
 

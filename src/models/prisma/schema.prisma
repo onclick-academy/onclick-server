@@ -73,6 +73,7 @@ model User {
   isEmailConfirm Boolean         @default(false)
   isDeleted      Boolean         @default(false)
   isAvailable    Boolean         @default(true)
+  isApprovedAsInstructor Boolean @default(false)
   deletedAt      DateTime?
 
   suspendStates     SuspendState[]
