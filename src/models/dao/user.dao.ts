@@ -195,4 +195,80 @@ export class UserDao {
         })
         return deletedUser
     }
+
+    applyInstructor = async (userId: string) => {
+        const user = await this.getUserById(userId)
+        if (user.role === roles.INSTRUCTOR) throw Error('User is already an Instructor')
+        const instructor = await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                role: roles.INSTRUCTOR
+            }
+        })
+        return instructor
+    }
+
+    approveInstructor = async (userId: string) => {
+        const user = await this.getUserById(userId)
+        if (user.role !== roles.INSTRUCTOR) throw Error('User has not applied to be an Instructor')
+        const instructor = await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                isApprovedAsInstructor: true
+            }
+        })
+        return instructor
+    }
+
+    declineInstructor = async (userId: string) => {
+        const user = await this.getUserById(userId)
+        if (user.role !== roles.INSTRUCTOR) throw Error('User has not applied to be an Instructor')
+        const instructor = await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                role: roles.STUDENT,
+                isApprovedAsInstructor: false
+            }
+        })
+        return instructor
+    }
+
+    getPendingInstructors = async () => {
+        const instructors = await prisma.user.findMany({
+            where: {
+                role: roles.INSTRUCTOR,
+                isApprovedAsInstructor: false,
+                isDeleted: false
+            }
+        })
+        return instructors
+    }
+
+    getAllInstructors = async () => {
+        const instructors = await prisma.user.findMany({
+            where: {
+                role: roles.INSTRUCTOR,
+                isApprovedAsInstructor: true,
+                isDeleted: false
+            }
+        })
+        return instructors
+    }
+
+    getInstructorById = async (id: string) => {
+        const instructor = await prisma.user.findUnique({
+            where: {
+                id: id,
+                role: roles.INSTRUCTOR,
+                isApprovedAsInstructor: true
+            }
+        })
+        return instructor
+    }
 }
