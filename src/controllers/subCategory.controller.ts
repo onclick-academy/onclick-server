@@ -61,38 +61,11 @@ export class SubCategoryController {
     }
   }
 
-  static linkTopicsToSubCategory = async (req: Request, res: Response) => {
-    const subCategoryDao = new SubCategoryDao()
-    const {id, topicIds} = req.body
-
-
-    try {
-
-      topicIds.forEach(async (topicId: string) => {
-        await TopicIdValidation(topicId)
-      })
-
-      await SubCategoryIdValidation(id)
-
-      const { error } = await SubCategoryValidation.linkTopicsToSubCategory({id, topicIds})
-      if (error) throw new Error(error.details[0].message)
-      const newSubCategoryTopics = await subCategoryDao.linkTopicsToSubCategory({id, topicIds})
-
-      return res
-        .status(201)
-        .json({ message: 'Topics linked to SubCategory successfully', data: newSubCategoryTopics, status: 'success' })
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message, status: 'failed' })
-    }
-  }
-
   static getSubCategoriesByCategoryId = async (req: Request, res: Response) => {
     const subCategoryDao = new SubCategoryDao()
     const categoryId = req.params.categoryId // TODO discuss with team
 
-    // console.log('categoryId Controller', categoryId)
     try {
-
       await CategoryIdValidation(categoryId)
 
       const subCategories = await subCategoryDao.getSubCategoryByCategoryId(categoryId)

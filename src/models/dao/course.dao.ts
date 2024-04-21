@@ -1,47 +1,56 @@
+import { title } from 'process'
 import prisma from '../prisma/prisma-client'
-
 export class CourseDao {
     applyCourse = async (courseDto: CourseDtoI) => {
-        const { topics, subCategories, ...courseData } = courseDto
+        const { topics, subCategories, ...courseData } = courseDto;
         const newCourse = await prisma.course.create({
             data: {
                 ...courseData,
                 subCategories: {
-                    connect: subCategories.map(subCategoryId => {
-                        return {
-                            id: subCategoryId
-                        }
-                    })
+                    connect: subCategories.map(subCategoryId => ({ id: subCategoryId }))
+                },
+                topics: {
+                    connect: topics.map(topicId => ({ id: topicId }))
                 }
+            },
+            include: {
+                topics: true 
             }
-        })
-        const courseTopics = topics.map(topicId => {
-            return {
-                topicId,
-                courseId: newCourse.id
-            }
-        })
+        });
 
-        const topicsNN = await prisma.courseTopic.createMany({
-            data: courseTopics
-        })
+        
+        // const topicIds = topics.map(topicId => ({ id: topicId }));
+        // const topicTitles = await prisma.topic.findMany({
+        //     where: { OR: topicIds },
+        //     select: { id: true, title: true }
+        // });
+
+        
+        // const courseTopics = topics.map(topicId => {
+        //     const topic = topicTitles.find(t => t.id === topicId);
+        //     return {
+        //         title: topic ? topic.title : '', 
+        //         topicId,
+        //         courseId: newCourse.id
+        //     };
+        // });
+
+        // const topicsNN = await prisma.topic.createMany({
+        //     data: courseTopics
+        // });
 
         return {
             newCourse,
-            topicsNN
-        }
-    }
+            // topicsNN
+        };
+    };
 
     getAllCourses = async () => {
         const courses = await prisma.course.findMany({
             where: {
                 isDeleted: false
             }, include: {
-                topics: {
-                    include: {
-                        topic: true
-                    }
-                },
+                topics: true,
                 sections: {
                     include: {
                         lectures: true
@@ -49,11 +58,6 @@ export class CourseDao {
                 },
                 enrollments: true,
                 subCategories: true,
-                publisher: {
-                    include: {
-                        user: true
-                    }
-                },
                 ratings: true,
                 CourseOwners: true,
                 category: true
@@ -69,11 +73,7 @@ export class CourseDao {
                 isDeleted: false
             },
             include: {
-                topics: {
-                    include: {
-                        topic: true
-                    }
-                },
+                topics: true,
                 sections: {
                     include: {
                         lectures: true
@@ -81,13 +81,12 @@ export class CourseDao {
                 },
                 enrollments: true,
                 subCategories: true,
-                publisher: {
+                ratings: true,
+                CourseOwners: {
                     include: {
                         user: true
                     }
                 },
-                ratings: true,
-                CourseOwners: true,
                 category: true
             }
         })
@@ -97,7 +96,11 @@ export class CourseDao {
     getCoursesByInstructorId = async (instructorId: string) => {
         const courses = await prisma.course.findMany({
             where: {
-                createdBy: instructorId,
+                CourseOwners: {
+                    some: {
+                        userId: instructorId
+                    }
+                },
                 isDeleted: false
             }
         })
@@ -135,7 +138,21 @@ export class CourseDao {
             include: {
                 courses: {
                     include: {
-                        course: true
+                        topics: true,
+                        sections: {
+                            include: {
+                                lectures: true
+                            }
+                        },
+                        enrollments: true,
+                        subCategories: true,
+                        ratings: true,
+                        CourseOwners: {
+                            include: {
+                                user: true
+                            }
+                        },
+                        category: true
                     }
                 }
             }
@@ -160,11 +177,7 @@ export class CourseDao {
                             mode: 'insensitive'
                         }
                     },
-                    {
-                        skillsGained: {
-                            hasSome: search.split(' ')
-                        }
-                    }
+            
                 ]
             }
         })

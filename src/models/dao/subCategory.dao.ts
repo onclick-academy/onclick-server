@@ -30,19 +30,19 @@ export class SubCategoryDao {
         return subCategory
     }
 
-    linkTopicsToSubCategory = async (subCategoryDto: { id: string; topicIds: string[] }) => {
-        let newSubCategoryTopics = []
-        for (let id of subCategoryDto.topicIds) {
-            const newSubCategoryTopic = await prisma.subCategoryTopic.create({
-                data: {
-                    subCategoryId: subCategoryDto.id,
-                    topicId: id
-                }
-            })
-            newSubCategoryTopics.push(newSubCategoryTopic)
-        }
-        return newSubCategoryTopics
-    }
+    // linkTopicsToSubCategory = async (subCategoryDto: { id: string; topicIds: string[] }) => {
+    //     let newSubCategoryTopics = []
+    //     for (let id of subCategoryDto.topicIds) {
+    //         const newSubCategoryTopic = await prisma.subCategoryTopic.create({
+    //             data: {
+    //                 subCategoryId: subCategoryDto.id,
+    //                 topicId: id
+    //             }
+    //         })
+    //         newSubCategoryTopics.push(newSubCategoryTopic)
+    //     }
+    //     return newSubCategoryTopics
+    // }
 
     getSubCategoryByCategoryId = async (categoryId: string) => {
         // console.log('categoryId', categoryId)

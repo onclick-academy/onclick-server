@@ -4,7 +4,7 @@ import { SubCategoryController } from '@controllers/subCategory.controller'
 
 const router = express.Router()
 
-router.route('/').get(SubCategoryController.linkTopicsToSubCategory)
+// router.route('/').get(SubCategoryController.linkTopicsToSubCategory)
 
 router.route('/all').get(SubCategoryController.getAllSubCategories)
 router
