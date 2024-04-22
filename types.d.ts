@@ -3,7 +3,8 @@ import { GENDER, NOTIFICATION_TYPE, ROLE } from '@prisma/client'
 declare global {
     interface UserDtoI {
         id: string
-        fullName: string
+        firstName: string
+        lastName: string
         username: string
         email: string
         bio: string
@@ -20,7 +21,8 @@ declare global {
 
     interface UserUpdateI {
         id: string
-        fullName?: string
+        firstName?: string
+        lastName?: string
         username?: string
         email?: string
         bio?: string

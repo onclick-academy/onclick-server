@@ -18,7 +18,6 @@ export class NotificationDao {
                 message: notificationDto.message,
                 isRead: notificationDto.isRead,
                 type: notificationDto.type.toUpperCase() as NOTIFICATION_TYPE,
-                additionalInfo: notificationDto.additionalInfo,
                 link: notificationDto.link
             }
         })

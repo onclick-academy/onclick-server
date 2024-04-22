@@ -1,13 +1,15 @@
+import { verifyAdminRole } from '@middlewares/admin.middleware'
 import { AuthMiddleware } from '@middlewares/auth.middleware'
 import express from 'express'
 
 const router = express.Router()
 
-
 // course routes
 router.use('/courses', require('./course.route').default)
 
 router.use(AuthMiddleware.verifyToken)
+
+router.use('/api/v1/admin', verifyAdminRole, require('@routes/admin.route').default)
 
 // Users Routes
 router.use('/users', require('./user.route').default)
@@ -17,7 +19,6 @@ router.use('/categories', require('./category.route').default)
 
 // sub-category routes
 router.use('/subcategories', require('./subCategory.routes').default)
-
 
 // instructor routes
 router.use('/instructors', require('./instructor.routes').default)

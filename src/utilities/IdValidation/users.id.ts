@@ -14,9 +14,10 @@ export async function UserIdValidation(userId: string) {
 }
 
 export async function InstructorIdValidation(instructorId: string) {
-    const instructor = await prisma.instructor.findUnique({
+    const instructor = await prisma.user.findUnique({
         where: {
-            id: instructorId
+            id: instructorId,
+            role: 'INSTRUCTOR'
         }
     })
 

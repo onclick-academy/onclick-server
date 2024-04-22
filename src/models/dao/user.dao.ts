@@ -1,6 +1,6 @@
 import prisma from '../prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
-import { roles } from '../../..'
+import { roles } from 'index'
 
 export class UserDao {
     isExist = async (ele: string, type: string) => {
@@ -123,7 +123,7 @@ export class UserDao {
     }
 
     updateUser = async (user: any) => {
-        console.log( 'from dao user' ,user)
+        console.log('from dao user', user)
         // await this.getUserById(user.id)
         user.updatedAt = new Date()
         let updatedUser = {}

@@ -1,5 +1,4 @@
-import { roles } from '../..'
-import { UserRequest } from '../types/user.interface'
+import { roles } from 'index'
 import { NextFunction, RequestHandler, Response } from 'express'
 
 export const verifyAdminRole = ((req: any, res: Response, next: NextFunction) => {

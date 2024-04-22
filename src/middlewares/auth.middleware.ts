@@ -1,4 +1,4 @@
-import { expiredPeriod, roles } from '../..'
+import { expiredPeriod, roles } from 'index'
 import { Response, NextFunction, RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 import { UserRequest, UserTokenI } from 'types/user.interface'
@@ -37,9 +37,9 @@ const getUserAndDecodedUser = async (flag: 'access' | 'refresh', token: string) 
 export class AuthMiddleware {
     static verifyToken = (async (req: any, res: Response, next: NextFunction) => {
         let accessToken = null
-        const authHeader = req.headers.token;
+        const authHeader = req.headers.token
         if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length); // Extract the token
+            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
         }
         if (accessToken == null)
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
@@ -50,7 +50,7 @@ export class AuthMiddleware {
                 ...userExist.decodedUser,
                 accessToken,
                 role: userExist.userExist.role,
-                id: userExist.userExist.id,
+                id: userExist.userExist.id
             }
             next()
         } catch (error: any) {
@@ -59,9 +59,9 @@ export class AuthMiddleware {
                     // @ts-ignore-next
 
                     let refreshToken = null
-                    const authHeader = req.headers.refreshToken;
+                    const authHeader = req.headers.refreshToken
                     if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-                        refreshToken = authHeader.substring(7, authHeader.length); // Extract the token
+                        refreshToken = authHeader.substring(7, authHeader.length) // Extract the token
                     }
 
                     if (!refreshToken)
@@ -103,9 +103,9 @@ export class AuthMiddleware {
 
     static studentAuthorization = (async (req: any, res: Response, next: NextFunction) => {
         let accessToken = null
-        const authHeader = req.headers.token;
+        const authHeader = req.headers.token
         if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length); // Extract the token
+            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
         }
 
         if (accessToken == null)
@@ -137,9 +137,9 @@ export class AuthMiddleware {
 
     static instructorAuthorization = (async (req: any, res: Response, next: NextFunction) => {
         let accessToken = null
-        const authHeader = req.headers.token;
+        const authHeader = req.headers.token
         if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length); // Extract the token
+            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
         }
 
         if (accessToken == null)
@@ -171,15 +171,12 @@ export class AuthMiddleware {
 
     static checkUserIsDeleted = async (req: UserRequest, res: Response, next: NextFunction) => {
         let accessToken = null
-        const authHeader = req.headers.token;
+        const authHeader = req.headers.token
         if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length); // Extract the token
+            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
         }
         try {
-            const decodedUser = jwt.verify(
-                accessToken,
-                process.env.JWT_SECRET_KEY as string
-            ) as unknown as UserTokenI
+            const decodedUser = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
             const user = await prisma.user.findUnique({
                 where: {
                     id: decodedUser.id

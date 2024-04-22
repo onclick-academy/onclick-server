@@ -7,12 +7,12 @@ import createError from 'http-errors'
 import express, { NextFunction, Request, Response } from 'express'
 
 import { ROLE } from '@prisma/client'
-import { AuthMiddleware } from '@middlewares/auth.middleware'
+import { AuthMiddleware } from 'middlewares/auth.middleware'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
 
 dotenv.config()
 
-import { hardDeleteUserAfter30Days } from './src/scripts/cron.op'
+import { hardDeleteUserAfter30Days } from './scripts/cron.op'
 
 hardDeleteUserAfter30Days.start()
 
@@ -35,7 +35,7 @@ export const roles: Roles = {
 }
 
 const cookieParser = require('cookie-parser')
-const app = express()
+export const app = express()
 
 app.use(cookieParser())
 
@@ -54,19 +54,17 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }))
 
-app.use(morgan('dev'));
-app.use('/api/v1/news', require('@routes/news.routes').default);
-app.use('/api/v1/contactus', require('@routes/contactus.route').default);
+app.use(morgan('dev'))
+app.use('/api/v1/news', require('@routes/news.routes').default)
+app.use('/api/v1/contactus', require('@routes/contactus.route').default)
 
-app.use('/api', require('@routes/home.route').default);
+app.use('/api', require('@routes/home.route').default)
 
-app.use('/api/v1/admin', AuthMiddleware.verifyToken, verifyAdminRole, require('@routes/admin.route').default);
+app.use('/api/v1/auth', require('@routes/auth.route').default)
 
-app.use('/api/v1/auth', require('@routes/auth.route').default);
-
-app.use('/api/v1', require('@routes/__tokenized').default);
+app.use('/api/v1', require('@routes/__tokenized').default)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500)
@@ -80,5 +78,5 @@ app.use((req, res, next) => {
     next(createError.NotFound())
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`))

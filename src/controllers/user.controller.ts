@@ -26,9 +26,9 @@ export class UserController {
     static getUserInfo = async (req: Request, res: Response) => {
         try {
             let token = null
-            const authHeader = req.headers.token;
+            const authHeader = req.headers.token
             if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-                token = authHeader.substring(7, authHeader.length); // Extract the token
+                token = authHeader.substring(7, authHeader.length) // Extract the token
             }
             if (!token) throw new Error('Token not found')
             console.log('🚀 ~ UserController ~ getUserInfo= ~ token:', token)
@@ -47,9 +47,6 @@ export class UserController {
                             email: info.email
                         }
                     ]
-                },
-                include: {
-                    instructor: true
                 }
             })
             if (!user) throw new Error('User not found `get userInfo')

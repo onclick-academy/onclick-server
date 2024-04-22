@@ -1,7 +1,5 @@
-
 import { Request, Response } from 'express'
 import { UserDao } from '../models/dao/user.dao'
-import { roles } from '../..'
 import { UserIdValidation } from '@utilities/IdValidation/users.id'
 
 export class InstructorController {
@@ -30,10 +28,8 @@ export class InstructorController {
         const { userId } = req.body // TODO - discuss with team
 
         try {
-
             await UserIdValidation(userId)
             const instructor = await userDao.approveInstructor(userId)
-
 
             res.status(201).json({
                 message: 'Instructor created successfully',
@@ -52,7 +48,6 @@ export class InstructorController {
         const { userId } = req.body // TODO - discuss with team
 
         try {
-
             await UserIdValidation(userId)
             const instructor = await userDao.declineInstructor(userId)
 

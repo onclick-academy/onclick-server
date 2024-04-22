@@ -1,4 +1,4 @@
-import { expiredPeriod } from '../..' // refer to index.ts on the root directory
+import { expiredPeriod } from 'index' // refer to index.ts on the root directory
 import { Request, Response } from 'express'
 import joi from 'joi'
 import fs from 'fs'
