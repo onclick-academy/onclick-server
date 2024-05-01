@@ -1,5 +1,5 @@
 {
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "src/index.ts", "prisma"],
     "exclude": ["node_modules", "**/*.spec.ts"],
     "compilerOptions": {
         "target": "es2016",

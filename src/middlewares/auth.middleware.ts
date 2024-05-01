@@ -1,4 +1,4 @@
-import { expiredPeriod, roles } from 'index'
+import { expiredPeriod, roles } from '../index'
 import { Response, NextFunction, RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 import { UserRequest, UserTokenI } from 'types/user.interface'

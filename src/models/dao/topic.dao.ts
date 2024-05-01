@@ -1,4 +1,4 @@
-import prisma from '../prisma/prisma-client'
+import prisma from '../../../prisma/prisma-client'
 
 export class TopicDao {
     createTopic = async (topicDto: TopicDtoI) => {

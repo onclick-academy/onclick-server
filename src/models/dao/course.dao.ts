@@ -1,8 +1,8 @@
 import { title } from 'process'
-import prisma from '../prisma/prisma-client'
+import prisma from '../../../prisma/prisma-client'
 export class CourseDao {
     applyCourse = async (courseDto: CourseDtoI) => {
-        const { topics, subCategories, ...courseData } = courseDto;
+        const { topics, subCategories, ...courseData } = courseDto
         const newCourse = await prisma.course.create({
             data: {
                 ...courseData,
@@ -14,22 +14,20 @@ export class CourseDao {
                 }
             },
             include: {
-                topics: true 
+                topics: true
             }
-        });
+        })
 
-        
         // const topicIds = topics.map(topicId => ({ id: topicId }));
         // const topicTitles = await prisma.topic.findMany({
         //     where: { OR: topicIds },
         //     select: { id: true, title: true }
         // });
 
-        
         // const courseTopics = topics.map(topicId => {
         //     const topic = topicTitles.find(t => t.id === topicId);
         //     return {
-        //         title: topic ? topic.title : '', 
+        //         title: topic ? topic.title : '',
         //         topicId,
         //         courseId: newCourse.id
         //     };
@@ -40,16 +38,17 @@ export class CourseDao {
         // });
 
         return {
-            newCourse,
+            newCourse
             // topicsNN
-        };
-    };
+        }
+    }
 
     getAllCourses = async () => {
         const courses = await prisma.course.findMany({
             where: {
                 isDeleted: false
-            }, include: {
+            },
+            include: {
                 topics: true,
                 sections: {
                     include: {
@@ -176,8 +175,7 @@ export class CourseDao {
                             contains: search,
                             mode: 'insensitive'
                         }
-                    },
-            
+                    }
                 ]
             }
         })

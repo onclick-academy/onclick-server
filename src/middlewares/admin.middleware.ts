@@ -1,4 +1,4 @@
-import { roles } from 'index'
+import { roles } from '../index'
 import { NextFunction, RequestHandler, Response } from 'express'
 
 export const verifyAdminRole = ((req: any, res: Response, next: NextFunction) => {
