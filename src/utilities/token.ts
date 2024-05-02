@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { expiredPeriod } from 'index'
+import { expiredPeriod } from '../index'
 
 interface TokenOptions {
     expiresIn?: string

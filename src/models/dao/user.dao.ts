@@ -1,6 +1,6 @@
 import prisma from '../prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
-import { roles } from 'index'
+import { roles } from '../../index'
 
 export class UserDao {
     isExist = async (ele: string, type: string) => {

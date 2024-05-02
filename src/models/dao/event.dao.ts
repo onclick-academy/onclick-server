@@ -1,7 +1,6 @@
 import prisma from '../prisma/prisma-client'
 
 export class EventDao {
-
     createEvent = async (eventDto: EventDtoI) => {
         const newEvent = await prisma.event.create({
             data: eventDto
@@ -62,5 +61,4 @@ export class EventDao {
 
         return deletedEvent
     }
-
 }
