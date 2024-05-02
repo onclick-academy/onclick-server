@@ -1,4 +1,4 @@
-import prisma from '../../../prisma/prisma-client'
+import prisma from '../prisma/prisma-client'
 import { CategoryDtoI, CategoryUpdateI } from '../../types/category.interface'
 
 export class CategoryDao {

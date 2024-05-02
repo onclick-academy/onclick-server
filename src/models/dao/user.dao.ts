@@ -1,4 +1,4 @@
-import prisma from '../../../prisma/prisma-client'
+import prisma from '../prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
 import { roles } from '../../index'
 

@@ -1,50 +1,30 @@
-version: '3.9'
-
+version: '3.8'
 services:
-  onclick-server:
-    build:
-      context: .
-      dockerfile: Dockerfile  # Dockerfile to build the Express server
+  onclick-app:
+    build: .
     ports:
-      - "3000:3000"  # Map host port to container port
+      - "3000:3000"
     environment:
-      -  PORT:3000
-      -  DATABASE_URL:'postgresql://onclick-user:password@localhost:5433/onclick'
-      -  HASH_SECRET:'HSHHHHHHHHHHH'
-      -  APP_EMAIL:'onclick.organization@gmail.com'
-      -  APP_PASSWORD:'uaepuopklvaxsxub'
-      -  JWT_SECRET_KEY:'JWT_SSSSS'
-      -  REFRESH_TOKEN_SECRET:'REFRESH_TOKEN'
-      -  REDIS_DATABASE_URL:'redis://localhost:6380/0'
-      -  SERVER_URL:'http://localhost:3001/api/v1'
-      -  FIREBASE_API_KEY:'AIzaSyB8BWtLPOvFa-_ySRCW_ZWfpUzhnyiPzCU'
-      -  FIREBASE_AUTH_DOMAIN:'onclick-7f191.firebaseapp.com'
-      -  FIREBASE_PROJECT_ID:'onclick-7f191'
-      -  FIREBASE_STORAGE_BUCKET:'onclick-7f191.appspot.com'
-      -  FIREBASE_MESSAGING_SENDER_ID:'512189549333'
-      -  FIREBASE_APP_ID:'1:512189549333:web:225427368bce8afc51f71c'
-      -  FIREBASE_MEASUREMENT_ID:'G-7CX3D2QY2Q'
-      -  FIREBASE_VAPID_KEY:'BLb-6II_mNXiEUjwmGy0-pXMMwG1WcKEJWjqQEo02OvYruKCaQtoJptdFKRIUrfU8nAWVq5QA67hFxm_7ZMDIqw'
+      // add the env variables here convert 'key= value' to 'key: 'value'
 
     depends_on:
       - onclick-postgres
       - onclick-redis
 
   onclick-postgres:
-    image: postgres:latest  # PostgreSQL Docker image
+    image: postgres
+    restart: always
     environment:
-      - POSTGRES_USER=omar
-      - POSTGRES_PASSWORD=sudoopoen
-      - POSTGRES_DB=onclick
+      POSTGRES_USER: onclick-user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: onclick
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Persist PostgreSQL data
-    ports:
-      - "5433:5432"  # Expose PostgreSQL to host
+      - onclick-postgres-data:/var/lib/postgresql/data
 
   onclick-redis:
-    image: redis:latest  # Redis Docker image
+    image: redis:alpine
     ports:
-      - "6380:6379"  # Expose Redis to host
+      - "6378:6379"
 
 volumes:
-  postgres_data:  # Volume to persist PostgreSQL data
+  onclick-postgres-data:

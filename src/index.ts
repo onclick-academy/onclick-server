@@ -27,6 +27,7 @@ type Roles = {
     STUDENT: ROLE
     SUPER_ADMIN: ROLE
 }
+
 export const roles: Roles = {
     SUPER_ADMIN: 'SUPER_ADMIN',
     ADMIN: 'ADMIN',

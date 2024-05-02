@@ -1,4 +1,4 @@
-import prisma from '../../../prisma/prisma-client'
+import prisma from '../prisma/prisma-client'
 
 export class EventDao {
     createEvent = async (eventDto: EventDtoI) => {

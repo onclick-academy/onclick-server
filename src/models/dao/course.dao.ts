@@ -1,5 +1,5 @@
 import { title } from 'process'
-import prisma from '../../../prisma/prisma-client'
+import prisma from '../prisma/prisma-client'
 export class CourseDao {
     applyCourse = async (courseDto: CourseDtoI) => {
         const { topics, subCategories, ...courseData } = courseDto
