@@ -7,9 +7,10 @@ const router = express.Router()
 // course routes
 router.use('/courses', require('./course.route').default)
 
-router.use(AuthMiddleware.verifyToken)
+// router.use(AuthMiddleware.verifyToken)
 
-router.use('/api/v1/admin', verifyAdminRole, require('@routes/admin.route').default)
+// router.use('/admin', verifyAdminRole, require('@routes/admin.route').default) // TODO uncomment and delete next line
+router.use('/admin', require('@routes/admin.route').default)
 
 // Users Routes
 router.use('/users', require('./user.route').default)

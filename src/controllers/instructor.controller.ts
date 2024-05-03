@@ -4,7 +4,7 @@ import { UserIdValidation } from '@utilities/IdValidation/users.id'
 
 export class InstructorController {
     static ApplyInstructor = async (req: any, res: Response) => {
-        const userId = req.user.id
+        const userId = req.body.userId // req.user.id TODO
 
         try {
             await UserIdValidation(userId)

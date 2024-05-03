@@ -1,4 +1,3 @@
-import { verifyAdminRole } from '@middlewares/admin.middleware'
 import express, { RequestHandler } from 'express'
 
 import { InstructorController } from '../controllers/instructor.controller'
