@@ -4,8 +4,21 @@ FROM node:16-slim
 # Set the working directory in the container
 WORKDIR /app
 
+# Install Python and other necessary packages
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    openssl \
+    build-essential
+
+# Set Python3 as the default python version for node-gyp
+ENV PYTHON=/usr/bin/python3
+
+# Optionally, configure npm to use the installed Python version
+RUN npm config set python /usr/bin/python3
+
 # Copy the package.json and package-lock.json
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install
@@ -14,7 +27,6 @@ RUN npm install
 COPY src/models/prisma ./prisma
 
 # Install the Prisma CLI and generate the Prisma client
-RUN apt-get update -y && apt-get install -y openssl
 RUN npx prisma generate
 
 # Copy the rest of your application code
