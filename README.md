@@ -13,6 +13,43 @@ git clone https://github.com/onclick-academy/onclick-server.git
 ```
 Or download it as a zip file and extract it to your desired location.
 
+## Using Docker and Docker Compose
+
+### Prerequisites
+- **Docker**: Ensure Docker is installed on your machine.
+- **Docker Compose**: Ensure Docker Compose is installed and available for orchestrating multiple containers.
+
+### Steps to Follow
+
+1. **Build and Start Services**:
+   - **Initial Setup**: For the first build or when you update the `Dockerfile` or `docker-compose.yml`, use the command:
+     ```bash
+     docker-compose up --build
+     ```
+   - **Regular Startup**: For subsequent runs, start the services with:
+     ```bash
+     docker-compose up
+     ```
+
+2. **Stop Services**:
+   - When the services are no longer needed, or if your machine is running low on resources, stop all services with:
+     ```bash
+     docker-compose down
+     ```
+
+3. **Connect to PostgreSQL Database**:
+   - Connect to the PostgreSQL database using the `psql` command-line interface:
+     ```bash
+     sudo psql -h localhost -U onclick-user -d onclick
+     ```
+   - **Note**: The password for `onclick-user` is `password`.
+
+4. **Connect to Redis**:
+   - Connect to the Redis server using the `redis-cli` tool:
+     ```bash
+     redis-cli -h localhost -p 6378
+     ```
+
 
 ## Usage and Configurations
 1- Setup PostgreSQL Database: Create a PostgreSQL database for the project.
