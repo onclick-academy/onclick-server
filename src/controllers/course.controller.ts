@@ -26,7 +26,6 @@ export class CourseController {
             courseDto.CourseOwners.forEach(async (ownerId) => {
                 await InstructorIdValidation(ownerId);
             });
-            // await AdminIdValidation(courseDto.adminId)
             await CategoryIdValidation(courseDto.categoryId)
 
             // TODO => topic validation in course creation
