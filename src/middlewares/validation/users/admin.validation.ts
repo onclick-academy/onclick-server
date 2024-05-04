@@ -23,7 +23,7 @@ export class AdminValidation {
         profilePic: Joi.string(),
         isDeleted: Joi.boolean().default(false),
         deletedAt: Joi.date().default(new Date()),
-        isEmailConfirm: Joi.boolean().default(false),
+        isEmailConfirm: Joi.boolean().default(false)
     }
 
     static createAdmin(adminDto: UserDtoI) {

@@ -8,3 +8,4 @@ yarn.lock
 *.log
 uploads/*
 admin*.json
+nodemon.json

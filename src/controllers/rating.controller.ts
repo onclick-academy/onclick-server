@@ -100,7 +100,7 @@ export class RatingController {
 
             return res
                 .status(200)
-                .json({ message: 'Rating retrieved successfully', data: userRating ,status: 'success' })
+                .json({ message: 'Rating retrieved successfully', data: userRating, status: 'success' })
         } catch (error) {
             console.log(error)
             res.status(400).json({ message: error.message, status: 'fail' })
@@ -119,7 +119,7 @@ export class RatingController {
 
             return res
                 .status(200)
-                .json({ message: 'Rating retrieved successfully', data: courseRating, avrgRating ,status: 'success' })
+                .json({ message: 'Rating retrieved successfully', data: courseRating, avrgRating, status: 'success' })
         } catch (error) {
             console.log(error)
             res.status(400).json({ message: error.message, status: 'fail' })
@@ -139,7 +139,12 @@ export class RatingController {
 
             return res
                 .status(200)
-                .json({ message: 'Rating retrieved successfully', data: instructorRating, avrgRating ,status: 'success' })
+                .json({
+                    message: 'Rating retrieved successfully',
+                    data: instructorRating,
+                    avrgRating,
+                    status: 'success'
+                })
         } catch (error) {
             console.log(error)
             res.status(400).json({ message: error.message, status: 'fail' })

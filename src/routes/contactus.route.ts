@@ -11,5 +11,4 @@ router
     .put(ContactUsController.updateContactUs)
     .delete(ContactUsController.deleteContactUs)
 
-
 export default router
