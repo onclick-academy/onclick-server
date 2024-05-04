@@ -1,5 +1,5 @@
 import { ContactUsDao } from '@models/dao/contactus.dao'
-import {ContactUsDto} from '../models/dto/contactUs.dto'
+import { ContactUsDto } from '../models/dto/contactUs.dto'
 import { contactUsValidation } from '@middlewares/validation/content/contactUs.validation'
 import { Request, Response } from 'express'
 

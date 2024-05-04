@@ -17,7 +17,6 @@ export class notificationValidation {
         title: joi.string().required().min(6).max(255),
         message: joi.string().min(6).max(255),
         isRead: joi.boolean().default(false),
-        additionalInfo: joi.object(),
         link: joi.string().required().min(6).max(255)
     }
     static createNotification(notificationDto: NotificationDtoI) {

@@ -8,7 +8,6 @@ export class LectureController {
         const lectureDto = new LectureDto(req.body)
         const lectureDao = new LectureDao()
         try {
-
             await SectionIdValidation(lectureDto.sectionId)
 
             const { error } = await LectureValidation.createLecture(lectureDto)
@@ -25,11 +24,12 @@ export class LectureController {
     static getLecturesBySectionId = async (req: any, res: any) => {
         const lectureDao = new LectureDao()
         try {
-
             await LectureIdValidation(req.body.lectureId)
 
             const section = await lectureDao.getLectureBySectionId(req.body.lectureId)
-            return res.status(200).json({ message: "Lectures retreived successufully" , data: section, status: "success" })
+            return res
+                .status(200)
+                .json({ message: 'Lectures retreived successufully', data: section, status: 'success' })
         } catch (error: any) {
             console.log(error)
             return res.status(500).json({ error: error.message || 'Internal server error' })
@@ -40,7 +40,7 @@ export class LectureController {
         const lectureDao = new LectureDao()
         try {
             const lecture = await lectureDao.getLectureById(req.body.id)
-            return res.status(200).json({ message: "Lecture retreived successuffully" ,data: lecture })
+            return res.status(200).json({ message: 'Lecture retreived successuffully', data: lecture })
         } catch (error: any) {
             console.log(error)
             return res.status(500).json({ error: error.message || 'Internal server error' })
@@ -51,7 +51,6 @@ export class LectureController {
         const lectureDto = new LectureDto(req.body)
         const lectureDao = new LectureDao()
         try {
-
             let id = req.body.id
 
             await SectionIdValidation(lectureDto.sectionId)
@@ -71,7 +70,6 @@ export class LectureController {
     static softDeleteLecture = async (req: any, res: any) => {
         const lectureDao = new LectureDao()
         try {
-
             await LectureIdValidation(req.body.id)
             await SectionIdValidation(req.body.lectureId)
 
@@ -86,7 +84,6 @@ export class LectureController {
     static hardDeleteLecture = async (req: any, res: any) => {
         const lectureDao = new LectureDao()
         try {
-
             await LectureIdValidation(req.body.id)
             const lecture = await lectureDao.hardDeleteLecture(req.body.id)
             return res.status(200).json({ message: 'Lecture  deleted successfully', data: lecture })

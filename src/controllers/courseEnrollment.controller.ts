@@ -1,10 +1,9 @@
-import { CourseEnrollmentDao } from "@models/dao/courseEnrollment.dao"
-import { CourseEnrollmentDto } from "@models/dto/courseEnrollment.dto"
+import { CourseEnrollmentDao } from '@models/dao/courseEnrollment.dao'
+import { CourseEnrollmentDto } from '@models/dto/courseEnrollment.dto'
 import { UserRequest } from '../types/user.interface'
-import { CourseIdValidation } from "@utilities/IdValidation/coursePackage.id"
-import { UserIdValidation } from "@utilities/IdValidation/users.id"
-import { Request, Response } from "express"
-
+import { CourseIdValidation } from '@utilities/IdValidation/coursePackage.id'
+import { UserIdValidation } from '@utilities/IdValidation/users.id'
+import { Request, Response } from 'express'
 
 export class CourseEnrollmentController {
     static createEnrollment = async (req: UserRequest, res: Response) => {
@@ -16,7 +15,7 @@ export class CourseEnrollmentController {
             await UserIdValidation(courseEnrollmentDto.userId)
 
             const enrollment = await courseEnrollmentDao.createEnrollment(courseEnrollmentDto)
-            res.status(200).json({message:"Enrollment created", data: enrollment, status: 'success'})
+            res.status(200).json({ message: 'Enrollment created', data: enrollment, status: 'success' })
         } catch (error) {
             console.log(error)
 
@@ -36,9 +35,9 @@ export class CourseEnrollmentController {
             const enrollment = await courseEnrollmentDao.isUserEnrolled(courseEnrollmentDto)
 
             if (!enrollment) {
-                return res.status(200).json({message:"User not enrolled", data: enrollment, status: 'success'})
+                return res.status(200).json({ message: 'User not enrolled', data: enrollment, status: 'success' })
             }
-            res.status(200).json({message:"User Enrolled", data: enrollment, status: 'success'})
+            res.status(200).json({ message: 'User Enrolled', data: enrollment, status: 'success' })
         } catch (error) {
             console.log(error)
             res.status(500).json({ error: error.message })

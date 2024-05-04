@@ -1,11 +1,8 @@
-import express from 'express';
-import { SuspendStateController } from '@controllers/suspendState.controller';
+import express from 'express'
+import { SuspendStateController } from '@controllers/suspendState.controller'
 
-const router = express.Router();
+const router = express.Router()
 
-router
-    .route('/')
-    .post(SuspendStateController.createSuspendState)
-    .put(SuspendStateController.updateSuspendState)
+router.route('/').post(SuspendStateController.createSuspendState).put(SuspendStateController.updateSuspendState)
 
-export default router;
+export default router

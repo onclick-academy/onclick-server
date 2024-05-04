@@ -23,7 +23,10 @@ export class LectureValidation {
             ...this.baseSchema,
             order: Joi.number().integer().positive().required()
         })
-            .fork(['order' ,'title', 'description', 'videoUrl', 'duration' , 'isDeleted', 'deletedAt', 'thumbnail'], schema => schema.optional())
+            .fork(
+                ['order', 'title', 'description', 'videoUrl', 'duration', 'isDeleted', 'deletedAt', 'thumbnail'],
+                schema => schema.optional()
+            )
             .validateAsync(lectureDto)
     }
 }

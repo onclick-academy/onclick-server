@@ -4,9 +4,7 @@ import { InstructorController } from '../controllers/instructor.controller'
 
 const router = express.Router()
 
-router
-    .route('/:instructorId')
-    .get(InstructorController.getInstructorById)
+router.route('/:instructorId').get(InstructorController.getInstructorById)
 
 router
     .route('/')

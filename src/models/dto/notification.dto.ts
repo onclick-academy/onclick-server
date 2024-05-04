@@ -7,7 +7,6 @@ export class NotificationDto {
     message?: string
     isRead: boolean
     type: NOTIFICATION_TYPE
-    additionalInfo?: JSON
     link: string
 
     constructor(bodyReq: NotificationDtoI) {
@@ -17,7 +16,6 @@ export class NotificationDto {
         this.message = bodyReq['message']
         this.isRead = bodyReq['isRead']
         this.type = bodyReq['type']
-        this.additionalInfo = bodyReq['additionalInfo']
         this.link = bodyReq['link']
     }
 }

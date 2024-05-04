@@ -1,4 +1,4 @@
-import prisma from "@models/prisma/prisma-client";
+import prisma from '@models/prisma/prisma-client'
 
 export class AppSettingsDao {
     createAppSettings = async (appSettingsDto: AppSettingsDtoI) => {
@@ -23,5 +23,4 @@ export class AppSettingsDao {
             data: appSettingsDto
         })
     }
-
 }
