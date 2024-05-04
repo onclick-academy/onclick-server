@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     openssl \
-    build-essential
+    build-essential \
+    postgresql-client
 
 # Set Python3 as the default python version for node-gyp
 ENV PYTHON=/usr/bin/python3

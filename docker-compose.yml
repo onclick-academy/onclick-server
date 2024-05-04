@@ -20,10 +20,8 @@ services:
       SERVER_URL: http://localhost:3001/api/v1
 
     depends_on:
-      onclick-postgres:
-        condition: service_healthy
-      onclick-redis:
-        condition: service_started
+      - onclick-postgres
+      - onclick-redis
 
   onclick-postgres:
     image: postgres
@@ -36,11 +34,6 @@ services:
       - "5432:5432"
     volumes:
       - onclick-postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U onclick-user"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   onclick-redis:
     image: redis:alpine
