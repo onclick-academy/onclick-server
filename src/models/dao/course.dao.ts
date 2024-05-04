@@ -1,47 +1,35 @@
 import { title } from 'process'
 import prisma from '../prisma/prisma-client'
+import { ROLE_OF_INSTRUCTOR } from '@prisma/client';
 export class CourseDao {
     applyCourse = async (courseDto: CourseDtoI) => {
-        const { topics, subCategories, ...courseData } = courseDto
+        const { topics, subCategories, adminId, CourseOwners, ...courseData } = courseDto;
+        if (!adminId) {
+            throw new Error("Admin ID is not provided");
+        }
         const newCourse = await prisma.course.create({
             data: {
                 ...courseData,
+                adminId,
                 subCategories: {
                     connect: subCategories.map(subCategoryId => ({ id: subCategoryId }))
                 },
                 topics: {
                     connect: topics.map(topicId => ({ id: topicId }))
+                },
+                CourseOwners: {
+                    create: CourseOwners.map(userId => ({ user: { connect: { id: userId } }, role: ROLE_OF_INSTRUCTOR.PUBLISHER }))
                 }
             },
             include: {
-                topics: true
+                topics: true,
+                CourseOwners: true 
             }
-        })
+        });
 
-        // const topicIds = topics.map(topicId => ({ id: topicId }));
-        // const topicTitles = await prisma.topic.findMany({
-        //     where: { OR: topicIds },
-        //     select: { id: true, title: true }
-        // });
-
-        // const courseTopics = topics.map(topicId => {
-        //     const topic = topicTitles.find(t => t.id === topicId);
-        //     return {
-        //         title: topic ? topic.title : '',
-        //         topicId,
-        //         courseId: newCourse.id
-        //     };
-        // });
-
-        // const topicsNN = await prisma.topic.createMany({
-        //     data: courseTopics
-        // });
-
-        return {
-            newCourse
-            // topicsNN
-        }
+        return newCourse; 
     }
+
 
     getAllCourses = async () => {
         const courses = await prisma.course.findMany({
