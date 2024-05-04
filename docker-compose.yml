@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  onclick-app:
+    build:
+      context: .
+      args:
+        DATABASE_URL: postgresql://onclick-user:password@onclick-postgres:5432/onclick
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://onclick-user:password@onclick-postgres:5432/onclick
+      HASH_SECRET: HSHHHHHHHHHHH
+      APP_EMAIL: onclick.organization@gmail.com
+      APP_PASSWORD: uaepuopklvaxsxub
+      JWT_SECRET_KEY: JWT_SSSSS
+      REFRESH_TOKEN_SECRET: REFRESH_TOKEN
+      REDIS_DATABASE_URL: redis://onclick-redis:6379/0
+      SERVER_URL: http://localhost:3001/api/v1
+
+    depends_on:
+      onclick-postgres:
+        condition: service_healthy
+      onclick-redis:
+        condition: service_started
+
+  onclick-postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: onclick-user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: onclick
+    ports:
+      - "5432:5432"
+    volumes:
+      - onclick-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onclick-user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  onclick-redis:
+    image: redis:alpine
+    ports:
+      - "6378:6379"
+
+volumes:
+  onclick-postgres-data:
