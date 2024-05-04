@@ -23,7 +23,9 @@ export class CourseController {
         console.log('course dto', courseDto)
 
         try {
-            await InstructorIdValidation(courseDto.createdBy)
+            courseDto.CourseOwners.forEach(async (ownerId) => {
+                await InstructorIdValidation(ownerId);
+            });
             // await AdminIdValidation(courseDto.adminId)
             await CategoryIdValidation(courseDto.categoryId)
 
@@ -164,7 +166,7 @@ export class CourseController {
         courseDto.id = req.params.courseId
 
         try {
-            if (courseDto.createdBy) await InstructorIdValidation(courseDto.createdBy)
+            // if (courseDto.createdBy) await InstructorIdValidation(courseDto.createdBy)
             if (courseDto.categoryId) await CategoryIdValidation(courseDto.categoryId)
             if (courseDto.topics) {
                 courseDto.topics.forEach(async topicId => {

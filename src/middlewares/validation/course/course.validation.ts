@@ -3,7 +3,6 @@ import joi from 'joi'
 export class CourseValidation {
     private static baseSchema = {
         id: joi.string().allow(null),
-        createdBy: joi.string().required(),
         adminId: joi.string(),
         categoryId: joi.string().required(),
         title: joi.string().min(3).max(255).required(),
@@ -12,8 +11,6 @@ export class CourseValidation {
         rate: joi.number().min(0).max(5),
         discount: joi.number().positive(),
         isAvailable: joi.boolean().default(false),
-        skillsGained: joi.array().items(joi.string().min(2)).required(),
-        duration: joi.string(),
         photo: joi.string().required(),
         isDeleted: joi.boolean().default(false),
         deletedAt: joi.date().iso().allow(null),
@@ -21,6 +18,7 @@ export class CourseValidation {
         introVideo: joi.string().uri(),
         isApproved: joi.boolean().default(false),
         topics: joi.array().items(joi.string().min(2)).required(),
+        CourseOwners: joi.array().items(joi.string().min(1)).required(),
         subCategories: joi.array().items(joi.string().min(2)).required()
     }
 

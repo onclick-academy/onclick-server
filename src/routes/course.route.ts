@@ -4,7 +4,7 @@ import { CourseController } from '../controllers/course.controller'
 
 const router = express.Router()
 
-router.route('/').post(AuthMiddleware.verifyToken,CourseController.applyCourse)
+router.route('/').post(CourseController.applyCourse)
 
 router.route('/').get(CourseController.getAllCourses)
 

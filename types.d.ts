@@ -126,25 +126,23 @@ declare global {
     interface CourseDtoI {
         id?: string | undefined
         deletedAt?: Date
+        adminId: string
         topics: string[]
         subCategories: string[]
-        createdBy: string
-        adminId: string
         categoryId: string
         title: string
         description: string
         price: number
         rate?: number
         discount?: number
-        skillsGained: string[]
         duration?: string
         photo: string
         certificate?: string
+        CourseOwners: string[]
         introVideo?: string
         isAvailable: boolean
         isDeleted: boolean
         isApproved?: boolean
-        createdBy: string
     }
 
     interface CourseUpdateI {
