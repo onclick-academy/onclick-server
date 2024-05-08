@@ -1,10 +1,7 @@
 version: '3.8'
 services:
   onclick-app:
-    build:
-      context: .
-      args:
-        DATABASE_URL: postgresql://onclick-user:password@onclick-postgres:5432/onclick
+    build: .
     ports:
       - "3000:3000"
     env_file:
@@ -18,8 +15,8 @@ services:
       REFRESH_TOKEN_SECRET: REFRESH_TOKEN
       REDIS_DATABASE_URL: redis://onclick-redis:6379/0
       SERVER_URL: http://localhost:3001/api/v1
-
-    depends_on:
+    
+    links:
       - onclick-postgres
       - onclick-redis
 
@@ -39,6 +36,16 @@ services:
     image: redis:alpine
     ports:
       - "6378:6379"
+
+  prisma-studio:
+    build: .
+    ports:
+      - "5555:5555" # Port for Prisma Studio
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://onclick-user:password@onclick-postgres:5432/onclick
+    command: npx prisma studio --port 5555
 
 volumes:
   onclick-postgres-data:

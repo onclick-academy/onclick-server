@@ -1,11 +1,11 @@
 import { title } from 'process'
 import prisma from '../prisma/prisma-client'
-import { ROLE_OF_INSTRUCTOR } from '@prisma/client';
+import { ROLE_OF_INSTRUCTOR } from '@prisma/client'
 export class CourseDao {
     applyCourse = async (courseDto: CourseDtoI) => {
-        const { topics, subCategories, adminId, CourseOwners, ...courseData } = courseDto;
+        const { topics, subCategories, adminId, CourseOwners, ...courseData } = courseDto
         if (!adminId) {
-            throw new Error("Admin ID is not provided");
+            throw new Error('Admin ID is not provided')
         }
         const newCourse = await prisma.course.create({
             data: {
@@ -18,18 +18,20 @@ export class CourseDao {
                     connect: topics.map(topicId => ({ id: topicId }))
                 },
                 CourseOwners: {
-                    create: CourseOwners.map(userId => ({ user: { connect: { id: userId } }, role: ROLE_OF_INSTRUCTOR.PUBLISHER }))
+                    create: CourseOwners.map(userId => ({
+                        user: { connect: { id: userId } },
+                        role: ROLE_OF_INSTRUCTOR.PUBLISHER
+                    }))
                 }
             },
             include: {
                 topics: true,
-                CourseOwners: true 
+                CourseOwners: true
             }
-        });
+        })
 
-        return newCourse; 
+        return newCourse
     }
-
 
     getAllCourses = async () => {
         const courses = await prisma.course.findMany({

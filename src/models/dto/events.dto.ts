@@ -8,7 +8,6 @@ export class EventDto {
     public startDate: Date
     public endDate: Date
     public isDeleted: boolean
-    public deletedAt?: Date
     public isAvailable: boolean
     public cover: string
 
@@ -22,7 +21,6 @@ export class EventDto {
         this.startDate = bodyReq['startDate']
         this.endDate = bodyReq['endDate']
         this.isDeleted = bodyReq['isDeleted']
-        this.deletedAt = bodyReq['deletedAt']
         this.isAvailable = bodyReq['isAvailable']
         this.cover = bodyReq['cover']
     }

@@ -294,7 +294,7 @@ declare global {
         recipientId: string
         title: string
         message?: string
-        isRead: boolean
+        isRead?: boolean
         type: NOTIFICATION_TYPE
         additionalInfo?: any
         link: string

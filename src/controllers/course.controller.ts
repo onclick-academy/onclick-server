@@ -16,16 +16,15 @@ import handlebars from 'handlebars'
 import fs from 'fs'
 
 export class CourseController {
-    static applyCourse = async (req: Request, res: Response) => {
+    static applyCourse = async (req: UserRequest, res: Response) => {
         const courseDao = new CourseDao()
         const courseDto = new CourseDto(req.body)
         console.log('req.body', req.body)
         console.log('course dto', courseDto)
 
         try {
-            courseDto.CourseOwners.forEach(async (ownerId) => {
-                await InstructorIdValidation(ownerId);
-            });
+            const ownerId = req.user.id
+            await InstructorIdValidation(ownerId)
             await CategoryIdValidation(courseDto.categoryId)
 
             // TODO => topic validation in course creation

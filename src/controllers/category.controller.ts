@@ -4,7 +4,6 @@ import { categoryValidation } from '../middlewares/validation/course/category.va
 
 import { Request, Response } from 'express'
 import { sendNotificationToAll } from '@utilities/notification'
-import prisma from '@models/prisma/prisma-client'
 
 export class CategoryController {
     static createCategory = async (req: Request, res: Response) => {

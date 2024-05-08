@@ -5,7 +5,7 @@ export class NotificationDto {
     recipientId: string
     title: string
     message?: string
-    isRead: boolean
+    isRead?: boolean
     type: NOTIFICATION_TYPE
     link: string
 

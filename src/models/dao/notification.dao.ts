@@ -13,12 +13,7 @@ export class NotificationDao {
 
         const newNotification = await prisma.notification.create({
             data: {
-                recipientId: notificationDto.recipientId,
-                title: notificationDto.title,
-                message: notificationDto.message,
-                isRead: notificationDto.isRead,
-                type: notificationDto.type.toUpperCase() as NOTIFICATION_TYPE,
-                link: notificationDto.link
+                ...notificationDto
             }
         })
 

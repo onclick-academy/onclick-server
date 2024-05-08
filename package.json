@@ -9,6 +9,7 @@
         "docker:up": "docker-compose up --build",
         "docker:down": "docker-compose down",
         "docker:full": "yarn build && yarn docker:down && yarn docker:up",
+        "docker:studio": "sudo docker exec -it onclick-server_onclick-app_1 bash -c \"npx prisma studio\"",
         "format": "npx prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
     },
     "main": "dist/index.js",
