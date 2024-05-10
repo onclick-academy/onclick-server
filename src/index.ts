@@ -58,12 +58,14 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use(morgan('dev'))
+app.use('/api/v1/auth', require('@routes/auth.route').default)
+
 app.use('/api/v1/news', require('@routes/news.routes').default)
+
 app.use('/api/v1/contactus', require('@routes/contactus.route').default)
 
 app.use('/api', require('@routes/home.route').default)
 
-app.use('/api/v1/auth', require('@routes/auth.route').default)
 
 app.use('/api/v1', require('@routes/__tokenized').default)
 

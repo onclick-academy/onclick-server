@@ -53,23 +53,30 @@ export class PasswordController {
     static verifyResetCode = async (req: Request, res: Response) => {
         const { code, email } = req.body
         const authDao = new AuthDao()
-        const user = await authDao.getUserByEmail({ email })
-        if (!user) {
-            return res.status(400).json({ error: 'Code is not valid', status: 'error' })
-        }
-        const userId = user.id
+        try {
+            const user = await authDao.getUserByEmail({ email })
+            if (!user) {
+                return res.status(400).json({ error: 'Code is not valid', status: 'error' })
+            }
+            const userId = user.id
 
-        const resetCode = await redis.get(`reset ${userId}`)
-        if (resetCode === code) {
-            return res.status(200).json({ message: 'Code is valid', status: 'success' })
+            const resetCode = await redis.get(`reset ${userId}`)
+            if (resetCode === code) {
+                return res.status(200).json({ message: 'Code is valid', status: 'success' })
+            }
+            else {
+                return res.status(400).json({ error: 'Code is not valid', status: 'error' })
+            }
+        } catch (error: any) {
+            return res.status(400).json({ error: error.message, status: 'error' })
         }
-        return res.status(400).json({ error: 'Code is not valid', status: 'error' })
     }
 
     static resetPassword = async (req: Request, res: Response) => {
         try {
             const { password, code, email } = req.body
-
+            console.log(password, code, email)
+            
             const authDao = new AuthDao()
             const user = await authDao.getUserByEmail({ email })
             if (!user) {
@@ -89,6 +96,7 @@ export class PasswordController {
 
             return res.status(200).json({ message: 'Password Changed', data: updatedUser, status: 'success' })
         } catch (error: any) {
+            console.log(error)
             return res.status(500).json({ error: error.message, status: 'failed' })
         }
     }
