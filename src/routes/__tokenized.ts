@@ -1,8 +1,11 @@
+import { SearchController } from '@controllers/search.controller'
 import { verifyAdminRole } from '@middlewares/admin.middleware'
 import { AuthMiddleware } from '@middlewares/auth.middleware'
 import express from 'express'
 
 const router = express.Router()
+
+router.post('/search/:query', SearchController.search)
 
 // course routes
 router.use('/courses', require('./course.route').default)
