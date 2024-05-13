@@ -37,15 +37,6 @@ enum NOTIFICATION_TYPE {
   SUSPEND_USER
 }
 
-enum EDUCATION_LEVEL {
-  ELEMENTARY
-  MIDDLE
-  HIGH
-  COLLEGE
-  UNIVERSITY
-  MASTER
-  PHD
-}
 
 enum TARGET_RATE {
   COURSE
@@ -67,7 +58,6 @@ model User {
   password       String
   profilePic     String?
   birthDate      DateTime
-  educationLevel EDUCATION_LEVEL @default(COLLEGE)
   gender         GENDER          @default(MALE)
   role           ROLE            @default(STUDENT)
   isEmailConfirm Boolean         @default(false)

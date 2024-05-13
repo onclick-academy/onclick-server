@@ -1,4 +1,4 @@
-import { GENDER, ROLE, EDUCATION_LEVEL } from '@prisma/client'
+import { GENDER, ROLE } from '@prisma/client'
 import { Request } from 'express'
 
 export interface UserTokenI {
@@ -32,7 +32,6 @@ export interface UserDtoI {
     bio: string
     password: string
     phoneNum: string
-    educationLevel: EDUCATION_LEVEL
     profilePic?: string
     birthDate: Date
     gender?: GENDER
@@ -50,7 +49,6 @@ export interface UserUpdateI {
     bio?: string
     password?: string
     phoneNum?: string
-    educationLevel?: EDUCATION_LEVEL
     profilePic?: string
     birthDate?: Date
     gender?: GENDER

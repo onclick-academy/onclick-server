@@ -40,6 +40,16 @@ export class UserDao {
         userDto.password = hashedPassword
         userDto.birthDate = new Date(userDto.birthDate)
 
+        // check user is 15+ years old
+        const today = new Date()
+        const birthDate = new Date(userDto.birthDate)
+        let age = today.getFullYear() - birthDate.getFullYear()
+        const m = today.getMonth() - birthDate.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--
+        }
+        if (age < 9) throw Error('User must be 9+ years old')
+
         const newUser = await prisma.user.create({
             data: userDto
         })
