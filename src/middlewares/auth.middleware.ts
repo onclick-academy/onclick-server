@@ -37,6 +37,8 @@ const getUserAndDecodedUser = async (flag: 'access' | 'refresh', token: string) 
 export class AuthMiddleware {
     static verifyToken = (async (req: any, res: Response, next: NextFunction) => {
         let accessToken = req.headers.token || req.cookies.accessToken
+        console.log("object token", accessToken)
+        accessToken = accessToken.split(' ')[1]
         if (accessToken == null)
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
 
