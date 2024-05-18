@@ -33,7 +33,8 @@ export class PasswordController {
                 return res.status(400).json({ error: 'Email sent', status: 'success' })
             }
 
-            const htmlContent = fs.readFileSync('src/views/reset-password.html', 'utf8')
+            const htmlContent = await fs.promises.readFile('src/views/reset-password.html', 'utf8') // this will not block the event loop
+            // const htmlContent = fs.readFileSync('src/views/reset-password.html', 'utf8')
             const template = handlebars.compile(htmlContent)
             const html = template({ resetCode, username: user.username })
             await sendEmail(html, userEmail)
@@ -74,6 +75,7 @@ export class PasswordController {
 
     static resetPassword = async (req: Request, res: Response) => {
         try {
+
             console.log('reset pass', req.body)
             const { code, email } = req.body
             const { password } = req.body.data
