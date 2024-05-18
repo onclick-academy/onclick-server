@@ -1,15 +1,9 @@
 import multer from 'multer'
-import path from 'path'
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)) // Example to include original file extension
-    }
-})
+// Configure multer to store files in memory
+const storage = multer.memoryStorage()
 
-const upload = multer({ storage: storage })
+// Create the multer instance with the memory storage configuration
+const upload = multer({ storage })
 
 export { upload }

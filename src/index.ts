@@ -66,7 +66,6 @@ app.use('/api/v1/contactus', require('@routes/contactus.route').default)
 
 app.use('/api', require('@routes/home.route').default)
 
-
 app.use('/api/v1', require('@routes/__tokenized').default)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
