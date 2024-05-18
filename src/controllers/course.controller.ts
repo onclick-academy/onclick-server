@@ -2,7 +2,7 @@ import { CourseDao } from '../models/dao/course.dao'
 import { CourseDto } from '../models/dto/course.dto'
 import { CourseValidation } from '../middlewares/validation/course/course.validation'
 
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { InstructorIdValidation } from '@utilities/IdValidation/users.id'
 import {
     CategoryIdValidation,
@@ -14,6 +14,7 @@ import { UserRequest } from '../types/user.interface'
 import { sendEmail } from '@utilities/email'
 import handlebars from 'handlebars'
 import fs from 'fs'
+import { passToExpressError } from '@utilities/error'
 
 export class CourseController {
     static applyCourse = async (req: UserRequest, res: Response) => {
@@ -44,7 +45,7 @@ export class CourseController {
         }
     }
 
-    static approvecourse = async (req: UserRequest, res: Response) => {
+    static approvecourse = async (req: UserRequest, res: Response, next: NextFunction) => {
         const adminId = req.user.id
         const courseId = req.params.courseId
 
@@ -70,7 +71,7 @@ export class CourseController {
             await sendEmail(html, email)
             return
         } catch (error: any) {
-            return res.status(400).json({ error: error.message, status: 'failed' })
+            passToExpressError(error, next)
         }
     }
 

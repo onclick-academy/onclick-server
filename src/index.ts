@@ -13,6 +13,7 @@ import { verifyAdminRole } from '@middlewares/admin.middleware'
 dotenv.config()
 
 import { hardDeleteUserAfter30Days } from './scripts/cron.op'
+import { passToExpressError } from '@utilities/error'
 
 hardDeleteUserAfter30Days.start()
 
@@ -66,15 +67,10 @@ app.use('/api/v1/contactus', require('@routes/contactus.route').default)
 
 app.use('/api', require('@routes/home.route').default)
 
-
 app.use('/api/v1', require('@routes/__tokenized').default)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    res.status(err.status || 500)
-    res.send({
-        status: err.status || 500,
-        message: err.message
-    })
+    return passToExpressError(err, next)
 })
 
 app.use((req, res, next) => {
