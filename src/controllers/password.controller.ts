@@ -75,8 +75,10 @@ export class PasswordController {
 
     static resetPassword = async (req: Request, res: Response) => {
         try {
-            const { password, code, email } = req.body
-            console.log(password, code, email)
+
+            console.log('reset pass', req.body)
+            const { code, email } = req.body
+            const { password } = req.body.data
 
             const authDao = new AuthDao()
             const user = await authDao.getUserByEmail({ email })
