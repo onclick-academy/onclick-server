@@ -108,7 +108,8 @@ export class AuthController {
             await redis.set(`confirm ${newUuid}`, user.id, 'ex', 60 * 10)
             const url = `${process.env.SERVER_URL}/auth/email/user/${newUuid}`
 
-            const htmlContent = fs.readFileSync('src/views/confirm-email.html', 'utf8') // TODO change to asyn reading html file
+            const htmlContent = await fs.promises.readFile('src/views/confirm-email.html', 'utf8') // this will not block the event loop
+            // const htmlContent = fs.readFileSync('src/views/confirm-email.html', 'utf8') // TODO change to asyn reading html file
             const template = handlebars.compile(htmlContent)
             const html = template({ url, username: user.username })
             await sendEmail(html, userEmail)

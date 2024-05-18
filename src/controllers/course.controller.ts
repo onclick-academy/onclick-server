@@ -58,7 +58,8 @@ export class CourseController {
             const publisher = course.CourseOwners[0].user
 
             const email = publisher.email
-            const htmlContent = fs.readFileSync('src/views/approved-course.html', 'utf8')
+            const htmlContent = await fs.promises.readFile('src/views/approved-course.html', 'utf8') // this will not block the event loop
+            // const htmlContent = fs.readFileSync('src/views/approved-course.html', 'utf8') // this will block the event loop
             const template = handlebars.compile(htmlContent)
             const html = template({
                 link: process.env.CLIENT_URL + '/courses/create?step=3',
