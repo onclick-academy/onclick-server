@@ -1,34 +1,22 @@
 import { uploadToCloudflare } from '../utilities/cloudflareUpload'
 
-export interface PathI {
-    userId: string
-    sectionId: string
-    courseId: string
-    lectureId: string
-}
-
 class FileService {
-    private isSingle: boolean
-    private path: PathI
+    private path: string
 
-    constructor(isSingle: boolean = true, path: PathI) {
-        this.isSingle = isSingle
+    constructor(path: string) {
         this.path = path
     }
 
-    public async uploadFile(fileBuffer: Buffer, fileName: string, mimeType: string) {
-        console.log('🚀 ~ FileService ~ uploadFile ~ mimeType:', mimeType)
-        if (!this.isValidFile(mimeType)) {
+    public async uploadFile(file: any) {
+        if (!this.isValidFile(file.mimetype)) {
+            console.log('🚀 ~ FileService ~ uploadFile ~ file.type:', file)
             throw new Error('Invalid file type')
         }
-        const uploadResult = await uploadToCloudflare(mimeType, fileBuffer, fileName, this.path)
+        const uploadResult = await uploadToCloudflare(file, this.path)
         return uploadResult
     }
 
     public async uploadFiles(files: any[]) {
-        if (this.isSingle) {
-            throw new Error('Cannot upload multiple files in single file mode')
-        }
         if (!Array.isArray(files)) {
             throw new Error('Invalid files')
         }
@@ -36,7 +24,7 @@ class FileService {
         const uploadResults = []
         for (const file of files) {
             if (this.isValidFile(file.mimetype)) {
-                const uploadResult = await uploadToCloudflare(file.mimeType, file.buffer, file.originalname, this.path)
+                const uploadResult = await uploadToCloudflare(file, this.path)
                 uploadResults.push(uploadResult)
             }
         }
@@ -44,10 +32,8 @@ class FileService {
     }
 
     private isValidFile(mimeType: string): boolean {
-        // const validTypes = this.isSingle
-        //     ? ['video/mp4']
-        //     : ['image/jpeg', 'image/png', 'application/pdf', 'application/msword']
-        // return validTypes.includes(mimeType)
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'video/mp4', 'video/mpeg', 'video/quicktime ']
+        return validTypes.includes(mimeType)
         return true
     }
 }

@@ -4,6 +4,6 @@ import { upload } from '@middlewares/upload'
 
 const router = express.Router()
 
-router.route('/').post(upload.single('file'), FilesController.uploadSingleFile)
+router.route('/single/:courseId/:sectionId/:lectureId').post(upload.single('file'), FilesController.uploadSingleFile)
 
 export default router

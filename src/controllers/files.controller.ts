@@ -14,16 +14,11 @@ class FileController {
                 return
             }
 
-            const { id } = req.user
-            const { sectionId, courseId, lectureId } = req.body
+            const { id: userId } = req.user
+            const { sectionId, courseId, lectureId } = req.params
 
-            this.fileService = new FileService(true, {
-                userId: id,
-                sectionId: sectionId || 'sectionId',
-                courseId: courseId || 'courseId',
-                lectureId: lectureId || 'lectureId'
-            })
-            const uploadedFile = await this.fileService.uploadFile(file.buffer, file.originalname, file.mimetype)
+            this.fileService = new FileService(`${userId}/${courseId}/${sectionId}/${lectureId}`)
+            const uploadedFile = await this.fileService.uploadFile(file)
             res.status(200).json({ message: 'File uploaded successfully', data: uploadedFile })
         } catch (error) {
             res.status(500).json({ message: error.message })
