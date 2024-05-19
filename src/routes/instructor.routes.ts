@@ -11,6 +11,6 @@ router
 router
     .route('/')
     .post(InstructorController.ApplyInstructor)
-    .get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
+    .get(InstructorController.gerAllInstructors as unknown as RequestHandler)
 
 export default router
