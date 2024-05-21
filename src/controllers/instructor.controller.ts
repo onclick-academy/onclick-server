@@ -24,10 +24,11 @@ export class InstructorController {
     static approveInstructor = async (req: Request, res: Response) => {
         const userDao = new UserDao()
 
-        const { userId } = req.body // TODO - discuss with team
+        const userId = req.body.instructorId // instructorId  not usr id
 
         try {
             await UserIdValidation(userId)
+
             const instructor = await userDao.approveInstructor(userId)
 
             res.status(201).json({
@@ -44,7 +45,7 @@ export class InstructorController {
     static declineInstructor = async (req: Request, res: Response) => {
         const userDao = new UserDao()
 
-        const { userId } = req.body // TODO - discuss with team
+        const userId = req.body.instructorId // TODO - discuss with team
 
         try {
             await UserIdValidation(userId)
@@ -90,12 +91,11 @@ export class InstructorController {
             res.status(500).json({ error: error.message })
         }
     }
-
-    static getAllVerifiedInstructors = async (req: Request, res: Response) => {
+    static gerAllInstructors = async (req: Request, res: Response) => {
         const userDao = new UserDao()
-
+        const { limit, offset } = req.query
         try {
-            const instructors = await userDao.getAllInstructors()
+            const instructors = await userDao.getAllInstructors({ limit: limit || 100, offset: offset || 20 })
 
             res.status(200).json({
                 message: 'All Instructors retreived successufuly',
@@ -106,4 +106,21 @@ export class InstructorController {
             res.status(500).json({ error: error.message })
         }
     }
+    static getAllVerifiedInstructors = async (req: Request, res: Response) => {
+        const userDao = new UserDao()
+
+        try {
+            const instructors = await userDao.getApprovedInstructors()
+
+            res.status(200).json({
+                message: 'All Instructors retreived successufuly',
+                data: instructors,
+                state: 'success'
+            })
+        } catch (error: any) {
+            res.status(500).json({ error: error.message })
+        }
+    }
+
+
 }

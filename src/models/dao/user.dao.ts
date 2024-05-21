@@ -266,7 +266,7 @@ export class UserDao {
         return instructors
     }
 
-    getAllInstructors = async () => {
+    getApprovedInstructors = async () => {
         const instructors = await prisma.user.findMany({
             where: {
                 role: roles.INSTRUCTOR,
@@ -286,5 +286,17 @@ export class UserDao {
             }
         })
         return instructor
+    }
+    getAllInstructors = async ({limit, offset}) => {
+        const instructors = await prisma.user.findMany({
+            where: {
+                role: roles.INSTRUCTOR,
+                isDeleted: false
+            },
+            take: limit,
+            skip: offset
+
+        })
+        return instructors
     }
 }

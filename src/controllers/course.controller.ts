@@ -20,15 +20,16 @@ export class CourseController {
     static applyCourse = async (req: UserRequest, res: Response) => {
         const courseDao = new CourseDao()
         const courseDto = new CourseDto(req.body)
-        console.log('req.body', req.body)
-        console.log('course dto', courseDto)
 
         try {
             const ownerId = req.user.id
             await InstructorIdValidation(ownerId)
-            await CategoryIdValidation(courseDto.categoryId)
+          
+            courseDto.CourseOwners.forEach(async (ownerId) => {
+                await InstructorIdValidation(ownerId);
+            });
 
-            // TODO => topic validation in course creation
+            await CategoryIdValidation(courseDto.categoryId)
 
             courseDto.topics.forEach(async topicId => {
                 await TopicIdValidation(topicId)
