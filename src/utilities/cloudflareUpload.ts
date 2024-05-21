@@ -8,7 +8,7 @@ export const uploadToCloudflare = async (file: any, path: string) => {
             method: 'PUT',
             body: fileBuffer,
             headers: {
-                'X-Custom-Auth-Key': 'a223adbe-48c9-4a90-967b-838f6139ddd8',
+                'X-Custom-Auth-Key': process.env.CLOUDFLARE_HEADER_KEY,
                 'Content-Type': file.mimetype
             }
         })

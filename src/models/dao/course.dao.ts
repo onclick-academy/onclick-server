@@ -2,7 +2,7 @@ import { title } from 'process'
 import prisma from '../prisma/prisma-client'
 import { ROLE_OF_INSTRUCTOR } from '@prisma/client'
 export class CourseDao {
-    applyCourse = async (courseDto: CourseDtoI) => {
+    static applyCourse = async (courseDto: CourseDtoI) => {
         const { topics, subCategories, adminId, CourseOwners, ...courseData } = courseDto
         if (!adminId) {
             throw new Error('Admin ID is not provided')
@@ -55,7 +55,7 @@ export class CourseDao {
         return courses
     }
 
-    getCourseById = async (id: string) => {
+    static getCourseById = async (id: string) => {
         const course = await prisma.course.findUnique({
             where: {
                 id: id,
@@ -170,6 +170,26 @@ export class CourseDao {
             }
         })
         return courses
+    }
+
+    static enrollCourse = async (userId: string, courseId: string) => {
+        const enrollment = await prisma.courseEnrollment.create({
+            data: {
+                userId: userId,
+                courseId: courseId
+            }
+        })
+        return enrollment
+    }
+
+    static isEnrolled = async (userId: string, courseId: string) => {
+        const enrollment = await prisma.courseEnrollment.findFirst({
+            where: {
+                courseId: courseId,
+                userId: userId
+            }
+        })
+        return enrollment
     }
 
     updateCourse = async (courseDto: CourseUpdateI) => {

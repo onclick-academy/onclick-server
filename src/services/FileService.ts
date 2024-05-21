@@ -7,7 +7,7 @@ class FileService {
         this.path = path
     }
 
-    public async uploadFile(file: any) {
+    public async putFile(file: any) {
         if (!this.isValidFile(file.mimetype)) {
             console.log('🚀 ~ FileService ~ uploadFile ~ file.type:', file)
             throw new Error('Invalid file type')
@@ -16,25 +16,39 @@ class FileService {
         return uploadResult
     }
 
-    public async uploadFiles(files: any[]) {
-        if (!Array.isArray(files)) {
-            throw new Error('Invalid files')
+    public async getFile() {
+        const url = `${process.env.CLOUDEFLARE_URL}/${this.path}`
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Custom-Auth-Key': process.env.CLOUDFLARE_HEADER_KEY
+            }
+        })
+        if (!response.ok) {
+            throw new Error('Failed to retrieve file from Cloudflare')
         }
 
-        const uploadResults = []
-        for (const file of files) {
-            if (this.isValidFile(file.mimetype)) {
-                const uploadResult = await uploadToCloudflare(file, this.path)
-                uploadResults.push(uploadResult)
+        return response
+    }
+
+    public async deleteFile() {
+        const url = `${process.env.CLOUDEFLARE_URL}/${this.path}`
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'X-Custom-Auth-Key': process.env.CLOUDFLARE_HEADER_KEY
             }
+        })
+        if (!response.ok) {
+            throw new Error('Failed to delete file from Cloudflare')
         }
-        return uploadResults
+
+        return response
     }
 
     private isValidFile(mimeType: string): boolean {
         const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'video/mp4', 'video/mpeg', 'video/quicktime ']
         return validTypes.includes(mimeType)
-        return true
     }
 }
 

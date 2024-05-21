@@ -165,10 +165,10 @@ model Course {
   sections      Section[]
   enrollments   CourseEnrollment[]
   WishList      WishList[]
-  approvedBy    User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
   subCategories SubCategory[]
   ratings       Rating[]
   CourseOwners  CourseOwners[]
+  approvedBy    User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
   category      Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 

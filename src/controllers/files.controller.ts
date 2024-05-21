@@ -16,26 +16,27 @@ class FileController {
 
             const { id: userId } = req.user
             const { sectionId, courseId, lectureId } = req.params
-
             this.fileService = new FileService(`${userId}/${courseId}/${sectionId}/${lectureId}`)
-            const uploadedFile = await this.fileService.uploadFile(file)
+
+            const uploadedFile = await this.fileService.putFile(file)
             res.status(200).json({ message: 'File uploaded successfully', data: uploadedFile })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
     }
 
-    uploadMultipleFiles = async (req: Request, res: Response): Promise<void> => {
+    getFile = async (req: Request, res: Response): Promise<void> => {
         try {
-            const files = req.files as any[]
-            const uploadedFiles = await this.fileService.uploadFiles(files)
-            res.status(200).json(uploadedFiles)
+            const { courseId, sectionId, lectureId } = req.params
+            const { id: userId } = (req as UserRequest).user
+
+            this.fileService = new FileService(`${userId}/${courseId}/${sectionId}/${lectureId}`)
+            const file = await this.fileService.getFile()
+            res.status(200).json({ message: 'File retrieved successfully', data: file })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
     }
-
-    // TODO Implement others CRUD operations
 }
 
 export default new FileController()
