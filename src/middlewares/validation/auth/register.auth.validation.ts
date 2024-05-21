@@ -14,14 +14,11 @@ export class RegisterValidation {
         phoneNum: joi.string().required().min(6).max(255),
         profilePic: joi.string().min(6).max(255).optional(),
         birthDate: joi.date().required(),
-        role: joi.valid('ADMIN', 'INSTRUCTOR', 'STUDENT','SUPER_ADMIN').default('STUDENT'),
+        role: joi.valid('ADMIN', 'INSTRUCTOR', 'STUDENT', 'SUPER_ADMIN').default('STUDENT'),
         isEmailConfirm: joi.boolean().default(false),
         gender: joi.valid('FEMALE', 'MALE').default('MALE'),
         isDeleted: joi.boolean().default(false),
         isRememberMe: joi.boolean().default(false),
-        educationLevel: joi
-            .valid('ELEMENTARY', 'MIDDLE', 'HIGH', 'COLLEGE', 'UNIVERSITY', 'MASTER', 'PHD')
-            .default('COLLEGE')
     }
 
     static createUser(userDto: UserDtoI) {

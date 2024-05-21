@@ -3,10 +3,7 @@ import { EventController } from '@controllers/event.controller'
 
 const router = express.Router()
 
-router
-    .route('/')
-    .get(EventController.getAllEvents)
-    .post(EventController.createEvent)
+router.route('/').get(EventController.getAllEvents).post(EventController.createEvent)
 
 router
     .route('/:eventId')

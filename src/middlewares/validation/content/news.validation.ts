@@ -9,7 +9,7 @@ export class newsValidation {
         description: joi.string().required().min(6),
         images: joi.array().items(joi.string()),
         cover: joi.string().required(),
-        "deletedAt": joi.date().optional(),
+        deletedAt: joi.date().optional(),
         isDeleted: joi.boolean().default(false),
         isAvailable: joi.boolean().default(true)
     }

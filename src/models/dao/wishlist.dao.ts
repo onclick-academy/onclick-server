@@ -2,7 +2,6 @@ import prisma from '@models/prisma/prisma-client'
 
 export class WishListDao {
     createWishList = async (wishListDto: WishlistDtoI) => {
-
         const wishList = await prisma.wishList.create({
             data: wishListDto
         })
@@ -16,7 +15,7 @@ export class WishListDao {
                 courseId: wishListDto.courseId
             }
         })
-        console.log("from wishlist dao",wishList)
+        console.log('from wishlist dao', wishList)
         if (!wishList) return false
         return wishList
     }
@@ -52,8 +51,9 @@ export class WishListDao {
                         CourseOwners: true,
                         category: true
                     }
-                }}
-            })
+                }
+            }
+        })
         return wishLists
     }
 

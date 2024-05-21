@@ -4,117 +4,118 @@ import { SubCategoryDto } from '../models/dto/subcategory.dto'
 import { SubCategoryValidation } from '../middlewares/validation/course/subCategory.validations'
 
 import { Request, Response } from 'express'
-import { CategoryIdValidation, SubCategoryIdValidation, TopicIdValidation } from '@utilities/IdValidation/coursePackage.id'
+import {
+    CategoryIdValidation,
+    SubCategoryIdValidation,
+    TopicIdValidation
+} from '@utilities/IdValidation/coursePackage.id'
 
 export class SubCategoryController {
-  static createSubCategory = async (req: Request, res: Response) => {
-    const subCategoryDao = new SubCategoryDao()
-    const subCategoryDto = new SubCategoryDto(req.body)
-    subCategoryDto.categoryId = req.params.categoryId
+    static createSubCategory = async (req: Request, res: Response) => {
+        const subCategoryDao = new SubCategoryDao()
+        const subCategoryDto = new SubCategoryDto(req.body)
+        subCategoryDto.categoryId = req.params.categoryId
 
-    try {
+        try {
+            await CategoryIdValidation(subCategoryDto.categoryId)
 
-      await CategoryIdValidation(subCategoryDto.categoryId)
+            const { error } = await SubCategoryValidation.createSubCategory(subCategoryDto)
+            if (error) throw new Error(error.details[0].message)
+            const newSubCategory = await subCategoryDao.createSubCategory(subCategoryDto)
 
-      const { error } = await SubCategoryValidation.createSubCategory(subCategoryDto)
-      if (error) throw new Error(error.details[0].message)
-      const newSubCategory = await subCategoryDao.createSubCategory(subCategoryDto)
-
-      return res
-        .status(201)
-        .json({ message: 'SubCategory created successfuly', data: newSubCategory, status: 'success' })
-    } catch (error: any) {
-      console.log(error);
-      return res.status(400).json({ error: error.message, status: 'failed' })
+            return res
+                .status(201)
+                .json({ message: 'SubCategory created successfuly', data: newSubCategory, status: 'success' })
+        } catch (error: any) {
+            console.log(error)
+            return res.status(400).json({ error: error.message, status: 'failed' })
+        }
     }
-  }
 
-  static getAllSubCategories = async (req: Request, res: Response) => {
-    const subCategoryDao = new SubCategoryDao()
+    static getAllSubCategories = async (req: Request, res: Response) => {
+        const subCategoryDao = new SubCategoryDao()
 
-    try {
-      const subCategories = await subCategoryDao.getAllSubCategories()
+        try {
+            const subCategories = await subCategoryDao.getAllSubCategories()
 
-      return res
-        .status(200)
-        .json({ message: 'All SubCategories retreived successfully', data: subCategories, status: 'success' })
-    } catch (error: any) {
-      console.log(error);
-      return res.status(400).json({ error: error.message, status: 'failed' })
+            return res
+                .status(200)
+                .json({ message: 'All SubCategories retreived successfully', data: subCategories, status: 'success' })
+        } catch (error: any) {
+            console.log(error)
+            return res.status(400).json({ error: error.message, status: 'failed' })
+        }
     }
-  }
 
-  static getSubCategoryById = async (req: Request, res: Response) => {
-    const subCategoryDao = new SubCategoryDao()
-    const subCategoryId = req.params.subCategoryId
+    static getSubCategoryById = async (req: Request, res: Response) => {
+        const subCategoryDao = new SubCategoryDao()
+        const subCategoryId = req.params.subCategoryId
 
-    console.log('subCategoryId Controller', subCategoryId)
+        console.log('subCategoryId Controller', subCategoryId)
 
-    try {
-      const subCategory = await subCategoryDao.getSubCategoryById(subCategoryId)
+        try {
+            const subCategory = await subCategoryDao.getSubCategoryById(subCategoryId)
 
-      return res
-        .status(200)
-        .json({ message: 'SubCategory retreived successfully', data: subCategory, status: 'success' })
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message, status: 'failed' })
+            return res
+                .status(200)
+                .json({ message: 'SubCategory retreived successfully', data: subCategory, status: 'success' })
+        } catch (error: any) {
+            return res.status(400).json({ error: error.message, status: 'failed' })
+        }
     }
-  }
 
-  static getSubCategoriesByCategoryId = async (req: Request, res: Response) => {
-    const subCategoryDao = new SubCategoryDao()
-    const categoryId = req.params.categoryId // TODO discuss with team
+    static getSubCategoriesByCategoryId = async (req: Request, res: Response) => {
+        const subCategoryDao = new SubCategoryDao()
+        const categoryId = req.params.categoryId // TODO discuss with team
 
-    try {
-      await CategoryIdValidation(categoryId)
+        try {
+            await CategoryIdValidation(categoryId)
 
-      const subCategories = await subCategoryDao.getSubCategoryByCategoryId(categoryId)
+            const subCategories = await subCategoryDao.getSubCategoryByCategoryId(categoryId)
 
-      return res
-        .status(200)
-        .json({ message: 'Sub Categories retreived successfully', data: subCategories, status: 'success' })
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message, status: 'failed' })
+            return res
+                .status(200)
+                .json({ message: 'Sub Categories retreived successfully', data: subCategories, status: 'success' })
+        } catch (error: any) {
+            return res.status(400).json({ error: error.message, status: 'failed' })
+        }
     }
-  }
 
-  static updateSubCategory = async (req: Request, res: Response) => {
-    const subCategoryDao = new SubCategoryDao()
-    const subCategoryDto = new SubCategoryDto(req.body)
-    subCategoryDto.id = req.params.subCategoryId
+    static updateSubCategory = async (req: Request, res: Response) => {
+        const subCategoryDao = new SubCategoryDao()
+        const subCategoryDto = new SubCategoryDto(req.body)
+        subCategoryDto.id = req.params.subCategoryId
 
-    try {
+        try {
+            await SubCategoryIdValidation(subCategoryDto.id)
+            // await CategoryIdValidation(subCategoryDto.categoryId)
 
-      await SubCategoryIdValidation(subCategoryDto.id)
-      // await CategoryIdValidation(subCategoryDto.categoryId)
+            const { error } = await SubCategoryValidation.updateSubCategory(subCategoryDto)
+            if (error) throw new Error(error.details[0].message)
+            const updatedSubCategory = await subCategoryDao.updateSubCategory(subCategoryDto)
 
-      const { error } = await SubCategoryValidation.updateSubCategory(subCategoryDto)
-      if (error) throw new Error(error.details[0].message)
-      const updatedSubCategory = await subCategoryDao.updateSubCategory(subCategoryDto)
-
-      return res
-        .status(200)
-        .json({ message: 'SubCategory updated successfully', data: updatedSubCategory, status: 'success' })
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message, status: 'failed' })
+            return res
+                .status(200)
+                .json({ message: 'SubCategory updated successfully', data: updatedSubCategory, status: 'success' })
+        } catch (error: any) {
+            return res.status(400).json({ error: error.message, status: 'failed' })
+        }
     }
-  }
 
-  static deleteSubCategory = async (req: Request, res: Response) => {
-    const subCategoryDao = new SubCategoryDao()
-    const subCategoryId = req.params.subCategoryId
+    static deleteSubCategory = async (req: Request, res: Response) => {
+        const subCategoryDao = new SubCategoryDao()
+        const subCategoryId = req.params.subCategoryId
 
-    try {
+        try {
+            await SubCategoryIdValidation(subCategoryId)
 
-      await SubCategoryIdValidation(subCategoryId)
+            const deletedSubCategory = await subCategoryDao.deleteSubCategory(subCategoryId)
 
-      const deletedSubCategory = await subCategoryDao.deleteSubCategory(subCategoryId)
-
-      return res
-        .status(200)
-        .json({ message: 'SubCategory deleted successfully', data: deletedSubCategory, status: 'success' })
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message, status: 'failed' })
+            return res
+                .status(200)
+                .json({ message: 'SubCategory deleted successfully', data: deletedSubCategory, status: 'success' })
+        } catch (error: any) {
+            return res.status(400).json({ error: error.message, status: 'failed' })
+        }
     }
-  }
 }

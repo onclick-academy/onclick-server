@@ -64,7 +64,6 @@ export class NotificationController {
                 req.body.offset
             )
 
-
             res.status(200).json({
                 status: 'success',
                 data: notifications

@@ -2,7 +2,7 @@ import { CourseDao } from '../models/dao/course.dao'
 import { CourseDto } from '../models/dto/course.dto'
 import { CourseValidation } from '../middlewares/validation/course/course.validation'
 
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { InstructorIdValidation } from '@utilities/IdValidation/users.id'
 import {
     CategoryIdValidation,
@@ -14,21 +14,22 @@ import { UserRequest } from '../types/user.interface'
 import { sendEmail } from '@utilities/email'
 import handlebars from 'handlebars'
 import fs from 'fs'
+import { passToExpressError } from '@utilities/error'
 
 export class CourseController {
-    static applyCourse = async (req: Request, res: Response) => {
+    static applyCourse = async (req: UserRequest, res: Response) => {
         const courseDao = new CourseDao()
         const courseDto = new CourseDto(req.body)
-        console.log('req.body', req.body)
-        console.log('course dto', courseDto)
 
         try {
+            const ownerId = req.user.id
+            await InstructorIdValidation(ownerId)
+          
             courseDto.CourseOwners.forEach(async (ownerId) => {
                 await InstructorIdValidation(ownerId);
             });
-            await CategoryIdValidation(courseDto.categoryId)
 
-            // TODO => topic validation in course creation
+            await CategoryIdValidation(courseDto.categoryId)
 
             courseDto.topics.forEach(async topicId => {
                 await TopicIdValidation(topicId)
@@ -45,7 +46,7 @@ export class CourseController {
         }
     }
 
-    static approvecourse = async (req: UserRequest, res: Response) => {
+    static approvecourse = async (req: UserRequest, res: Response, next: NextFunction) => {
         const adminId = req.user.id
         const courseId = req.params.courseId
 
@@ -59,7 +60,8 @@ export class CourseController {
             const publisher = course.CourseOwners[0].user
 
             const email = publisher.email
-            const htmlContent = fs.readFileSync('src/views/approved-course.html', 'utf8')
+            const htmlContent = await fs.promises.readFile('src/views/approved-course.html', 'utf8') // this will not block the event loop
+            // const htmlContent = fs.readFileSync('src/views/approved-course.html', 'utf8') // this will block the event loop
             const template = handlebars.compile(htmlContent)
             const html = template({
                 link: process.env.CLIENT_URL + '/courses/create?step=3',
@@ -71,7 +73,7 @@ export class CourseController {
             await sendEmail(html, email)
             return
         } catch (error: any) {
-            return res.status(400).json({ error: error.message, status: 'failed' })
+            passToExpressError(error, next)
         }
     }
 

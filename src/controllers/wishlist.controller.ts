@@ -14,7 +14,7 @@ export class WishlistController {
             if (error) return res.status(400).json({ message: error.message })
 
             const wishList = await wishListDao.createWishList(wishListDto)
-            return res.status(200).json({ message: 'Wishlist created successfully', data: wishList, status: 'success'})
+            return res.status(200).json({ message: 'Wishlist created successfully', data: wishList, status: 'success' })
         } catch (error) {
             console.log(error)
             return res.status(500).json({ message: error }) // error.message
@@ -28,8 +28,9 @@ export class WishlistController {
         wishListDto.courseId = req.params.courseId
         try {
             const isWishListed = await wishListDao.isWishListed(wishListDto)
-            if (!isWishListed) return res.status(200).json({ message: 'notWishListed', data: isWishListed, status: 'false'})
-            return res.status(200).json({ message: 'wishLited', data: isWishListed, status: 'success'})
+            if (!isWishListed)
+                return res.status(200).json({ message: 'notWishListed', data: isWishListed, status: 'false' })
+            return res.status(200).json({ message: 'wishLited', data: isWishListed, status: 'success' })
         } catch (error) {
             console.log(error)
             return res.status(500).json({ message: error }) // error.message
@@ -95,7 +96,7 @@ export class WishlistController {
         const wishListDao = new WishListDao()
         try {
             const wishList = await wishListDao.deleteWishList(wishListId)
-            return res.status(200).json({ message: 'Wishlist deleted successfully', data: wishList, status: 'success'})
+            return res.status(200).json({ message: 'Wishlist deleted successfully', data: wishList, status: 'success' })
         } catch (error) {
             console.log(error)
             return res.status(500).json({ message: error }) // error.message

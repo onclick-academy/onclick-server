@@ -13,4 +13,7 @@ router
     .post(InstructorController.ApplyInstructor)
     .get(InstructorController.gerAllInstructors as unknown as RequestHandler)
 
+router.route('/').get(InstructorController.getAllVerifiedInstructors as unknown as RequestHandler)
+router.route('/apply').get(InstructorController.ApplyInstructor)
+
 export default router

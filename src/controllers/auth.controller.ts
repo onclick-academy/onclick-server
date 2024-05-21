@@ -45,14 +45,29 @@ export class AuthController {
             const accessToken = createToken(newUser, process.env.JWT_SECRET_KEY, {
                 expiresIn: expiredPeriod.accessToken
             })
-            const refreshToken = createToken(newUser, process.env.REFRESH_TOKEN_SECRET, {
-                expiresIn: expiredPeriod.refreshToken
+
+            let refreshToken = null
+            if (userDto.isRememberMe) {
+                createToken(newUser, process.env.REFRESH_TOKEN_SECRET, {
+                    expiresIn: expiredPeriod.refreshToken
+                })
+            }
+
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 1000 * 60 * 60 * 24 * 7
+            })
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 1000 * 60 * 60 * 24 * 7
             })
 
             res.status(200).json({
                 data: newUser,
                 accessToken: accessToken,
-                refreshToken: userDto.isRememberMe ? refreshToken : null,
+                refreshToken: refreshToken,
                 status: 'success'
             })
 
@@ -65,6 +80,7 @@ export class AuthController {
             }
 
             await this.sendConfirmationEmail(req, res)
+            return
         } catch (error: any) {
             console.log(error)
             return res.status(500).json({ error: error.message, status: 'failed' })
@@ -92,7 +108,8 @@ export class AuthController {
             await redis.set(`confirm ${newUuid}`, user.id, 'ex', 60 * 10)
             const url = `${process.env.SERVER_URL}/auth/email/user/${newUuid}`
 
-            const htmlContent = fs.readFileSync('src/views/confirm-email.html', 'utf8')
+            const htmlContent = await fs.promises.readFile('src/views/confirm-email.html', 'utf8') // this will not block the event loop
+            // const htmlContent = fs.readFileSync('src/views/confirm-email.html', 'utf8') // TODO change to asyn reading html file
             const template = handlebars.compile(htmlContent)
             const html = template({ url, username: user.username })
             await sendEmail(html, userEmail)
@@ -103,6 +120,7 @@ export class AuthController {
 
     static emailUserConfirmation = async (req: Request, res: Response) => {
         const { uuid } = req.params
+
         try {
             const userId = await redis.get(`confirm ${uuid}`)
             const user = await prisma.user.findUnique({
@@ -150,14 +168,26 @@ export class AuthController {
             const accessToken = createToken(loginDto, process.env.JWT_SECRET_KEY, {
                 expiresIn: expiredPeriod.accessToken
             })
-            const refreshToken = createToken(loginDto, process.env.REFRESH_TOKEN_SECRET, {
+            let refreshToken = null
+            refreshToken = createToken(loginDto, process.env.REFRESH_TOKEN_SECRET, {
                 expiresIn: expiredPeriod.refreshToken
+            })
+            // Set cookies in cookies
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+            })
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
             })
 
             return res.status(200).json({
                 data: user,
                 accessToken: accessToken,
-                refreshToken: loginDto.isRememberMe ? refreshToken : null,
+                refreshToken: refreshToken,
                 status: 'success'
             })
         } catch (error: any) {

@@ -15,17 +15,17 @@ export class CategoryController {
             if (error) throw new Error(error.details[0].message)
             const newCategory = await categoryDao.createCategory(categoryDto)
 
-            const notification = await sendNotificationToAll({
+            await sendNotificationToAll({
                 title: 'New Category Created',
                 message: `A new category with the name ${newCategory.title} has been created`,
                 type: 'COURSE_ENROLLMENT',
-                additionalInfo: JSON.stringify(newCategory),
                 link: '/categories'
             })
-            console.log(notification)
-            return res
-                .status(201)
-                .json({ message: 'Category created successfuly', data: newCategory, notification, status: 'success' })
+            return res.status(201).json({
+                message: 'Category created successfuly',
+                data: newCategory,
+                status: 'success'
+            })
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })
         }

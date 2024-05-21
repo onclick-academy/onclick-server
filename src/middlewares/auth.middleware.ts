@@ -36,22 +36,21 @@ const getUserAndDecodedUser = async (flag: 'access' | 'refresh', token: string) 
 }
 export class AuthMiddleware {
     static verifyToken = (async (req: any, res: Response, next: NextFunction) => {
-        let accessToken = null
-        const authHeader = req.headers.token
-        if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
-        }
+        let accessToken = req.headers.token || req.cookies.accessToken
+        console.log("object token", accessToken)
+        accessToken = accessToken.split(' ')[1]
         if (accessToken == null)
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
 
         try {
-            const userExist = await getUserAndDecodedUser('access', accessToken)
+            const user = await getUserAndDecodedUser('access', accessToken)
             req.user = {
-                ...userExist.decodedUser,
+                ...user.decodedUser,
                 accessToken,
-                role: userExist.userExist.role,
-                id: userExist.userExist.id
+                role: user.userExist.role,
+                id: user.userExist.id
             }
+            console.log('🚀 ~ AuthMiddleware ~ verifyToken= ~ req.user:', req.user)
             next()
         } catch (error: any) {
             if (error.name === 'TokenExpiredError') {
@@ -103,10 +102,7 @@ export class AuthMiddleware {
 
     static studentAuthorization = (async (req: any, res: Response, next: NextFunction) => {
         let accessToken = null
-        const authHeader = req.headers.token
-        if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
-        }
+        const authHeader = req.headers.token || req.cookies.accessToken
 
         if (accessToken == null)
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
@@ -137,10 +133,7 @@ export class AuthMiddleware {
 
     static instructorAuthorization = (async (req: any, res: Response, next: NextFunction) => {
         let accessToken = null
-        const authHeader = req.headers.token
-        if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
-        }
+        const authHeader = req.headers.token || req.cookies.accessToken
 
         if (accessToken == null)
             return res.status(401).json({ error: 'Access token is required', redirectUrl: '/api/v1/auth/login' })
@@ -171,10 +164,7 @@ export class AuthMiddleware {
 
     static checkUserIsDeleted = async (req: UserRequest, res: Response, next: NextFunction) => {
         let accessToken = null
-        const authHeader = req.headers.token
-        if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            accessToken = authHeader.substring(7, authHeader.length) // Extract the token
-        }
+        const authHeader = req.headers.token || req.cookies.accessToken
         try {
             const decodedUser = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as unknown as UserTokenI
             const user = await prisma.user.findUnique({

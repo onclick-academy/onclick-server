@@ -1,4 +1,4 @@
-import prisma from "@models/prisma/prisma-client";
+import prisma from '@models/prisma/prisma-client'
 
 export class SuspendStateDao {
     createSusspendState = async (susspendStateDto: SuspendStateDtoI) => {
