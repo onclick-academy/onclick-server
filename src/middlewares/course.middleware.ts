@@ -3,20 +3,19 @@
  * !WE will not store vidoe url in database but we can generate it on the fly
  * !and use signed url to access the video !!this is so important!!
 
- *? Here is what we r make sure of:
- * First when POST || DELETE || PUT:
- * 1. The course exists
- * 2. The user is instructor
- * 2. The course belongs to the instructor
- * 4. The course is not deleted and is approved
- * 5. Have sort of HEADERS validation
+*? Here is what we r make sure of:
+* First when POST || DELETE || PUT:
+* 1. The course exists
+* 2. The user is instructor
+* 2. The course belongs to the instructor
+* 4. The course is not deleted and is approved
+* 5. Have sort of HEADERS validation
 
- * Second when GET:
- * all of above except the second point
- * also:
- * 1. The user is enrolled in the course
- * 
- */
+* Second when GET:
+* all of above except the second point
+* also:
+* 1. The user is enrolled in the course
+*/
 
 import { CourseDao } from '@models/dao/course.dao'
 import { UserRequest } from 'types/user.interface'
@@ -27,12 +26,13 @@ export class CourseMiddleware {
      * Validate all headers (authentication, cloudflare workers)
      */
     static validateHeaders = async (req: Request, res: Response, next: NextFunction) => {
-        const accessToken = req.headers['authorization'] || req.cookies['accessToken']
-        const cloudflareKey = req.headers['X-Custom-Auth-Key']
+        const cloudflareKey = req.headers['x-custom-auth-key']
 
-        if (!accessToken || !cloudflareKey) {
+        if (cloudflareKey !== process.env.CLOUDFLARE_HEADER_KEY) {
             return res.status(401).json({ message: 'Unauthorized' })
         }
+
+        next()
     }
 
     /**
@@ -41,10 +41,11 @@ export class CourseMiddleware {
      */
     static async validateCourse(req: UserRequest, res: Response, next: NextFunction) {
         try {
+            const courseDao = new CourseDao()
             const { courseId } = req.params
             const { id: userId } = req.user
 
-            const course = await CourseDao.getCourseById(courseId)
+            const course = await courseDao.getCourseById(courseId)
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' })
             }
@@ -61,13 +62,15 @@ export class CourseMiddleware {
 
     /**
      * Validate if the user is enrolled in the course
-     * we used this in getting the course details
+     * we used this in getting the course details - use in GET requests
      */
     static validateEnrollment = async (req: UserRequest, res: Response, next: NextFunction) => {
         try {
+            const courseDao = new CourseDao()
+
             const { courseId } = req.params
             const { id: userId } = req.user
-            const course = await CourseDao.getCourseById(courseId)
+            const course = await courseDao.getCourseById(courseId)
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' })
             }

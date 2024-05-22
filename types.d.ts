@@ -69,7 +69,7 @@ declare global {
         order: number
         title: string
         description: string
-        videoUrl: string
+        // videoUrl: string
         duration: string
         isDeleted: boolean
     }

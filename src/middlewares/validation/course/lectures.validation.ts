@@ -7,7 +7,7 @@ export class LectureValidation {
         order: Joi.number().integer().positive().required(),
         title: Joi.string().required(),
         description: Joi.string().required(),
-        videoUrl: Joi.string().required(),
+        // videoUrl: Joi.string().required(),
         thumbnail: Joi.string().required(),
         duration: Joi.string().required(),
         isDeleted: Joi.boolean().default(false),
@@ -23,9 +23,8 @@ export class LectureValidation {
             ...this.baseSchema,
             order: Joi.number().integer().positive().required()
         })
-            .fork(
-                ['order', 'title', 'description', 'videoUrl', 'duration', 'isDeleted', 'deletedAt', 'thumbnail'],
-                schema => schema.optional()
+            .fork(['order', 'title', 'description', 'duration', 'isDeleted', 'deletedAt', 'thumbnail'], schema =>
+                schema.optional()
             )
             .validateAsync(lectureDto)
     }
