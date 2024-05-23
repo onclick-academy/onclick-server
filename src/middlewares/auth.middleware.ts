@@ -35,6 +35,10 @@ const getUserAndDecodedUser = async (flag: 'access' | 'refresh', token: string) 
     return { decodedUser, userExist }
 }
 export class AuthMiddleware {
+    /**
+     * Verify access token and refresh token
+     * if access token is expired and refresh token is valid then generate new access token
+     */
     static verifyToken = (async (req: any, res: Response, next: NextFunction) => {
         let accessToken = req.headers.token || req.cookies.accessToken
         console.log("object token", accessToken)

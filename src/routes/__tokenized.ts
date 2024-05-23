@@ -4,13 +4,14 @@ import { AuthMiddleware } from '@middlewares/auth.middleware'
 import express from 'express'
 
 const router = express.Router()
+router.use(AuthMiddleware.verifyToken)
+
+router.use('/files', require('@routes/files.route').default)
 
 router.post('/search/:query', SearchController.search)
 
 // course routes
 router.use('/courses', require('./course.route').default)
-
-router.use(AuthMiddleware.verifyToken)
 
 router.use('/admin', verifyAdminRole, require('@routes/admin.route').default) // TODO uncomment and delete next line
 // router.use('/admin', require('@routes/admin.route').default)

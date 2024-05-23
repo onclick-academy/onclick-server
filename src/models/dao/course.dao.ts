@@ -172,6 +172,26 @@ export class CourseDao {
         return courses
     }
 
+    enrollCourse = async (userId: string, courseId: string) => {
+        const enrollment = await prisma.courseEnrollment.create({
+            data: {
+                userId: userId,
+                courseId: courseId
+            }
+        })
+        return enrollment
+    }
+
+    isEnrolled = async (userId: string, courseId: string) => {
+        const enrollment = await prisma.courseEnrollment.findFirst({
+            where: {
+                courseId: courseId,
+                userId: userId
+            }
+        })
+        return enrollment
+    }
+
     updateCourse = async (courseDto: CourseUpdateI) => {
         const updatedCourse = await prisma.course.update({
             where: {

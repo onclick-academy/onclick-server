@@ -7,6 +7,7 @@ export class LectureController {
     static createLecture = async (req: any, res: any) => {
         const lectureDto = new LectureDto(req.body)
         const lectureDao = new LectureDao()
+
         try {
             await SectionIdValidation(lectureDto.sectionId)
 

@@ -165,10 +165,10 @@ model Course {
   sections      Section[]
   enrollments   CourseEnrollment[]
   WishList      WishList[]
-  approvedBy    User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
   subCategories SubCategory[]
   ratings       Rating[]
   CourseOwners  CourseOwners[]
+  approvedBy    User?              @relation(fields: [adminId], references: [id], onDelete: Cascade)
   category      Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
@@ -181,9 +181,7 @@ model Lecture {
   order       Int       @unique @default(autoincrement())
   title       String
   description String
-  // TODO Using  Proxying Through Server: Instead of exposing the direct URL to the client
-  // TODO Signed URLs: Use signed URLs to validation only for a certain time period and specific user.
-  videoUrl    String
+  // videoUrl    String
   thumbnail   String
   duration    String
   isDeleted   Boolean   @default(false)
