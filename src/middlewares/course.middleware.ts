@@ -66,6 +66,7 @@ export class CourseMiddleware {
      */
     static validateEnrollment = async (req: UserRequest, res: Response, next: NextFunction) => {
         try {
+            if (req.user.role !== 'STUDENT') next()
             const courseDao = new CourseDao()
 
             const { courseId } = req.params
