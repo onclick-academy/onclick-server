@@ -18,6 +18,7 @@ export const uploadToCloudflare = async (file: any, path: string) => {
         }
 
         return {
+            response,
             url,
             filename: file.originalname,
             size: (fileBuffer.byteLength / 1024).toFixed(2) + 'KB' // Format the size to two decimal places

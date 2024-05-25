@@ -1,9 +1,7 @@
 import prisma from '@models/prisma/prisma-client'
-import { NOTIFICATION_TYPE } from '@prisma/client'
-import { link } from 'joi'
 
 export class NotificationDao {
-    static async createNotification(notificationDto: NotificationDtoI) {
+    static async createNotification(notificationDto: any) {
         const user = await prisma.user.findUnique({
             where: {
                 id: notificationDto.recipientId
