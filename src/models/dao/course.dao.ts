@@ -76,7 +76,7 @@ export class CourseDao {
                         user: true
                     }
                 },
-                category: true
+                category: true,
             }
         })
         return course

@@ -21,4 +21,22 @@ export class CourseEnrollmentDao {
         if (!enrollment) return false
         return true
     }
+
+    getEnrollmentsByCourseId = async (courseId: string) => {
+        const enrollments = await prisma.courseEnrollment.findMany({
+            where: {
+                courseId
+            }
+        })
+        return enrollments
+    }
+
+    getEnrollmentsByUserId = async (userId: string) => {
+        const enrollments = await prisma.courseEnrollment.findMany({
+            where: {
+                userId
+            }
+        })
+        return enrollments
+    }
 }

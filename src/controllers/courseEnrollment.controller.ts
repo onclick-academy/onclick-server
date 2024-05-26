@@ -43,4 +43,30 @@ export class CourseEnrollmentController {
             res.status(500).json({ error: error.message })
         }
     }
+
+    static getEnrollmentsByCourseId = async (req: Request, res: Response) => {
+        const courseEnrollmentDao = new CourseEnrollmentDao()
+        try {
+            await CourseIdValidation(req.params.courseId)
+
+            const enrollments = await courseEnrollmentDao.getEnrollmentsByCourseId(req.params.courseId)
+            res.status(200).json({ message: 'Enrollments fetched', data: enrollments, status: 'success' })
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: error.message })
+        }
+    }
+
+    static getEnrollmentsByUserId = async (req: UserRequest, res: Response) => {
+        const courseEnrollmentDao = new CourseEnrollmentDao()
+        try {
+            await UserIdValidation(req.user.id)
+
+            const enrollments = await courseEnrollmentDao.getEnrollmentsByUserId(req.user.id)
+            res.status(200).json({ message: 'Enrollments fetched', data: enrollments, status: 'success' })
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: error.message })
+        }
+    }
 }
