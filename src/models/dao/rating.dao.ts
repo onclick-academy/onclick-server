@@ -1,4 +1,4 @@
-import prisma from '@models/prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client.js'
 
 export class RatingDao {
     createRating = async (ratingDto: RatingDtoI) => {

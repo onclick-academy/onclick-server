@@ -8,6 +8,8 @@ router.route('/').post(AuthMiddleware.verifyToken, CourseController.applyCourse)
 
 router.route('/').get(CourseController.getAllCourses)
 
+router.get('/search', CourseController.searchCourses)
+
 router
     .route('/:courseId')
     .get(CourseController.getCourseById)

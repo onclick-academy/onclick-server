@@ -1,4 +1,4 @@
-import prisma from '../prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 import { comparePassword } from '../../utilities/hash'
 import { UserTokenI } from '../../types/user.interface'
 

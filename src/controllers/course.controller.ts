@@ -24,10 +24,10 @@ export class CourseController {
         try {
             const ownerId = req.user.id
             await InstructorIdValidation(ownerId)
-          
-            courseDto.CourseOwners.forEach(async (ownerId) => {
-                await InstructorIdValidation(ownerId);
-            });
+
+            courseDto.CourseOwners.forEach(async ownerId => {
+                await InstructorIdValidation(ownerId)
+            })
 
             await CategoryIdValidation(courseDto.categoryId)
 
@@ -79,9 +79,18 @@ export class CourseController {
 
     static getAllCourses = async (req: Request, res: Response) => {
         const courseDao = new CourseDao()
+        const { offset, limit } = req.query
         try {
-            const courses = await courseDao.getAllCourses()
-            return res.status(200).json({ message: 'Courses fetched successfuly', data: courses, status: 'success' })
+            const courses = await courseDao.getAllCourses({
+                offset: parseInt(offset as string) || 0,
+                limit: parseInt(limit as string) || 10
+            })
+            const totlaNumbersOfCourses = await courseDao.getTotalNumberOfCourses()
+            return res.status(200).json({
+                message: 'Courses fetched successfuly',
+                data: { courses, total: totlaNumbersOfCourses },
+                status: 'success'
+            })
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })
         }
@@ -152,9 +161,11 @@ export class CourseController {
 
     // TODO
     static searchCourses = async (req: Request, res: Response) => {
+        const { search, limit, offset } = req.query
+
         const courseDao = new CourseDao()
         try {
-            const courses = await courseDao.searchCourses(req.query.q as string)
+            const courses = await courseDao.searchCourses(search as string, +offset, +limit)
             return res.status(200).json({ message: 'Courses fetched successfuly', data: courses, status: 'success' })
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })

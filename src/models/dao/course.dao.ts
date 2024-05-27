@@ -1,6 +1,7 @@
 import { title } from 'process'
-import prisma from '../prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 import { ROLE_OF_INSTRUCTOR } from '@prisma/client'
+import fetchCourses from '@utilities/fetchCourses'
 export class CourseDao {
     applyCourse = async (courseDto: CourseDtoI) => {
         const { topics, subCategories, adminId, CourseOwners, ...courseData } = courseDto
@@ -33,26 +34,21 @@ export class CourseDao {
         return newCourse
     }
 
-    getAllCourses = async () => {
-        const courses = await prisma.course.findMany({
+    getAllCourses = async ({ offset = 0, limit = 20 }) => {
+        return fetchCourses({ offset, limit, isDeleted: false })
+    }
+
+    searchCourses = async (search: string, offset = 0, limit = 10) => {
+        return fetchCourses({ search, offset, limit, isDeleted: false })
+    }
+
+    getTotalNumberOfCourses = async () => {
+        const totalNumberOfCourses = await prisma.course.count({
             where: {
                 isDeleted: false
-            },
-            include: {
-                topics: true,
-                sections: {
-                    include: {
-                        lectures: true
-                    }
-                },
-                enrollments: true,
-                subCategories: true,
-                ratings: true,
-                CourseOwners: true,
-                category: true
             }
         })
-        return courses
+        return totalNumberOfCourses
     }
 
     getCourseById = async (id: string) => {
@@ -101,6 +97,61 @@ export class CourseDao {
             where: {
                 categoryId: categoryId,
                 isDeleted: false
+            },
+
+            select: {
+                id: true,
+                photo: true,
+                title: true,
+                price: true,
+                description: true,
+                ratings: {
+                    select: {
+                        rate: true
+                    }
+                },
+                sections: {
+                    select: {
+                        lectures: {
+                            select: {
+                                _count: true
+                            }
+                        }
+                    }
+                },
+                CourseOwners: {
+                    select: {
+                        user: {
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                                profilePic: true
+                            }
+                        },
+                        role: true
+                    }
+                },
+                _count: {
+                    select: {
+                        enrollments: true,
+                        ratings: true
+                    }
+                },
+                category: {
+                    select: {
+                        title: true
+                    }
+                },
+                subCategories: {
+                    select: {
+                        name: true
+                    }
+                },
+                topics: {
+                    select: {
+                        title: true
+                    }
+                }
             }
         })
 
@@ -147,28 +198,6 @@ export class CourseDao {
             }
         })
 
-        return courses
-    }
-
-    searchCourses = async (search: string) => {
-        const courses = await prisma.course.findMany({
-            where: {
-                OR: [
-                    {
-                        title: {
-                            contains: search,
-                            mode: 'insensitive'
-                        }
-                    },
-                    {
-                        description: {
-                            contains: search,
-                            mode: 'insensitive'
-                        }
-                    }
-                ]
-            }
-        })
         return courses
     }
 

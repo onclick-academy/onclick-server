@@ -11,7 +11,9 @@
         "docker:down": "docker-compose down",
         "docker:full": "yarn build && yarn docker:down && yarn docker:up",
         "docker:studio": "sudo docker exec -it onclick-server_onclick-app_1 bash -c \"npx prisma studio\"",
-        "format": "npx prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+        "format": "npx prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+        "prisma:migrate": "npx prisma migrate dev --name init",
+        "seed": "node dist/seed.js"
     },
     "main": "dist/index.js",
     "_moduleAliases": {
@@ -28,6 +30,8 @@
     },
     "dependencies": {
         "@prisma/client": "5.12.1",
+        "@types/faker": "^6.6.9",
+        "Faker": "^0.7.2",
         "bcrypt": "^5.1.1",
         "blob-polyfill": "^7.0.20220408",
         "cookie-parser": "^1.4.6",
@@ -36,6 +40,7 @@
         "cros": "^1.0.1",
         "dotenv": "^16.3.2",
         "express": "^4.18.2",
+        "faker": "^6.6.6",
         "firebase": "^10.8.1",
         "firebase-admin": "^12.0.0",
         "http-errors": "^2.0.0",
