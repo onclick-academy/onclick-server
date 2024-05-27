@@ -1,4 +1,4 @@
-import prisma from '../prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 
 export class LectureMaterialDao {
     createLectureMaterial = async (lectureMaterialDto: lectureMaterialI) => {

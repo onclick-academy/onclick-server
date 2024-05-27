@@ -1,4 +1,4 @@
-import prisma from '../prisma/prisma-client'
+import prisma from '@models/prisma/prisma-client'
 import { hashPassword } from '../../utilities/hash'
 import { roles } from '../../index'
 
@@ -287,7 +287,7 @@ export class UserDao {
         })
         return instructor
     }
-    getAllInstructors = async ({limit, offset}) => {
+    getAllInstructors = async ({ limit, offset }) => {
         const instructors = await prisma.user.findMany({
             where: {
                 role: roles.INSTRUCTOR,
@@ -295,7 +295,6 @@ export class UserDao {
             },
             take: limit,
             skip: offset
-
         })
         return instructors
     }
