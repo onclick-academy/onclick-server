@@ -15,6 +15,7 @@ import { sendEmail } from '@utilities/email'
 import handlebars from 'handlebars'
 import fs from 'fs'
 import { passToExpressError } from '@utilities/error'
+import fetchCourses from '@utilities/fetchCourses'
 
 export class CourseController {
     static applyCourse = async (req: UserRequest, res: Response) => {
@@ -74,25 +75,6 @@ export class CourseController {
             return
         } catch (error: any) {
             passToExpressError(error, next)
-        }
-    }
-
-    static getAllCourses = async (req: Request, res: Response) => {
-        const courseDao = new CourseDao()
-        const { offset, limit } = req.query
-        try {
-            const courses = await courseDao.getAllCourses({
-                offset: parseInt(offset as string) || 0,
-                limit: parseInt(limit as string) || 10
-            })
-            const totlaNumbersOfCourses = await courseDao.getTotalNumberOfCourses()
-            return res.status(200).json({
-                message: 'Courses fetched successfuly',
-                data: { courses, total: totlaNumbersOfCourses },
-                status: 'success'
-            })
-        } catch (error: any) {
-            return res.status(400).json({ error: error.message, status: 'failed' })
         }
     }
 
@@ -163,9 +145,18 @@ export class CourseController {
     static searchCourses = async (req: Request, res: Response) => {
         const { search, limit, offset } = req.query
 
-        const courseDao = new CourseDao()
         try {
-            const courses = await courseDao.searchCourses(search as string, +offset, +limit)
+            const courses =
+                search !== ''
+                    ? await fetchCourses({
+                          search: search as string,
+                          limit: parseInt(limit as string) || 10,
+                          offset: parseInt(offset as string) || 0
+                      })
+                    : await fetchCourses({
+                          offset: parseInt(offset as string) || 0,
+                          limit: parseInt(limit as string) || 10
+                      })
             return res.status(200).json({ message: 'Courses fetched successfuly', data: courses, status: 'success' })
         } catch (error: any) {
             return res.status(400).json({ error: error.message, status: 'failed' })

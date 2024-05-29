@@ -109,7 +109,12 @@ const fetchCourses = async ({ search = '', offset = 0, limit = 10, isDeleted = f
         take: +limit || 10
     })
 
-    return courses
+    const totalCourses = await prisma.course.count({ where })
+
+    return {
+        courses,
+        totalCourses
+    }
 }
 
 export default fetchCourses

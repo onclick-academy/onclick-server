@@ -34,14 +34,6 @@ export class CourseDao {
         return newCourse
     }
 
-    getAllCourses = async ({ offset = 0, limit = 20 }) => {
-        return fetchCourses({ offset, limit, isDeleted: false })
-    }
-
-    searchCourses = async (search: string, offset = 0, limit = 10) => {
-        return fetchCourses({ search, offset, limit, isDeleted: false })
-    }
-
     getTotalNumberOfCourses = async () => {
         const totalNumberOfCourses = await prisma.course.count({
             where: {
@@ -72,7 +64,7 @@ export class CourseDao {
                         user: true
                     }
                 },
-                category: true,
+                category: true
             }
         })
         return course
